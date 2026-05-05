@@ -18,6 +18,7 @@ namespace CRM.Infra
         private ICRMClientContactRepo _CRMClientContactRepo;
         private ICRMClientDocumentRepo _CRMClientDocumentRepo;
         private ICRMClientSearchRepo _CRMClientSearchRepo;
+        private ICRMClientServiceRepo _CRMClientServiceRepo;
 
         public IConfigRepo ConfigRepo => _configRepo ?? new ConfigRepo(dbContext, mapper, memoryCache);
         public IAddressRepo AddressRepo => _addressRepo ?? new AddressRepo(dbContext, provider);
@@ -27,5 +28,6 @@ namespace CRM.Infra
         public ICRMClientContactRepo CRMClientContactRepo => _CRMClientContactRepo ??= new CRMClientContactRepo(dbContext, mapper);
         public ICRMClientDocumentRepo CRMClientDocumentRepo => _CRMClientDocumentRepo ??= new CRMClientDocumentRepo(dbContext, mapper);
         public ICRMClientSearchRepo CRMClientSearchRepo => _CRMClientSearchRepo ??= new CRMClientSearchRepo(dbContext);
+        public ICRMClientServiceRepo CRMClientServiceRepo => _CRMClientServiceRepo ??= new CRMClientServiceRepo(dbContext, mapper);
     }
 }

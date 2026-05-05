@@ -9,7 +9,7 @@ namespace CRM.Application
             services.AddScoped<IConfigService, ConfigService>();
             services.AddScoped<IAddressService, AddressService>();           
             services.AddScoped<IDocumentFileService, DocumentFileService>();
-            services.AddScoped<ICRMClientService, CRMClientService>();
+            services.AddScoped<ICRMClientService, CRMClientServices>();
             
         }
     }

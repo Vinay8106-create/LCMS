@@ -10,7 +10,7 @@ using System.Net;
 
 namespace CRM.Application
 {
-    public class CRMClientService : ICRMClientService
+    public class CRMClientServices : ICRMClientService
     {
         private readonly ICRMUow _iCRMUow;
         private readonly IMapper _mapper;
@@ -19,7 +19,7 @@ namespace CRM.Application
         protected readonly BaseRequestProfile _UserProfile;
         protected readonly IS2SLogic _s2SLogic;
 
-        public CRMClientService(ICRMUow iCRMUow, IMapper mapper, IAddressService addressService,
+        public CRMClientServices(ICRMUow iCRMUow, IMapper mapper, IAddressService addressService,
             IDocumentFileService DocumentService, BaseRequestProfile userProfile, IS2SLogic s2SLogic)
         {
             _iCRMUow = iCRMUow;
@@ -177,8 +177,6 @@ namespace CRM.Application
             throw new NotImplementedException();
         }
 
-
-
         #region Client Details
 
         #region Create Client Contact
@@ -270,6 +268,15 @@ namespace CRM.Application
         }
         #endregion
 
+        #endregion
+
+        #region Client Service
+        #region initial data        
+        public async Task<DDLData> GetClientServiceInitialDataAsync()
+        {
+            return await _iCRMUow.CRMClientServiceRepo.ClientServiceInitialData();
+        }
+        #endregion
         #endregion
     }
 }

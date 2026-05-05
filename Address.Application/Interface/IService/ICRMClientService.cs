@@ -25,5 +25,9 @@ namespace CRM.Application
         Task<CRMClientContactDto> GetClientContactByClientContactIdAsync(long clientContactId);
         Task<SuccessResponse> DeleteClientContact(long clientContactId);
         #endregion
+
+        #region Client Service
+        Task<DDLData> GetClientServiceInitialDataAsync();
+        #endregion
     }
 }

@@ -61,4 +61,29 @@ namespace CRM.Domain
         public long Id { get; set; }
         public string Description { get; set; }
     }
+    public class config_Service : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+    public class config_MatterType : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+    public class config_MatterSubType : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+    public class config_ContactMode : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+    public class config_ServiceStatus : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
 }

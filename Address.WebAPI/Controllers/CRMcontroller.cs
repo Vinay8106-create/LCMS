@@ -159,6 +159,17 @@ namespace CRM.WebAPI
         #endregion
 
 
+        #region Client Service
+
+        [HttpGet("GetClientServiceInitialData")]
+        [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "GetClientServiceInitialData")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DDLData))]
+        public async Task<IActionResult> GetClientServiceInitialData()
+        {
+            return this.Ok(await _iCRMClientService.GetClientServiceInitialDataAsync());
+        }
+        #endregion
+
     }
 }
 
