@@ -277,6 +277,31 @@ namespace CRM.Application
             return await _iCRMUow.CRMClientServiceRepo.ClientServiceInitialData();
         }
         #endregion
+
+        #region Create Client Service
+        public async Task<CRMClientServiceDto> CreateClientServiceAsync()
+        {
+            return new CRMClientServiceDto();
+        }
+        #endregion
+        #region Save Client Service
+        public async Task<CRMClientServiceDto> SaveClientServiceAsync(CRMClientServiceDto request)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(CRMClientDto));
+            var Client = _mapper.Map<CRMClientService>(request);
+
+            string groupName = CRMConstants.GroupName.CSO;
+            await _s2SLogic.Admin.IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
+            Client.ValidateMandatoryFieldsForService();         
+
+            if (Client.HasError)
+                throw new BusinessException(Client.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);  
+       
+            var response = _mapper.Map<CRMClientServiceDto>(Client);           
+
+            return response;
+        }
+        #endregion
         #endregion
     }
 }

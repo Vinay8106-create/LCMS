@@ -160,13 +160,31 @@ namespace CRM.WebAPI
 
 
         #region Client Service
-
+        [AllowAnonymous]
         [HttpGet("GetClientServiceInitialData")]
         [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "GetClientServiceInitialData")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DDLData))]
         public async Task<IActionResult> GetClientServiceInitialData()
         {
             return this.Ok(await _iCRMClientService.GetClientServiceInitialDataAsync());
+        }
+
+        [AllowAnonymous]
+        [HttpGet("CreateClientService")]
+        [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "CreateClientService")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientServiceDto))]
+        public async Task<IActionResult> CreateClientService()
+        {
+            return this.Ok(await _iCRMClientService.CreateClientServiceAsync());
+        }
+
+        [HttpPost("SaveClientService")]
+        [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "SaveClientService")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientServiceDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AppMessage))]
+        public async Task<IActionResult> SaveClientService(CRMClientServiceDto request)
+        {
+            return this.Ok(await _iCRMClientService.SaveClientServiceAsync(request));
         }
         #endregion
 

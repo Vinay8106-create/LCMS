@@ -1,4 +1,5 @@
-﻿using Galaxy.Domain.Models;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using Galaxy.Domain.Models;
 using LCMS.Domain;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -23,6 +24,28 @@ namespace CRM.Domain
         public virtual Collection<CRMClientServiceStatusHistory> CRMClientServiceStatusHistories { get; set; }
         public virtual Collection<CRMClientServiceEmailHistory> CRMClientServiceEmailHistories { get; set; }
 
+        public void ValidateMandatoryFieldsForService()
+        {
+            errorMsgList = new List<uMessage>();
+            if (ServiceConfigId==0)
+            {
+                errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "Service type is mandatory." });
+            }
+
+            if (MatterTypeConfigId==0)
+            {
+                errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "Matter Type is mandatory." });
+            }
+
+            if (MatterSubTypeConfigId==0)
+            {
+                errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "Matter Subtype is mandatory." });
+            }
+            if (ContactModeConfigId==0)
+            {
+                errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "Contact Mode is mandatory." });
+            }
+        }
 
     }
 }

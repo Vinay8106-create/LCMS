@@ -28,6 +28,8 @@ namespace CRM.Application
 
         #region Client Service
         Task<DDLData> GetClientServiceInitialDataAsync();
+        Task<CRMClientServiceDto> CreateClientServiceAsync();
+        Task<CRMClientServiceDto> SaveClientServiceAsync(CRMClientServiceDto request);
         #endregion
     }
 }

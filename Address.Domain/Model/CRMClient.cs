@@ -56,5 +56,6 @@ namespace CRM.Domain
                 errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "Email Id is mandatory." });
             }
         }
+        
     }
 }
