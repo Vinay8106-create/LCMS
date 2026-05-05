@@ -76,7 +76,11 @@ namespace CRM.Application
             var Client = _mapper.Map<CRMClient>(request);
 
             string groupName = CRMConstants.GroupName.CSO;
-            await _s2SLogic.Admin.IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
+
+            var validUser = await _s2SLogic.Admin.IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
+
+            if (validUser != true) throw new BusinessException(await _iCRMUow.MessageRepo.GetMessageByNo(1001), HttpStatusCode.BadRequest);
+
             Client.ValidateMandatoryFields();
 
             var Residentialaddress = _mapper.Map<Address>(request.ResidentialAddress);
