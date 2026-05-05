@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Galaxy.Domain" Version="1.0.2-rc11" />
+		<PackageReference Include="Galaxy.Dto" Version="1.0.2-rc11" />
+		<PackageReference Include="Google.Protobuf" Version="3.26.1" />
+		<PackageReference Include="ITGAdmin.DTO" Version="1.0.2-rc10" />
+	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Galaxy.Dto" Version="1.0.2-rc10" />
+  </ItemGroup>
+
+</Project>

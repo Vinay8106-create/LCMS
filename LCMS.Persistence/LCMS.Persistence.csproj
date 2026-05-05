@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Galaxy.Infra" Version="1.0.2-rc11" />
+		<PackageReference Include="Galaxy.Workflow.Runtime.Infra" Version="1.0.2-rc10" />
+		<PackageReference Include="Galaxy.Workflow.Template.Infra" Version="1.0.2-rc10" />
+		<PackageReference Include="ITGAcc.Integration.Infra" Version="1.0.3" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Address.Domain\CRM.Domain.csproj" />
+	</ItemGroup>
+
+</Project>

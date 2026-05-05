@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Galaxy.Application" Version="1.0.2-rc11" />
+		<PackageReference Include="ITGAcc.Integration.Application" Version="1.0.3" />
+		<PackageReference Include="ITGAdmin.DTO" Version="1.0.2-rc10" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\LCMS.Dto\LCMS.Dto.csproj" />
+		<ProjectReference Include="..\LCMS.S2SLogic\LCMS.S2SLogic.csproj" />
+	</ItemGroup>
+
+
+</Project>

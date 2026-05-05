@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Galaxy.ApiUtility" Version="1.0.2-rc11" />
+		<PackageReference Include="Galaxy.Dto" Version="1.0.2-rc11" />
+		<PackageReference Include="Galaxy.MultiTenant" Version="1.0.2-rc11" />
+		<PackageReference Include="Galaxy.MultiTenant.DbPlugin" Version="1.0.2-rc11" />
+		<PackageReference Include="Galaxy.Utility" Version="1.0.2-rc11" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="7.2.0" />
+
+
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Auth.Application\Auth.Application.csproj" />
+		<ProjectReference Include="..\Auth.Infra\Auth.Infra.csproj" />
+		<ProjectReference Include="..\LCMS.S2SLogic\LCMS.S2SLogic.csproj" />
+	</ItemGroup>
+
+</Project>

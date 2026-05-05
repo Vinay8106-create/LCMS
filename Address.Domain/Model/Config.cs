@@ -1,0 +1,64 @@
+﻿using Galaxy.Domain.Models;
+
+namespace CRM.Domain
+{
+    public class config_ClientType : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class config_ClientSubType : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class config_ClientStatus : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class config_Gender : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class config_MaritalStatus : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class config_DocumentMaster : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class config_AddressLevel1 : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class config_AddressLevel2 : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class config_AddressLevel3 : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class config_Relationship : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
+}

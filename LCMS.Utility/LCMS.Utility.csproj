@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="DocumentFormat.OpenXml" Version="3.4.1" />
+		<PackageReference Include="Galaxy.Infra" Version="1.0.2-rc11" />
+		<PackageReference Include="Galaxy.Workflow.Runtime.Application" Version="1.0.2-rc10" />
+		<PackageReference Include="ITGAcc.Integration.Application" Version="1.0.3" />
+		<PackageReference Include="ITGAcc.Integration.Infra" Version="1.0.3" />
+		<PackageReference Include="ITGAccounts.Dto" Version="1.0.3" />
+		<PackageReference Include="ITGAccounts.S2SLogic" Version="1.0.3" />
+		<PackageReference Include="RestSharp" Version="106.11.7" />
+		<PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="106.11.7" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="3.119.1" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\LCMS.Constants\LCMS.Constants.csproj" />
+	  <ProjectReference Include="..\LCMS.DTO\LCMS.DTO.csproj" />
+	</ItemGroup>
+
+</Project>
