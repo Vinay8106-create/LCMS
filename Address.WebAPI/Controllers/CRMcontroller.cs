@@ -187,7 +187,7 @@ namespace CRM.WebAPI
         #endregion
 
         #region Legal Officer
-
+        [AllowAnonymous]
         [HttpGet("GetLegalOfficerInitialData")]
         [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "GetLegalOfficerInitialData")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DDLData))]

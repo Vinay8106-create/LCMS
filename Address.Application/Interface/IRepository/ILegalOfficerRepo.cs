@@ -11,6 +11,7 @@ namespace CRM.Application
         Task<LegalOfficer> UpdateLegalOfficer(LegalOfficerDto request);
         Task<LegalOfficer> GetLegalOfficerById(long LegalOfficerId, bool isTracking = false);
         Task<DDLData> GetLegalOfficerInitialData();
+      
 
 
     }

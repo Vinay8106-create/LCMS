@@ -2,12 +2,14 @@
 using CRM.Application;
 using CRM.Domain;
 using Galaxy.Domain.Exceptions;
+using Galaxy.Domain.Models;
 using Galaxy.Dto;
 using Galaxy.Infra;
 using LCMS.Dto;
 using LCMS.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using static Dapper.SqlMapper;
 
 namespace CRM.Infra
 {
@@ -52,7 +54,10 @@ namespace CRM.Infra
             var MatterSubType = await GetDDLAsync<config_LegalOfficerStatus>("DDLLegalOfficerStatus");
             dDLData.data.Add(MatterSubType);
             var ContactMode = await GetDDLAsync<config_IDType>("DDLIDType");
-            dDLData.data.Add(ContactMode);           
+            dDLData.data.Add(ContactMode);
+            var User = await getAllITGUser();
+            dDLData.data.Add(User);
+
             return dDLData;
         }
 
@@ -70,6 +75,25 @@ namespace CRM.Infra
                 Key = key,
                 Value = data
             };
+        }
+
+        public async Task<DDL> getAllITGUser()
+        {
+            var data = await _dbContext.Set<User>()
+                .Select(x => new DDLClass
+                {
+                    Id = EF.Property<long>(x, "Id"),
+                    Description = (x.FirstName ?? "") + " " +
+                      (x.MiddleName ?? "") + " " +
+                      (x.LastName ?? "")
+                }).AsNoTracking().ToListAsync();
+
+            return new DDL
+            {
+                Key = "DDLUser",
+                Value = data
+            };
+
         }
        
     }
