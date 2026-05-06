@@ -45,16 +45,14 @@ namespace CRM.Infra
         public async Task<DDLData> GetLegalOfficerInitialData()
         {
             DDLData dDLData = new DDLData();
-            var ServiceType = await GetDDLAsync<config_Service>("DDLServiceType");
+            var ServiceType = await GetDDLAsync<config_Designation>("DDLDesignation");
             dDLData.data.Add(ServiceType);
-            var MatterType = await GetDDLAsync<config_MatterType>("DDLMatterType");
+            var MatterType = await GetDDLAsync<config_Specialization>("DDLSpecialization");
             dDLData.data.Add(MatterType);
-            var MatterSubType = await GetDDLAsync<config_MatterSubType>("DDLMatterSubType");
+            var MatterSubType = await GetDDLAsync<config_LegalOfficerStatus>("DDLLegalOfficerStatus");
             dDLData.data.Add(MatterSubType);
-            var ContactMode = await GetDDLAsync<config_ContactMode>("DDLContactMode");
-            dDLData.data.Add(ContactMode);
-            var ServiceStatus = await GetDDLAsync<config_ServiceStatus>("DDLServiceStatus");
-            dDLData.data.Add(ServiceStatus);
+            var ContactMode = await GetDDLAsync<config_IDType>("DDLIDType");
+            dDLData.data.Add(ContactMode);           
             return dDLData;
         }
 
@@ -73,10 +71,6 @@ namespace CRM.Infra
                 Value = data
             };
         }
-
-      
-       
-
        
     }
 }
