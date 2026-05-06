@@ -175,22 +175,22 @@ namespace Master.Infra
                 desc => SetPropertyValue(model, "ConfigServiceStatus", desc)
             ),//
             (
-                GetPropertyValue<int?>(model, "configDesignationId"),
+                GetPropertyValue<int?>(model, "DesignationConfigId"),
                 "config_Designation",
                 desc => SetPropertyValue(model, "ConfigDesignation", desc)
             ),
             (
-                GetPropertyValue<int?>(model, "configSpecializationId"),
+                GetPropertyValue<int?>(model, "SpecializationConfigId"),
                 "config_Specialization",
                 desc => SetPropertyValue(model, "configSpecialization", desc)
             ),
             (
-                GetPropertyValue<int?>(model, "configLegalOfficerStatusId"),
+                GetPropertyValue<int?>(model, "LegalStatusConfigId"),
                 "config_LegalOfficerStatus",
                 desc => SetPropertyValue(model, "configLegalOfficerStatus", desc)
             ),
             (
-                GetPropertyValue<int?>(model, "configIDTypeId"),
+                GetPropertyValue<int?>(model, "IDTypeConfigId"),
                 "config_IDType",
                 desc => SetPropertyValue(model, "configIDType", desc)
             )

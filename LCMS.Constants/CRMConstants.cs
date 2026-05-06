@@ -28,6 +28,7 @@
         public static class GroupName
         {
             public const string CSO = "Customer Service Officer";
+            public const string LAO = "Legal Administration Team";
         }
 
     }

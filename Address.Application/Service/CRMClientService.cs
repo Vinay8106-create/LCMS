@@ -150,6 +150,11 @@ namespace CRM.Application
         {
             await _iCRMUow.ConfigRepo.SetDescription(clientService);
         }
+
+        private async Task SetDescription(LegalOfficerDto legalOfficerDto)
+        {
+            await _iCRMUow.ConfigRepo.SetDescription(legalOfficerDto);
+        }
         #endregion
 
         #region Get Client By Client Id
@@ -349,15 +354,23 @@ namespace CRM.Application
         public async Task<LegalOfficerDto> SaveLegalOfficerAsync(LegalOfficerDto request)
         {
             var LegalOfficer = _mapper.Map<LegalOfficer>(request);
-            LegalOfficer.ValidateMandatoryFieldsForLegalOfficer();        
+
+            string groupName = CRMConstants.GroupName.LAO;
+            var validUser = await _s2SLogic.Admin.IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
+            if (validUser != true) throw new BusinessException(await _iCRMUow.MessageRepo.GetMessageByNo(1001), HttpStatusCode.BadRequest);
+
+            LegalOfficer.ValidateMandatoryFieldsForLegalOfficer();
 
             if (LegalOfficer.HasError)
                 throw new BusinessException(LegalOfficer.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
 
-            LegalOfficer = LegalOfficer.Id > 0 ? await _iCRMUow.LegalOfficerRepo.UpdateLegalOfficer(request) : await _iCRMUow.LegalOfficerRepo.InsertLegalOfficer(request);
+            LegalOfficer = LegalOfficer.Id > 0 ? await _iCRMUow.LegalOfficerRepo.UpdateLegalOfficer(request)
+                : await _iCRMUow.LegalOfficerRepo.InsertLegalOfficer(request);
 
             await _iCRMUow.SaveChangesAsync();
             var response = _mapper.Map<LegalOfficerDto>(LegalOfficer);
+            await SetDescription(response);
+
             return response;
         }
         #endregion
