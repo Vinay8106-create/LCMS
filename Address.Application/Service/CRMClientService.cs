@@ -30,6 +30,8 @@ namespace CRM.Application
             _s2SLogic = s2SLogic;
         }
 
+        #region CRM Client
+
         #region Get Client Initial Data
         public async Task<DDLData> GetClientInitialDataAsync()
         {
@@ -139,16 +141,23 @@ namespace CRM.Application
             await _iCRMUow.ConfigRepo.SetDescription(client);
         }
 
-        private async Task SetDescription(CRMClientContactDto client)
+        private async Task SetDescription(CRMClientContactDto clientContact)
         {
-            await _iCRMUow.ConfigRepo.SetDescription(client);
+            await _iCRMUow.ConfigRepo.SetDescription(clientContact);
+        }
+
+        private async Task SetDescription(CRMClientServiceDto clientService)
+        {
+            await _iCRMUow.ConfigRepo.SetDescription(clientService);
         }
         #endregion
 
+        #region Get Client By Client Id
         public async Task<CRMClientDto> GetClientByClientIdAsync(long clientId)
         {
             return _mapper.Map<CRMClientDto>(await _iCRMUow.CRMClientRepo.GetClientById(clientId));
         }
+        #endregion
 
         public Task<CRMClientDocumentDto> CreateClientDocument()
         {
@@ -165,23 +174,9 @@ namespace CRM.Application
             throw new NotImplementedException();
         }
 
-        public Task<CRMClientDto> GetCRMClientByIdAsync(long clientId)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
-        public Task<DDLData> GetCRMClientInitialDataAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public Task<CRMClientDocumentDto> SaveClientDocumentAsync(CRMClientDocumentDto request)
-        {
-            throw new NotImplementedException();
-        }
-
-        #region Client Details
+        #region Client Contact
 
         #region Create Client Contact
         public async Task<CRMClientContactDto> CreateClientContactAsync()
@@ -275,6 +270,7 @@ namespace CRM.Application
         #endregion
 
         #region Client Service
+
         #region initial data        
         public async Task<DDLData> GetClientServiceInitialDataAsync()
         {
@@ -288,24 +284,49 @@ namespace CRM.Application
             return new CRMClientServiceDto();
         }
         #endregion
+
         #region Save Client Service
         public async Task<CRMClientServiceDto> SaveClientServiceAsync(CRMClientServiceDto request)
         {
             if (request == null) throw new ArgumentNullException(nameof(CRMClientDto));
-            var Client = _mapper.Map<CRMClientService>(request);
+            var ClientService = _mapper.Map<CRMClientService>(request);
 
             string groupName = CRMConstants.GroupName.CSO;
-            await _s2SLogic.Admin.IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
-            Client.ValidateMandatoryFieldsForService();         
+            var validUser = await _s2SLogic.Admin.IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
+            if (validUser != true) throw new BusinessException(await _iCRMUow.MessageRepo.GetMessageByNo(1001), HttpStatusCode.BadRequest);
 
-            if (Client.HasError)
-                throw new BusinessException(Client.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);  
-       
-            var response = _mapper.Map<CRMClientServiceDto>(Client);           
+            ClientService.ValidateMandatoryFieldsForService();
+
+            if (ClientService.HasError)
+                throw new BusinessException(ClientService.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
+
+            if (string.IsNullOrWhiteSpace(ClientService.ServiceRefNo))
+            {
+                await GenerateClientServiceNo(ClientService);
+            }
+
+            ClientService = ClientService.Id > 0 ? await _iCRMUow.CRMClientServiceRepo.UpdateClientService(request) : await _iCRMUow.CRMClientServiceRepo.InsertClientService(ClientService);
+
+            await _iCRMUow.SaveChangesAsync();
+            var response = _mapper.Map<CRMClientServiceDto>(ClientService);
+
+            await SetDescription(response);
 
             return response;
         }
         #endregion
+
+        private async Task<CRMClientService> GenerateClientServiceNo(CRMClientService ClientService)
+        {
+            await _iCRMUow.CRMClientServiceRepo.GenerateClientServiceRefNo(ClientService);
+            if (string.IsNullOrWhiteSpace(ClientService.ServiceRefNo))
+            {
+                throw new BusinessException(await _iCRMUow.MessageRepo.GetMessageByNo(CRMConstants.CRMClientReferenceNumber.ErrorGeneratingRefNo, "Client Ref Number"), HttpStatusCode.BadRequest);
+            }
+
+            return ClientService;
+        }
+
         #endregion
     }
 }

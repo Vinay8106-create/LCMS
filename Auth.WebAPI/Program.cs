@@ -119,7 +119,7 @@ if (hostingMechanism == "Kestrel")
 
         var portString = builder.Configuration.GetConfigurationFromAppSettings("ListeningPort");
 
-        var httpPort = int.TryParse(portString, out var parsedPort) ? parsedPort : 1807;
+        var httpPort = int.TryParse(portString, out var parsedPort) ? parsedPort : 2802;
         options.ListenAnyIP(httpPort);
 
         options.ListenAnyIP(7279, listenOptions => {
@@ -152,9 +152,7 @@ if (string.Equals(environment, "Development", StringComparison.OrdinalIgnoreCase
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => {
-        c.SwaggerEndpoint(
-            builder.Configuration.GetConfigurationFromAppSettings("SwaggerPath"),
-            "API V1");
+        c.SwaggerEndpoint(builder.Configuration.GetConfigurationFromAppSettings("SwaggerPath"), "API V1");
     });
 }
 

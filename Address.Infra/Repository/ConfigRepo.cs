@@ -11,9 +11,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Net;
 
 namespace Master.Infra
-
 {
-
     public class ConfigRepo : Repository<config_ClientType>, IConfigRepo
     {
 
@@ -53,7 +51,6 @@ namespace Master.Infra
             return await GetByIdAsync(Id, isTracking);
         }
 
-
         public async Task<DDLData> ClientInitialData()
         {
             DDLData dDLData = new DDLData();
@@ -84,7 +81,7 @@ namespace Master.Infra
             var data = await _dbContext.Set<TEntity>()
                 .Select(x => new DDLClass
                 {
-                    Id = EF.Property<int>(x, "Id"),
+                    Id = EF.Property<int>(x, "ConfigId"),
                     Description = EF.Property<string>(x, "Description")
                 }).AsNoTracking().ToListAsync();
 
@@ -95,34 +92,12 @@ namespace Master.Infra
             };
         }
 
-        //public async Task SetDescription<T>(T model) where T : class
-        //{
-        //    var type = typeof(T);
-
-        //    var idProp = type.GetProperty("ClientTypeConfigId");
-        //    var descProp = type.GetProperty("ClientType");
-
-        //    if (idProp == null || descProp == null) return;
-
-        //    var value = idProp.GetValue(model);
-
-        //    if (value == null) return;
-
-        //    if (!int.TryParse(value.ToString(), out int id) || id == 0) return;
-
-        //    var desc = await _dbContext.config_ClientType
-        //        .Where(x => x.Id == id)
-        //        .Select(x => x.Description)
-        //        .FirstOrDefaultAsync();
-
-        //    descProp.SetValue(model, desc);
-        //}
 
         public async Task SetDescription<T>(T model) where T : class
         {
             if (model == null) return;
 
-            var mappings = new List<(int? id, string tableName, Action<string?> setter)>
+            var mappings = new List<(int? Configid, string tableName, Action<string?> setter)>
             {
             (
                 GetPropertyValue<int?>(model, "ClientTypeConfigId"),
@@ -153,18 +128,43 @@ namespace Master.Infra
                 GetPropertyValue<int?>(model, "configRelationshipId"),
                 "config_Relationship",
                 desc => SetPropertyValue(model, "configRelationship", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "configDocumentMasterId"),
+                "config_DocumentMaster",
+                desc => SetPropertyValue(model, "configDocumentMaster", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "configAddressLevel1Id"),
+                "config_AddressLevel1",
+                desc => SetPropertyValue(model, "configAddressLevel1", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "configAddressLevel2Id"),
+                "config_AddressLevel2",
+                desc => SetPropertyValue(model, "configAddressLevel2", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "configAddressLevel3Id"),
+                "config_AddressLevel3",
+                desc => SetPropertyValue(model, "configAddressLevel3", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "configRelationshipId"),
+                "config_Relationship",
+                desc => SetPropertyValue(model, "configRelationship", desc)
             )
             };
 
-            foreach (var (id, tableName, setter) in mappings)
+            foreach (var (Configid, tableName, setter) in mappings)
             {
-                if (id == null || id == 0) continue;
-                var desc = await GetDescriptionFromCache(tableName, id.Value);
+                if (Configid == null || Configid == 0) continue;
+                var desc = await GetDescriptionFromCache(tableName, Configid.Value);
                 setter(desc);
             }
         }
 
-        private async Task<string?> GetDescriptionFromCache(string tableName, long id)
+        private async Task<string?> GetDescriptionFromCache(string tableName, long Configid)
         {
             var cacheKey = $"config_{tableName}";
 
@@ -175,22 +175,22 @@ namespace Master.Infra
                 configData = tableName switch
                 {
                     "config_ClientType" => await _dbContext.config_ClientType
-                        .ToDictionaryAsync(x => x.Id, x => x.Description),
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
                     "config_ClientSubType" => await _dbContext.config_ClientSubType
-                        .ToDictionaryAsync(x => x.Id, x => x.Description),
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
                     "config_ClientStatus" => await _dbContext.config_ClientStatus
-                        .ToDictionaryAsync(x => x.Id, x => x.Description),
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
                     "config_Gender" => await _dbContext.config_Gender
-                        .ToDictionaryAsync(x => x.Id, x => x.Description),
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
                     "config_MaritalStatus" => await _dbContext.config_MaritalStatus
-                        .ToDictionaryAsync(x => x.Id, x => x.Description),
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
                     "config_Relationship" => await _dbContext.config_Relationship
-                        .ToDictionaryAsync(x => x.Id, x => x.Description),
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
                     _ => new Dictionary<long, string>()
                 };
@@ -202,7 +202,7 @@ namespace Master.Infra
                 });
             }
 
-            return configData.TryGetValue(id, out var desc) ? desc : null;
+            return configData.TryGetValue(Configid, out var desc) ? desc : null;
         }
 
         // Helper — Get property value without hardcoding

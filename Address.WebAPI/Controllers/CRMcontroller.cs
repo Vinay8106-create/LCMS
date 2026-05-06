@@ -160,7 +160,6 @@ namespace CRM.WebAPI
 
 
         #region Client Service
-        [AllowAnonymous]
         [HttpGet("GetClientServiceInitialData")]
         [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "GetClientServiceInitialData")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DDLData))]
@@ -169,7 +168,7 @@ namespace CRM.WebAPI
             return this.Ok(await _iCRMClientService.GetClientServiceInitialDataAsync());
         }
 
-        [AllowAnonymous]
+
         [HttpGet("CreateClientService")]
         [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "CreateClientService")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientServiceDto))]

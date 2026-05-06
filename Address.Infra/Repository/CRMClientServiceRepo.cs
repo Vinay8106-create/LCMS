@@ -23,7 +23,8 @@ namespace CRM.Infra
             _mapper = mapper;
         }
 
-        public SemaphoreSlim _referencenoLoack = new SemaphoreSlim(1, 1);
+        public SemaphoreSlim _referencenoLock = new SemaphoreSlim(1, 1);
+
         public async Task<DDLData> ClientServiceInitialData()
         {
             DDLData dDLData = new DDLData();
@@ -36,7 +37,7 @@ namespace CRM.Infra
             var ContactMode = await GetDDLAsync<config_ContactMode>("DDLContactMode");
             dDLData.data.Add(ContactMode);
             var ServiceStatus = await GetDDLAsync<config_ServiceStatus>("DDLServiceStatus");
-            dDLData.data.Add(ServiceStatus);           
+            dDLData.data.Add(ServiceStatus);
             return dDLData;
         }
 
@@ -45,7 +46,7 @@ namespace CRM.Infra
             var data = await _dbContext.Set<TEntity>()
                 .Select(x => new DDLClass
                 {
-                    Id = EF.Property<int>(x, "Id"),
+                    Id = EF.Property<int>(x, "ConfigId"),
                     Description = EF.Property<string>(x, "Description")
                 }).AsNoTracking().ToListAsync();
 
@@ -55,14 +56,14 @@ namespace CRM.Infra
                 Value = data
             };
         }
+
         public async Task<string> GenerateCustomerServiceReferenceNo()
         {
             try
             {
-                await _referencenoLoack.WaitAsync();    // only one thread can be created at a time
+                await _referencenoLock.WaitAsync();    // only one thread can be created at a time
                 using var reader = await _dbContext.ExecuteSpAsync(LCMSCommonConstants.ReferenceNumber.MetadataName,
-                new
-                {
+                new {
                     ConfigId = CRMConstants.CRMClientReferenceNumber.Id,
                     ConfigConstant = CRMConstants.CRMClientReferenceNumber.Constant,
                     RefMetaDataName = CRMConstants.CRMClientReferenceNumber.MetadataName,
@@ -80,11 +81,10 @@ namespace CRM.Infra
             }
             finally
             {
-                _referencenoLoack.Release();
+                _referencenoLock.Release();
             }
         }
 
-      
 
         public async Task<CRMClientService> GetCustomerServiceById(long customerServiceId, bool isTracking = false)
         {
@@ -107,11 +107,9 @@ namespace CRM.Infra
             return customer;
         }
 
-        
-
         public async Task<CRMClient> GenerateClientServiceRefNo(CRMClient client)
         {
-            await _referencenoLoack.WaitAsync();
+            await _referencenoLock.WaitAsync();
             string clientRefNo = null;
             using var reader = await _dbContext.ExecuteSpAsync(CRMConstants.StoredProcedured.APP_SP_GetClientRefNumber);
             var resultSets = await reader.ReadAsync();
@@ -126,21 +124,21 @@ namespace CRM.Infra
 
         public async Task<CRMClientService> UpdateClientService(CRMClientServiceDto request)
         {
-            var client = await dbSet.FirstOrDefaultAsync(x => x.Id == request.Id);
+            var clientService = await dbSet.FirstOrDefaultAsync(x => x.Id == request.Id);
 
-            if (client == null)
-                throw new BusinessException("Unable to locate the client. Please refresh and try again.", HttpStatusCode.BadRequest);
+            if (clientService == null)
+                throw new BusinessException("Unable to locate the clientService. Please refresh and try again.", HttpStatusCode.BadRequest);
 
-            _mapper.Map(request, client);
+            _mapper.Map(request, clientService);
 
-            return client;
+            return clientService;
         }
 
-        public async Task<CRMClientService> InsertClientService(CRMClientService client)
+        public async Task<CRMClientService> InsertClientService(CRMClientService clientService)
         {
-            await AddAsync(client);
+            await AddAsync(clientService);
 
-            return client;
+            return clientService;
         }
 
         public async Task<CRMClientService> GetClientServiceById(long clientServiceId, bool isTracking = false)
@@ -148,9 +146,19 @@ namespace CRM.Infra
             return await GetByIdAsync(clientServiceId, isTracking) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
         }
 
-        public Task<CRMClientService> GenerateClientServiceRefNo(CRMClientService client)
+        public async Task<CRMClientService> GenerateClientServiceRefNo(CRMClientService clientService)
         {
-            throw new NotImplementedException();
+            await _referencenoLock.WaitAsync();
+            string serviceRefNo = null;
+            using var reader = await _dbContext.ExecuteSpAsync(CRMConstants.StoredProcedured.APP_SP_GetClientRefNumber);
+            var resultSets = await reader.ReadAsync();
+            serviceRefNo = resultSets.Select(x => x.CustomerReferenceNumber).FirstOrDefault();
+            if (!string.IsNullOrWhiteSpace(serviceRefNo))
+            {
+                clientService.ServiceRefNo = serviceRefNo;
+            }
+
+            return clientService;
         }
     }
 }

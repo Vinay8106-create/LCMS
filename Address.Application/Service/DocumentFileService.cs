@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using CRM.Domain;
 using Galaxy.Domain.Exceptions;
-using Galaxy.Domain.Models;
 using Galaxy.Dto;
-using Galaxy.Utility;
 using LCMS.Constants;
 using LCMS.Dto;
 using LCMS.Utility;
@@ -40,14 +38,27 @@ namespace CRM.Application
             return documentFileDto;
         }
 
-        //public virtual async Task<DocumentDto> SaveDocumentFile(DocumentDto request)
+
+        //public virtual async Task<DocumentFileDto> SaveDocumentFile(DocumentFileDto request)
         //{
 
         //    if (request == null) throw new BusinessException(nameof(request));
 
         //    var document = _mapper.Map<Document>(request);
-        //    if (string.IsNullOrEmpty(document.FileName)) return request;          
-        //    document.RelativePath = request.RelativePath;      
+        //    if (string.IsNullOrWhiteSpace(document.FileName))
+        //        throw new BusinessException("File name is required", HttpStatusCode.BadRequest);
+
+        //    if (!string.IsNullOrWhiteSpace(request.FolderName) && !string.IsNullOrWhiteSpace(request.SubFolderName))
+        //    {
+        //        document.RelativePath = await ConstructDocumentFilePath(request.FolderName, request.SubFolderName);
+
+        //    }
+        //    else
+        //    {
+        //        document.RelativePath = request.RelativePath;
+
+        //    }
+
         //    if (string.IsNullOrEmpty(document.RelativePath))
         //        return request;
 
@@ -89,7 +100,7 @@ namespace CRM.Application
         //        await ValidateDocumentFileMandatoryFields(document);
 
         //        if (document.HasError)
-        //            return new DocumentDto();
+        //            return new DocumentFileDto();
 
         //        document = document.Id > 0 ? await _imasterUow.DocumentFileRepo.UpdateDocumentFileAsync(request)
         //            : await _imasterUow.DocumentFileRepo.InsertDocumentFileAsync(document);
@@ -100,109 +111,82 @@ namespace CRM.Application
         //    document.infoMessge = new uMessage();
         //    document.infoMessge = await _imasterUow.MessageRepo.GetMessageByNo(7001);
 
-        //    return _mapper.Map<DocumentDto>(document);
-
+        //    return _mapper.Map<DocumentFileDto>(document);
         //}
-
-        //public virtual async Task<string> ConstructDocumentFilePath(string FolderName, string SubFolderName)
-        //{
-        //    string attachmentPath = await _imasterUow.ConfigMetaDataRepo.GetConfigMetadataValueByIdAndConstantAndMetadataName(LoanApplicationConstants.AttachmentPath.AttacthMentPathID,
-        //        LoanApplicationConstants.AttachmentPath.AttachmentFolder, LoanApplicationConstants.AttachmentPath.AttachmentFolderMetadataName);
-        //    if (string.IsNullOrWhiteSpace(attachmentPath)) return string.Empty;
-
-        //    return Path.Combine(attachmentPath, FolderName, SubFolderName, "DocumentFile");
-        //}
-
-        //private async Task ValidateDocumentFileMandatoryFields(Document document)
-        //{
-        //    await AddErrorIf(() => string.IsNullOrWhiteSpace(document.FileType), "File Type");
-        //    await AddErrorIf(() => string.IsNullOrWhiteSpace(document.FileName), "File Name");
-        //    await AddErrorIf(() => string.IsNullOrWhiteSpace(document.RelativePath), "Relative Path");
-        //    await AddErrorIf(() => (document.FileSize == 0.0M), "File Size");
-
-        //    async Task AddErrorIf(Func<bool> condition, string fieldName)
-        //    {
-        //        if (condition())
-        //            throw new BusinessException(await _imasterUow.MessageRepo.GetMessageByNo(2, fieldName), HttpStatusCode.BadRequest);
-        //    }
-        //}
-
-
 
         public virtual async Task<DocumentFileDto> SaveDocumentFile(DocumentFileDto request)
         {
-
-            if (request == null) throw new BusinessException(nameof(request));
+            if (request == null)
+                throw new BusinessException("Request cannot be null", HttpStatusCode.BadRequest);
 
             var document = _mapper.Map<Document>(request);
-            if (string.IsNullOrEmpty(document.FileName)) return request;
+
+            await ValidateDocumentFileMandatoryFields(document);
+
+            if (document.HasError)
+            {
+                throw new BusinessException(
+                    document.errorMsgList.Select(x => x.Msg).ToList(),
+                    HttpStatusCode.BadRequest
+                );
+            }
 
             if (!string.IsNullOrWhiteSpace(request.FolderName) && !string.IsNullOrWhiteSpace(request.SubFolderName))
             {
                 document.RelativePath = await ConstructDocumentFilePath(request.FolderName, request.SubFolderName);
-
             }
             else
             {
                 document.RelativePath = request.RelativePath;
-
             }
 
-            if (string.IsNullOrEmpty(document.RelativePath))
-                return request;
-
-            int fileSize;
-            string baseFileName = Path.GetFileNameWithoutExtension(document.FileName);
-            string fileExtension = Path.GetExtension(document.FileName);
-            string fileName = baseFileName + fileExtension;
+            if (string.IsNullOrWhiteSpace(document.RelativePath))
+                throw new BusinessException("Relative path is required", HttpStatusCode.BadRequest);
 
             string relativePath = FileWrapper.GetPlatFormFilePath(document.RelativePath);
+
             if (!Directory.Exists(relativePath))
                 Directory.CreateDirectory(relativePath);
 
+            string baseFileName = Path.GetFileNameWithoutExtension(document.FileName);
+            string extension = Path.GetExtension(document.FileName);
+            string fileName = baseFileName + extension;
 
             string fullPath = FileWrapper.GetPlatFormFilePath(relativePath, fileName);
 
-            // Ensure unique file name
             int count = 1;
             while (FileWrapper.IsFileExists(fullPath))
             {
-                fileName = $"{baseFileName}({count}){fileExtension}";
+                fileName = $"{baseFileName}({count}){extension}";
                 fullPath = FileWrapper.GetPlatFormFilePath(relativePath, fileName);
                 count++;
             }
 
-            // Final resolved file path
-            string actualFilePath = CommonUtil.GetPlatformFilePath(Path.Combine(relativePath, fileName));
-
-            if (FileWrapper.WriteFile(relativePath, fileName, document.base64FileContent, out fileSize))
+            if (!FileWrapper.WriteFile(relativePath, fileName, document.base64FileContent, out int fileSize))
             {
-                document.FileName = fileName;
-                request.FileName = fileName;
-                document.RelativePath = relativePath;
-                request.RelativePath = relativePath;
-                document.FileSize = fileSize;
-                request.FileSize = fileSize;
-                document.FileType = document.getActualFileType;
-                request.FileType = document.getActualFileType;
-
-                await ValidateDocumentFileMandatoryFields(document);
-
-                if (document.HasError)
-                    return new DocumentFileDto();
-
-                document = document.Id > 0 ? await _imasterUow.DocumentFileRepo.UpdateDocumentFileAsync(request)
-                    : await _imasterUow.DocumentFileRepo.InsertDocumentFileAsync(document);
-
-                await _imasterUow.SaveChangesAsync();
+                throw new BusinessException("File could not be written", HttpStatusCode.InternalServerError);
             }
 
-            document.infoMessge = new uMessage();
-            document.infoMessge = await _imasterUow.MessageRepo.GetMessageByNo(7001);
+            document.FileName = fileName;
+            document.RelativePath = relativePath;
+            document.FileSize = fileSize;
+            document.FileType = document.getActualFileType;
 
-            return _mapper.Map<DocumentFileDto>(document);
+            document = document.Id > 0
+                ? await _imasterUow.DocumentFileRepo.UpdateDocumentFileAsync(_mapper.Map<DocumentFileDto>(document))
+                : await _imasterUow.DocumentFileRepo.InsertDocumentFileAsync(document);
 
+            await _imasterUow.SaveChangesAsync();
+
+            var response = _mapper.Map<DocumentFileDto>(document);
+
+            var message = await _imasterUow.MessageRepo.GetMessageByNo(7001);
+
+            response.Msg.InfoMessage = _mapper.Map<uMessageDto>(message);
+
+            return response;
         }
+
 
         public virtual async Task<string> ConstructDocumentFilePath(string FolderName, string SubFolderName)
         {
