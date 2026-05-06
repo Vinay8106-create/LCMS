@@ -12,6 +12,9 @@ namespace CRM.Application
             CreateMap<CRMClient, CRMClientDto>()
                 .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
                 .ReverseMap();
+            CreateMap<CRMClientService, CRMClientServiceDto>()
+             .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
+             .ReverseMap();
 
             CreateMap<Address, AddressDto>()
                 .ForMember(d => d.Msg, o => o.MapFrom<AppMessageResolver>())

@@ -128,11 +128,12 @@ namespace CRM.Domain
         public int ConfigId { get; set; }
 
 
-        public class config_IDType : BaseEntity
-        {
-            public long Id { get; set; }
-            public string Description { get; set; }
-            public int ConfigId { get; set; }
-        }
+
+    }
+    public class config_IDType : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+        public int ConfigId { get; set; }
     }
 }

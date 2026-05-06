@@ -5,6 +5,7 @@ using Galaxy.Infra.EntityConfig;
 using Galaxy.Workflow.Runtime.Infra;
 using Galaxy.Workflow.Template.Infra;
 using Microsoft.EntityFrameworkCore;
+using static CRM.Domain.config_LegalOfficerStatus;
 
 namespace LCMS.Persistence
 {
@@ -39,6 +40,11 @@ namespace LCMS.Persistence
         public DbSet<config_MatterSubType> config_MatterSubType { get; set; }
         public DbSet<config_ContactMode> config_ContactMode { get; set; }
         public DbSet<config_ServiceStatus> config_ServiceStatus { get; set; }
+
+        public DbSet<config_Designation> config_Designation { get; set; }
+        public DbSet<config_Specialization> config_Specialization { get; set; }
+        public DbSet<config_LegalOfficerStatus> config_LegalOfficerStatus { get; set; }
+        public DbSet<config_IDType> config_IDType { get; set; }
 
         #endregion
 
