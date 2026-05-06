@@ -34,6 +34,9 @@ namespace CRM.Application
             CreateMap<config_ClientType, ConfigDto>()
                 .ForMember(d => d.Msg, o => o.MapFrom<AppMessageResolver>())
                 .ReverseMap();
+            CreateMap<LegalOfficer, LegalOfficerDto>()
+                .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
+                .ReverseMap();
 
         }
 

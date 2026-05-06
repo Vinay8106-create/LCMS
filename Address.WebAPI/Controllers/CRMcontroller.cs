@@ -158,7 +158,6 @@ namespace CRM.WebAPI
 
         #endregion
 
-
         #region Client Service
         [HttpGet("GetClientServiceInitialData")]
         [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "GetClientServiceInitialData")]
@@ -185,6 +184,56 @@ namespace CRM.WebAPI
         {
             return this.Ok(await _iCRMClientService.SaveClientServiceAsync(request));
         }
+        #endregion
+
+        #region Legal Officer
+
+        [HttpGet("GetLegalOfficerInitialData")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "GetLegalOfficerInitialData")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DDLData))]
+        public async Task<IActionResult> GetLegalOfficerInitialData()
+        {
+            return this.Ok(await _iCRMClientService.GetLegalOfficerInitialDataAsync());
+        }
+        #region Create LegalOfficer 
+        [HttpGet("CreateLegalOfficer")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "CreateLegalOfficer")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerDto))]
+        public async Task<IActionResult> CreateLegalOfficer()
+        {
+            return this.Ok(await _iCRMClientService.CreateLegalOfficerAsync());
+        }
+        #endregion
+
+        #region Save LegalOfficer 
+        [HttpPost("SaveLegalOfficer")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "SaveLegalOfficer")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AppMessage))]
+        public async Task<IActionResult> SaveLegalOfficer(LegalOfficerDto request)
+        {
+            return this.Ok(await _iCRMClientService.SaveLegalOfficerAsync(request));
+        }
+        #endregion
+        #region Get LegalOfficer 
+        [HttpGet("GetLegalOfficerByLegalOfficerId")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "GetLegalOfficerByLegalOfficerId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerDto))]
+        public async Task<IActionResult> GetLegalOfficerByLegalOfficerIdAsync([FromQuery] long clientId)
+        {
+            return this.Ok(await _iCRMClientService.GetLegalOfficerByLegalOfficerIdAsync(clientId));
+        }
+        #endregion
+        #region Delete LegalOfficer 
+        [HttpDelete("DeleteLegalOfficer")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "DeleteLegalOfficer")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessResponse))]
+        public async Task<IActionResult> DeleteLegalOfficer([FromQuery] long LegalOfficerId)
+        {
+            return this.Ok(await _iCRMClientService.DeleteLegalOfficer(LegalOfficerId));
+        }
+        #endregion
+
         #endregion
 
     }

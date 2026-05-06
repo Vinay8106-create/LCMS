@@ -19,7 +19,6 @@ namespace LCMS.Persistence
         public DbSet<CRMClient> CRMClient { get; set; }
         public DbSet<CRMClientContact> CRMClientContact { get; set; }
         public DbSet<CRMClientDocument> CRMClientDocument { get; set; }
-
         public DbSet<CRMClientService> CRMClientService { get; set; }
         #endregion
 
@@ -41,6 +40,10 @@ namespace LCMS.Persistence
         public DbSet<config_ContactMode> config_ContactMode { get; set; }
         public DbSet<config_ServiceStatus> config_ServiceStatus { get; set; }
 
+        #endregion
+
+        #region
+        public DbSet<LegalOfficer> LegalOfficer { get; set; }
         #endregion
 
 

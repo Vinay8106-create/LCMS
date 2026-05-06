@@ -328,5 +328,76 @@ namespace CRM.Application
         }
 
         #endregion
+
+
+        #region Legal Officer
+        #region initial data        
+        public async Task<DDLData> GetLegalOfficerInitialDataAsync()
+        {
+            return await _iCRMUow.LegalOfficerRepo.GetLegalOfficerInitialData();
+        }
+        #endregion
+
+        #region Create Legal Officer
+        public async Task<LegalOfficerDto> CreateLegalOfficerAsync()
+        {
+            return new LegalOfficerDto();
+        }
+        #endregion
+
+        #region Save Client Contact
+        public async Task<LegalOfficerDto> SaveLegalOfficerAsync(LegalOfficerDto request)
+        {
+            var LegalOfficer = _mapper.Map<LegalOfficer>(request);
+            LegalOfficer.ValidateMandatoryFieldsForLegalOfficer();        
+
+            if (LegalOfficer.HasError)
+                throw new BusinessException(LegalOfficer.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
+
+            LegalOfficer = LegalOfficer.Id > 0 ? await _iCRMUow.LegalOfficerRepo.UpdateLegalOfficer(request) : await _iCRMUow.LegalOfficerRepo.InsertLegalOfficer(request);
+
+            await _iCRMUow.SaveChangesAsync();
+            var response = _mapper.Map<LegalOfficerDto>(LegalOfficer);
+            return response;
+        }
+        #endregion
+
+        #region Get Legal Officer By Id
+        public async Task<LegalOfficerDto> GetLegalOfficerByLegalOfficerIdAsync(long LegalOfficerId)
+        {
+            return _mapper.Map<LegalOfficerDto>(await _iCRMUow.LegalOfficerRepo.GetLegalOfficerById(LegalOfficerId));
+        }
+        #endregion
+
+        #region Delete LegalOfficer
+        public async Task<SuccessResponse> DeleteLegalOfficer(long LegalOfficerId)
+        {
+            SuccessResponse successResponse = new SuccessResponse();
+            if (LegalOfficerId <= 0)
+                successResponse.IsDeleted = false;
+            var LegalOfficer = await _iCRMUow.LegalOfficerRepo.GetLegalOfficerById(LegalOfficerId, true) ?? throw new BusinessException("Id not found");
+
+            if (LegalOfficer != null && LegalOfficer.Id > 0)
+            {
+                await _iCRMUow.BeginTransactionAsync();
+                _iCRMUow.LegalOfficerRepo.Delete(LegalOfficer);
+                await _iCRMUow.SaveChangesAsync();
+                successResponse.IsDeleted = true;
+                successResponse.Msg.InfoMessage = _mapper.Map<uMessageDto>(await _iCRMUow.MessageRepo.GetMessageByNo(2026));
+                successResponse.Msg.InfoMessage.Msg = string.Format(successResponse.Msg.InfoMessage.Msg, "Legal Officer");
+                await _iCRMUow.CommitTransactionAsync();
+                return successResponse;
+            }
+            else
+            {
+                successResponse.IsDeleted = false;
+                successResponse.Msg.ErrorMessage ??= new List<uMessageDto>();
+                var message = (await _iCRMUow.MessageRepo.GetMessageByNo(2038));
+                throw new BusinessException(message.Msg, HttpStatusCode.BadRequest);
+            }
+        }
+        #endregion
+
+        #endregion
     }
 }

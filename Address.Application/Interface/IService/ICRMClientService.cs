@@ -29,5 +29,13 @@ namespace CRM.Application
         Task<CRMClientServiceDto> CreateClientServiceAsync();
         Task<CRMClientServiceDto> SaveClientServiceAsync(CRMClientServiceDto request);
         #endregion
+
+        #region Legal Officer
+        Task<DDLData> GetLegalOfficerInitialDataAsync();
+        Task<LegalOfficerDto> CreateLegalOfficerAsync();
+        Task<LegalOfficerDto> SaveLegalOfficerAsync(LegalOfficerDto request);
+        Task<LegalOfficerDto> GetLegalOfficerByLegalOfficerIdAsync(long LegalOfficerId);
+        Task<SuccessResponse> DeleteLegalOfficer(long LegalOfficerId);
+        #endregion
     }
 }
