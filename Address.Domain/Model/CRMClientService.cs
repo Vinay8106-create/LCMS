@@ -13,6 +13,7 @@ namespace CRM.Domain
         public int? MatterTypeConfigId { get; set; }
         public int? MatterSubTypeConfigId { get; set; }
         public int? ContactModeConfigId { get; set; }
+        public string? AssignedTo { get; set; }
         public string? Notes { get; set; }
         public int? ServiceStatusConfigId { get; set; }
         public string? EnteredBy { get; set; }

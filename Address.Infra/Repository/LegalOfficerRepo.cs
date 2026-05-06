@@ -95,7 +95,30 @@ namespace CRM.Infra
             };
 
         }
-       
+        public async Task<DDL> getAllLegalOfficer()
+        {
+            var data = await (
+                                from lo in _dbContext.LegalOfficer
+                                join u in _dbContext.Set<User>() on lo.UserSerialId equals u.Id
+                                select new DDLClass
+                                {
+                                    Id = lo.Id,
+                                    Constant=u.UserLoginId,
+                                    Description = (u.FirstName ?? "") + " " +
+                                                  (u.MiddleName ?? "") + " " +
+                                                  (u.LastName ?? "")
+                                })
+                                .AsNoTracking()
+                                .ToListAsync();
+
+            return new DDL
+            {
+                Key = "DDLLegalOfficer",
+                Value = data
+            };
+
+        }
+
     }
 }
 

@@ -2,6 +2,7 @@
 using CRM.Application;
 using CRM.Domain;
 using Galaxy.Domain.Exceptions;
+using Galaxy.Domain.Models;
 using Galaxy.Dto;
 using Galaxy.Infra;
 using Galaxy.Utility;
@@ -37,7 +38,11 @@ namespace CRM.Infra
             var ContactMode = await GetDDLAsync<config_ContactMode>("DDLContactMode");
             dDLData.data.Add(ContactMode);
             var ServiceStatus = await GetDDLAsync<config_ServiceStatus>("DDLServiceStatus");
-            dDLData.data.Add(ServiceStatus);
+            dDLData.data.Add(ServiceStatus); 
+            var legalOfficer = await getAllLegalOfficer();
+            dDLData.data.Add(legalOfficer);
+
+
             return dDLData;
         }
 
@@ -159,6 +164,29 @@ namespace CRM.Infra
             }
 
             return clientService;
+        }
+        public async Task<DDL> getAllLegalOfficer()
+        {
+            var data = await (
+                                from lo in _dbContext.LegalOfficer
+                                join u in _dbContext.Set<User>() on lo.UserSerialId equals u.Id
+                                select new DDLClass
+                                {
+                                    Id = lo.Id,
+                                    Constant = u.UserLoginId,
+                                    Description = (u.FirstName ?? "") + " " +
+                                                  (u.MiddleName ?? "") + " " +
+                                                  (u.LastName ?? "")
+                                })
+                                .AsNoTracking()
+                                .ToListAsync();
+
+            return new DDL
+            {
+                Key = "DDLLegalOfficer",
+                Value = data
+            };
+
         }
     }
 }

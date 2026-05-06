@@ -26,6 +26,8 @@ namespace LCMS.Dto
         public long? PhotoId { get; set; }
         public string? ClientType { get; set; }
         public string? ClientSubType { get; set; }
+        public string?  AssignedTo {  get; set; }
+        public string? AssignedToFullName { get; set; }
         public string? Status { get; set; }
         public string? Gender { get; set; }
         public string? MaritalStatus { get; set; }
