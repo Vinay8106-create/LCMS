@@ -150,26 +150,69 @@ namespace Master.Infra
                 desc => SetPropertyValue(model, "configAddressLevel3", desc)
             ),
             (
-                GetPropertyValue<int?>(model, "configRelationshipId"),
-                "config_Relationship",
-                desc => SetPropertyValue(model, "configRelationship", desc)
+                GetPropertyValue<int?>(model, "ServiceConfigId"),
+                "config_Service",
+                desc => SetPropertyValue(model, "ConfigService", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "MatterTypeConfigId"),
+                "config_MatterType",
+                desc => SetPropertyValue(model, "ConfigMatterType", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "MatterSubTypeConfigId"),
+                "config_MatterSubType",
+                desc => SetPropertyValue(model, "ConfigMatterSubType", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "ContactModeConfigId"),
+                "config_ContactMode",
+                desc => SetPropertyValue(model, "ConfigContactMode", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "ServiceStatusConfigId"),
+                "config_ServiceStatus",
+                desc => SetPropertyValue(model, "ConfigServiceStatus", desc)
+            ),//
+            (
+                GetPropertyValue<int?>(model, "configDesignationId"),
+                "config_Designation",
+                desc => SetPropertyValue(model, "ConfigDesignation", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "configSpecializationId"),
+                "config_Specialization",
+                desc => SetPropertyValue(model, "configSpecialization", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "configLegalOfficerStatusId"),
+                "config_LegalOfficerStatus",
+                desc => SetPropertyValue(model, "configLegalOfficerStatus", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "configIDTypeId"),
+                "config_IDType",
+                desc => SetPropertyValue(model, "configIDType", desc)
             )
             };
 
             foreach (var (Configid, tableName, setter) in mappings)
             {
+                Console.WriteLine($"TableName: {tableName} | ConfigId: {Configid}");
                 if (Configid == null || Configid == 0) continue;
+
                 var desc = await GetDescriptionFromCache(tableName, Configid.Value);
+                Console.WriteLine($"DESC RESULT: {desc}");
                 setter(desc);
             }
         }
 
-        private async Task<string?> GetDescriptionFromCache(string tableName, long Configid)
+        private async Task<string?> GetDescriptionFromCache(string tableName, int Configid)
         {
-            var cacheKey = $"config_{tableName}";
+            var cacheKey = tableName;
 
             if (!_memoryCache.TryGetValue(cacheKey,
-                    out Dictionary<long, string>? configData) || configData == null)
+                    out Dictionary<int, string>? configData) || configData == null)
             {
                 // Cache miss — fetch entire table ONCE
                 configData = tableName switch
@@ -192,7 +235,46 @@ namespace Master.Infra
                     "config_Relationship" => await _dbContext.config_Relationship
                         .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
-                    _ => new Dictionary<long, string>()
+                    "config_DocumentMaster" => await _dbContext.config_DocumentMaster
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_AddressLevel1" => await _dbContext.config_AddressLevel1
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_AddressLevel2" => await _dbContext.config_AddressLevel2
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_AddressLevel3" => await _dbContext.config_AddressLevel3
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_Service" => await _dbContext.config_Service
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_MatterType" => await _dbContext.config_MatterType
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_MatterSubType" => await _dbContext.config_MatterSubType
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_ContactMode" => await _dbContext.config_ContactMode
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_ServiceStatus" => await _dbContext.config_ServiceStatus
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_Designation" => await _dbContext.config_Designation
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_Specialization" => await _dbContext.config_Specialization
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_LegalOfficerStatus" => await _dbContext.config_LegalOfficerStatus
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_IDType" => await _dbContext.config_IDType
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    _ => new Dictionary<int, string>()
                 };
 
                 _memoryCache.Set(cacheKey, configData, new MemoryCacheEntryOptions
