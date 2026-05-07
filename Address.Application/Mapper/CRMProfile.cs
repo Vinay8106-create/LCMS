@@ -44,6 +44,15 @@ namespace CRM.Application
             CreateMap<LegalOfficer, LegalOfficerDto>()
                 .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
                 .ReverseMap();
+            CreateMap<LegalOfficerSchedules, LegalOfficerSchedulesDto>()
+               .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
+               .ReverseMap();
+            CreateMap<LegalOfficerAppoinmentSlots, LegalOfficerAppoinmentSlotsDto>()
+               .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
+               .ReverseMap();
+            CreateMap<LegalOfficerAppoinment, LegalOfficerAppoinmentDto>()
+               .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
+               .ReverseMap();
 
         }
 
