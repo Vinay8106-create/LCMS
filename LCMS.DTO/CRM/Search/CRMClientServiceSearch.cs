@@ -22,11 +22,11 @@ namespace LCMS.DTO
         [FilterMapping("ClientServiceViewModel.ServiceStatus", Operation = FilterOperation.Contains)]
         public string? ServiceStatus { get; set; }
 
-        [FilterMapping("ClientServiceViewModel.FromDate", Operation = FilterOperation.Contains)]
-        public string? FromDate { get; set; }
+        [FilterMapping("ClientServiceViewModel.Date", Operation = FilterOperation.GreaterThanOrEqual)]
+        public DateTime? FromDate { get; set; }
 
-        [FilterMapping("ClientServiceViewModel.ToDate", Operation = FilterOperation.Contains)]
-        public string? ToDate { get; set; }
+        [FilterMapping("ClientServiceViewModel.Date", Operation = FilterOperation.LessThanOrEqual)]
+        public DateTime? ToDate { get; set; }
     }
 
     public class CRMClientServiceSearchResultsDto
@@ -40,6 +40,9 @@ namespace LCMS.DTO
         [SortableField("ClientServiceViewModel.ClientRefNo")]
         public string? ClientRefNo { get; set; }
 
+        [SortableField("ClientServiceViewModel.ClientName")]
+        public string? ClientName { get; set; }
+
         [SortableField("ClientServiceViewModel.ServiceType")]
         public string? ServiceType { get; set; }
 
@@ -52,11 +55,7 @@ namespace LCMS.DTO
         [SortableField("ClientServiceViewModel.ServiceStatus")]
         public string? ServiceStatus { get; set; }
 
-        [SortableField("ClientServiceViewModel.FromDate")]
-        public string? FromDate { get; set; }
-
-        [SortableField("ClientServiceViewModel.ToDate")]
-        public string? ToDate { get; set; }
-
+        [SortableField("ClientServiceViewModel.EnteredOn")]
+        public DateTime? EnteredOn { get; set; }
     }
 }

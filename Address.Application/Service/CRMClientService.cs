@@ -181,7 +181,6 @@ namespace CRM.Application
         }
 
 
-
         #endregion
 
         #region Client Contact
@@ -246,20 +245,23 @@ namespace CRM.Application
         }
         #endregion
 
+        #region Get All Client Contacts By ClientId
         public async Task<CRMClientContactSectionDto> GetAllClientContactsByClientId(long clientId)
         {
             if (clientId <= 0) throw new BusinessException("ID Is Invalid");
 
             return await _iCRMUow.CRMClientContactRepo.GetAllClientContactsByClientIdAsync(clientId);
         }
+        #endregion
 
+        #region Get All Client Documents By ClientId
         public async Task<CRMClientDocumentSectionDto> GetClientDocumentsByClientIdAsync(long clientId)
         {
             if (clientId <= 0) throw new BusinessException("ID Is Invalid");
 
             return await _iCRMUow.CRMClientDocumentRepo.GetAllDocumentsByClientIdAsync(clientId);
         }
-
+        #endregion
 
         #region Delete Client Contact
         public async Task<SuccessResponse> DeleteClientContact(long clientContactId)
@@ -315,6 +317,7 @@ namespace CRM.Application
                     : _mapper.Map(await _iCRMUow.MessageRepo.GetMessageByNo(3), result.Msg.InfoMessage);
                 return result;
             }
+
             return new SearchResult<CRMClientServiceSearchResultsDto>();
         }
         #endregion

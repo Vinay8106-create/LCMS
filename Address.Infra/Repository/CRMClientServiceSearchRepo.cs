@@ -33,11 +33,12 @@ namespace CRM.Infra
                 ClientServiceId = x.ClientServiceViewModel.ClientServiceId,
                 ClientServiceRefNo = x.ClientServiceViewModel.ClientServiceRefNo,
                 ClientRefNo = x.ClientServiceViewModel.ClientRefNo ?? "-",
+                ClientName = x.ClientServiceViewModel.ClientName ?? "-",
                 ServiceType = x.ClientServiceViewModel.ServiceType ?? "-",
                 ServiceSubType = x.ClientServiceViewModel.ServiceSubType ?? "-",
                 ContactMode = x.ClientServiceViewModel.ContactMode ?? "-",
                 ServiceStatus = x.ClientServiceViewModel.ServiceStatus ?? "-",
-                //FromDate = x.ClientServiceViewModel.FromDate ?? "-",
+                EnteredOn = x.ClientServiceViewModel.EnteredOn,
             });
         }
     }

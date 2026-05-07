@@ -108,15 +108,18 @@ namespace CRM.WebAPI
         }
         #endregion
 
+        #region GetClientContactByClientContactIdAsync
+
         [HttpGet("GetClientContactByClientContactId")]
         [SwaggerOperation(Tags = new[] { "CRMClientContact" }, Summary = "GetClientContactByClientContactId")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientDto))]
-        public async Task<IActionResult> GetClientByClientContactIdAsync([FromQuery] long clientId)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientContactDto))]
+        public async Task<IActionResult> GetClientContactByClientContactIdAsync([FromQuery] long clientContactId)
         {
-            return this.Ok(await _iCRMClientService.GetClientContactByClientContactIdAsync(clientId));
+            return this.Ok(await _iCRMClientService.GetClientContactByClientContactIdAsync(clientContactId));
         }
+        #endregion
 
-
+        #region Delete Client Contact
 
         [HttpDelete("DeleteClientContact")]
         [SwaggerOperation(Tags = new[] { "CRMClientContact" }, Summary = "DeleteClientContact")]
@@ -126,7 +129,9 @@ namespace CRM.WebAPI
             return this.Ok(await _iCRMClientService.DeleteClientContact(clientContactId));
         }
 
+        #endregion
 
+        #region Get All Client Contacts By ClientId
         [HttpGet("GetAllClientContactsByClientId")]
         [SwaggerOperation(Tags = new[] { "CRMClientContact" }, Summary = "GetAllClientContactsByClientId")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientContactSectionDto))]
@@ -134,10 +139,11 @@ namespace CRM.WebAPI
         {
             return this.Ok(await _iCRMClientService.GetAllClientContactsByClientId(clientId));
         }
+        #endregion
 
         #endregion
 
-        #region Client Documents
+        #region CRMClient Documents
 
         [HttpGet("GetAllClientDocumentsByClientId")]
         [SwaggerOperation(Tags = new[] { "CRMClientDocuments" }, Summary = "GetAllClientDocumentsByClientId")]
