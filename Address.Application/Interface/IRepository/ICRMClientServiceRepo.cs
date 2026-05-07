@@ -1,7 +1,7 @@
-﻿using Galaxy.Application;
-using LCMS.Dto;
-using CRM.Domain;
+﻿using CRM.Domain;
+using Galaxy.Application;
 using Galaxy.Dto;
+using LCMS.Dto;
 
 namespace CRM.Application
 {
@@ -13,6 +13,5 @@ namespace CRM.Application
 
         Task<CRMClientService> GenerateClientServiceRefNo(CRMClientService client);
         Task<DDLData> ClientServiceInitialData();
-
     }
 }

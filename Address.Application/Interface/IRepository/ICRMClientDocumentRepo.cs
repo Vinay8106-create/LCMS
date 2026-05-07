@@ -1,6 +1,6 @@
-﻿using Galaxy.Application;
+﻿using CRM.Domain;
+using Galaxy.Application;
 using LCMS.Dto;
-using CRM.Domain;
 
 namespace CRM.Application
 {
@@ -10,5 +10,6 @@ namespace CRM.Application
         Task<CRMClientDocument> UpdateCRMClientDcumentDetailAsync(CRMClientDocument request);
         Task<CRMClientDocument> GetCRMClientDocumentDetailById(long CRMClientContactDetailId, bool isTracking = false);
 
+        Task<CRMClientDocumentSectionDto> GetAllDocumentsByClientIdAsync(long clientId);
     }
 }

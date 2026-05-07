@@ -8,5 +8,7 @@
         public string? ContactNo { get; set; }
         public string? EmailId { get; set; }
         public string? ClientStatus { get; set; }
+        public string? ClientType { get; set; }
+        public string? ClientSubType { get; set; }
     }
 }

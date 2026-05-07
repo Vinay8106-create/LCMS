@@ -9,7 +9,6 @@ using LCMS.Dto;
 using LCMS.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-using static Dapper.SqlMapper;
 
 namespace CRM.Infra
 {
@@ -30,18 +29,20 @@ namespace CRM.Infra
 
         public async Task<LegalOfficer> InsertLegalOfficer(LegalOfficerDto request)
         {
-            var clientContact = _mapper.Map<LegalOfficer>(request);
-            await AddAsync(clientContact);
-            return clientContact;
+            var legalOfficer = _mapper.Map<LegalOfficer>(request);
+            await AddAsync(legalOfficer);
+
+            return legalOfficer;
         }
 
         public async Task<LegalOfficer> UpdateLegalOfficer(LegalOfficerDto request)
         {
-            var clientContact = await _dbContext.LegalOfficer.FirstOrDefaultAsync(x => x.Id == request.Id);
-            if (clientContact == null)
+            var legalOfficer = await _dbContext.LegalOfficer.FirstOrDefaultAsync(x => x.Id == request.Id);
+            if (legalOfficer == null)
                 throw new BusinessException("Id not found", HttpStatusCode.BadRequest);
-            _mapper.Map(request, clientContact);
-            return clientContact;
+            _mapper.Map(request, legalOfficer);
+
+            return legalOfficer;
         }
 
         public async Task<DDLData> GetLegalOfficerInitialData()
@@ -103,7 +104,7 @@ namespace CRM.Infra
                                 select new DDLClass
                                 {
                                     Id = lo.Id,
-                                    Constant=u.UserLoginId,
+                                    Constant = u.UserLoginId,
                                     Description = (u.FirstName ?? "") + " " +
                                                   (u.MiddleName ?? "") + " " +
                                                   (u.LastName ?? "")

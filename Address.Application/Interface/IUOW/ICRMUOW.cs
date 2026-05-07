@@ -12,6 +12,7 @@ namespace CRM.Application
         ICRMClientDocumentRepo CRMClientDocumentRepo { get; }
         ICRMClientSearchRepo CRMClientSearchRepo { get; }
         ICRMClientServiceRepo CRMClientServiceRepo { get; }
+        ICRMClientServiceSearchRepo CRMClientServiceSearchRepo { get; }
         ILegalOfficerRepo LegalOfficerRepo { get; }
     }
 }

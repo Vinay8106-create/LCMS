@@ -24,7 +24,5 @@ namespace LCMS.Dto
         public int Version { get; set; }
         public AppMessage? Message { get; set; } = new AppMessage();
     }
-
-
 }
 

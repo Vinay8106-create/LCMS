@@ -1,16 +1,10 @@
 ﻿using AutoMapper;
 using CRM.Application;
 using CRM.Domain;
-using Galaxy.Domain.Exceptions;
 using Galaxy.Infra;
 using LCMS.Dto;
-using LCMS.Utility;
-using CRM.Application;
-using CRM.Domain;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net;
 using LCMS.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRM.Infra
 {
@@ -37,6 +31,24 @@ namespace CRM.Infra
         public Task<CRMClientDocument> UpdateCRMClientDcumentDetailAsync(CRMClientDocument request)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<CRMClientDocumentSectionDto> GetAllDocumentsByClientIdAsync(long clientId)
+        {
+            // Step 1 - Fetch from DB
+            var documents = await _dbContext.CRMClientDocument
+                .Where(doc => doc.ClientId == clientId)
+                .OrderByDescending(doc => doc.Id)
+                .ToListAsync();
+
+            // Step 2 - Map in memory
+            var mappedList = _mapper.Map<List<CRMClientDocumentDto>>(documents);
+
+            // Step 3 - Wrap and return
+            return new CRMClientDocumentSectionDto
+            {
+                Items = mappedList
+            };
         }
     }
 }

@@ -152,47 +152,47 @@ namespace Master.Infra
             (
                 GetPropertyValue<int?>(model, "ServiceConfigId"),
                 "config_Service",
-                desc => SetPropertyValue(model, "ConfigService", desc)
+                desc => SetPropertyValue(model, "ServiceType", desc)
             ),
             (
                 GetPropertyValue<int?>(model, "MatterTypeConfigId"),
                 "config_MatterType",
-                desc => SetPropertyValue(model, "ConfigMatterType", desc)
+                desc => SetPropertyValue(model, "MatterType", desc)
             ),
             (
                 GetPropertyValue<int?>(model, "MatterSubTypeConfigId"),
                 "config_MatterSubType",
-                desc => SetPropertyValue(model, "ConfigMatterSubType", desc)
+                desc => SetPropertyValue(model, "MatterSubType", desc)
             ),
             (
                 GetPropertyValue<int?>(model, "ContactModeConfigId"),
                 "config_ContactMode",
-                desc => SetPropertyValue(model, "ConfigContactMode", desc)
+                desc => SetPropertyValue(model, "ContactMode", desc)
             ),
             (
                 GetPropertyValue<int?>(model, "ServiceStatusConfigId"),
                 "config_ServiceStatus",
-                desc => SetPropertyValue(model, "ConfigServiceStatus", desc)
+                desc => SetPropertyValue(model, "ServiceStatus", desc)
             ),//
             (
                 GetPropertyValue<int?>(model, "DesignationConfigId"),
                 "config_Designation",
-                desc => SetPropertyValue(model, "ConfigDesignation", desc)
+                desc => SetPropertyValue(model, "Designation", desc)
             ),
             (
                 GetPropertyValue<int?>(model, "SpecializationConfigId"),
                 "config_Specialization",
-                desc => SetPropertyValue(model, "configSpecialization", desc)
+                desc => SetPropertyValue(model, "Specialization", desc)
             ),
             (
                 GetPropertyValue<int?>(model, "LegalStatusConfigId"),
                 "config_LegalOfficerStatus",
-                desc => SetPropertyValue(model, "configLegalOfficerStatus", desc)
+                desc => SetPropertyValue(model, "Status", desc)
             ),
             (
                 GetPropertyValue<int?>(model, "IDTypeConfigId"),
                 "config_IDType",
-                desc => SetPropertyValue(model, "configIDType", desc)
+                desc => SetPropertyValue(model, "IDType", desc)
             )
             };
 

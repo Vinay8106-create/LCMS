@@ -26,7 +26,7 @@ namespace LCMS.Dto
         public long? PhotoId { get; set; }
         public string? ClientType { get; set; }
         public string? ClientSubType { get; set; }
-        public string?  AssignedTo {  get; set; }
+        public string? AssignedTo { get; set; }
         public string? AssignedToFullName { get; set; }
         public string? Status { get; set; }
         public string? Gender { get; set; }
@@ -64,6 +64,12 @@ namespace LCMS.Dto
         public AppMessage? Msg { get; set; } = new AppMessage();
     }
 
+    public class CRMClientContactSectionDto
+    {
+        public List<CRMClientContactDto>? Items { get; set; }
+        public AppMessage? Message { get; set; } = new AppMessage();
+    }
+
     public class CRMClientDocumentDto
     {
         public long Id { get; set; }
@@ -72,7 +78,11 @@ namespace LCMS.Dto
         public long? DocumentId { get; set; }
         public int Version { get; set; }
         public AppMessage? Msg { get; set; } = new AppMessage();
+    }
 
+    public class CRMClientDocumentSectionDto
+    {
+        public List<CRMClientDocumentDto> Items { get; set; }
     }
 }
 

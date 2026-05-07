@@ -1,5 +1,6 @@
 ﻿using Galaxy.Dto;
 using LCMS.Dto;
+using LCMS.DTO;
 
 namespace CRM.Application
 {
@@ -21,10 +22,16 @@ namespace CRM.Application
         Task<CRMClientContactDto> CreateClientContactAsync();
         Task<CRMClientContactDto> SaveClientContactAsync(CRMClientContactDto request);
         Task<CRMClientContactDto> GetClientContactByClientContactIdAsync(long clientContactId);
+
         Task<SuccessResponse> DeleteClientContact(long clientContactId);
+
+        Task<CRMClientContactSectionDto> GetAllClientContactsByClientId(long clientId);
+        Task<CRMClientDocumentSectionDto> GetClientDocumentsByClientIdAsync(long clientId);
         #endregion
 
         #region Client Service
+        Task<CRMClientServiceSearchDto> GetClientServiceSearchAsync();
+        Task<SearchResult<CRMClientServiceSearchResultsDto>> SearchCRMClientServiceAsync(CRMClientServiceSearchDto request);
         Task<DDLData> GetClientServiceInitialDataAsync();
         Task<CRMClientServiceDto> CreateClientServiceAsync();
         Task<CRMClientServiceDto> SaveClientServiceAsync(CRMClientServiceDto request);

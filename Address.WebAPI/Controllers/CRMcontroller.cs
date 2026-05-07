@@ -1,6 +1,7 @@
 using CRM.Application;
 using Galaxy.Dto;
 using LCMS.Dto;
+using LCMS.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -115,12 +116,35 @@ namespace CRM.WebAPI
             return this.Ok(await _iCRMClientService.GetClientContactByClientContactIdAsync(clientId));
         }
 
+
+
         [HttpDelete("DeleteClientContact")]
         [SwaggerOperation(Tags = new[] { "CRMClientContact" }, Summary = "DeleteClientContact")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessResponse))]
         public async Task<IActionResult> DeleteClientContact([FromQuery] long clientContactId)
         {
             return this.Ok(await _iCRMClientService.DeleteClientContact(clientContactId));
+        }
+
+
+        [HttpGet("GetAllClientContactsByClientId")]
+        [SwaggerOperation(Tags = new[] { "CRMClientContact" }, Summary = "GetAllClientContactsByClientId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientContactSectionDto))]
+        public async Task<IActionResult> GetAllClientContactsByClientIdAsync([FromQuery] long clientId)
+        {
+            return this.Ok(await _iCRMClientService.GetAllClientContactsByClientId(clientId));
+        }
+
+        #endregion
+
+        #region Client Documents
+
+        [HttpGet("GetAllClientDocumentsByClientId")]
+        [SwaggerOperation(Tags = new[] { "CRMClientDocuments" }, Summary = "GetAllClientDocumentsByClientId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientDocumentSectionDto))]
+        public async Task<IActionResult> GetAllClientDocumentsByClientIdAsync([FromQuery] long clientId)
+        {
+            return this.Ok(await _iCRMClientService.GetClientDocumentsByClientIdAsync(clientId));
         }
 
         #endregion
@@ -156,6 +180,25 @@ namespace CRM.WebAPI
             return this.Ok(await _DocumentFileService.DeleteDocumentFile(documentFileId));
         }
 
+        #endregion
+
+        #region Client Service Search
+
+        [HttpGet("GetClientServiceSearch")]
+        [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "GetClientServiceSearch")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientServiceSearchDto))]
+        public async Task<IActionResult> GetClientServiceSearch()
+        {
+            return this.Ok(await _iCRMClientService.GetClientServiceSearchAsync());
+        }
+
+        [HttpPost("SearchCRMClientService")]
+        [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "SearchCRMClientService")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SearchResult<CRMClientServiceSearchResultsDto>))]
+        public async Task<IActionResult> SearchCRMClientService(CRMClientServiceSearchDto request)
+        {
+            return this.Ok(await _iCRMClientService.SearchCRMClientServiceAsync(request));
+        }
         #endregion
 
         #region Client Service

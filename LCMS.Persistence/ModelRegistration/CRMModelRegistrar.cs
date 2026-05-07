@@ -27,6 +27,11 @@ namespace LCMS.Persistence
                 entity.ToView("vw_ClientSearch");
             });
 
+            modelBuilder.Entity<CRMClientServiceSearchViewModel>(entity => {
+                entity.HasNoKey();
+                entity.ToView("vw_ClientServiceSearch");
+            });
+
         }
     }
 }

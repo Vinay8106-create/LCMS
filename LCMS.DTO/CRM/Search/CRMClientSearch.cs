@@ -10,10 +10,10 @@ namespace LCMS.Dto
         [FilterMapping("ClientViewModel.ClientName", Operation = FilterOperation.Contains)]
         public string? ClientName { get; set; }
 
-        [FilterMapping("ClientViewModel.Type", Operation = FilterOperation.Contains)]
+        [FilterMapping("ClientViewModel.ClientType", Operation = FilterOperation.Contains)]
         public string? Type { get; set; }
 
-        [FilterMapping("ClientViewModel.Priority", Operation = FilterOperation.Contains)]
+        [FilterMapping("ClientViewModel.ClientSubType", Operation = FilterOperation.Contains)]
         public string? Priority { get; set; }
 
         [FilterMapping("ClientViewModel.ContactNo", Operation = FilterOperation.Contains)]
@@ -22,10 +22,10 @@ namespace LCMS.Dto
         [FilterMapping("ClientViewModel.EmailId", Operation = FilterOperation.Contains)]
         public string? EmailId { get; set; }
 
-        [FilterMapping("ClientViewModel.Status", Operation = FilterOperation.Contains)]
+        [FilterMapping("ClientViewModel.ClientStatus", Operation = FilterOperation.Contains)]
         public string? Status { get; set; }
-
     }
+
     public class CRMClientSearchResultsDto
     {
         [SortableField("ClientViewModel.ClientId", IsDefaultSort = true)]
@@ -37,16 +37,19 @@ namespace LCMS.Dto
         [SortableField("ClientViewModel.ClientName")]
         public string? ClientName { get; set; }
 
-        [SortableField("ClientViewModel.Type")]
+        [SortableField("ClientViewModel.ClientType")]
         public string? Type { get; set; }
 
-        [SortableField("ClientViewModel.Priority")]
+        [SortableField("ClientViewModel.ClientSubType")]
         public string? Priority { get; set; }
+
+        [SortableField("ClientViewModel.ContactNo")]
+        public string? ContactNo { get; set; }
 
         [SortableField("ClientViewModel.EmailId")]
         public string? EmailId { get; set; }
 
-        [SortableField("ClientViewModel.Status")]
+        [SortableField("ClientViewModel.ClientStatus")]
         public string? Status { get; set; }
     }
 }

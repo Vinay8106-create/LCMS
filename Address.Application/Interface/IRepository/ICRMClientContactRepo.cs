@@ -9,5 +9,7 @@ namespace CRM.Application
         Task<CRMClientContact> InsertCRMClientContactAsync(CRMClientContactDto request);
         Task<CRMClientContact> UpdateCRMClientContactAsync(CRMClientContactDto request);
         Task<CRMClientContact> GetCRMClientContactByClientContactId(long CRMClientContactDetailId, bool isTracking = false);
+
+        Task<CRMClientContactSectionDto> GetAllClientContactsByClientIdAsync(long clientId);
     }
 }

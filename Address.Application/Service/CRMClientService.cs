@@ -5,6 +5,7 @@ using Galaxy.Domain.Models;
 using Galaxy.Dto;
 using LCMS.Constants;
 using LCMS.Dto;
+using LCMS.DTO;
 using LCMS.S2SLogic;
 using System.Net;
 
@@ -179,6 +180,8 @@ namespace CRM.Application
             throw new NotImplementedException();
         }
 
+
+
         #endregion
 
         #region Client Contact
@@ -243,6 +246,21 @@ namespace CRM.Application
         }
         #endregion
 
+        public async Task<CRMClientContactSectionDto> GetAllClientContactsByClientId(long clientId)
+        {
+            if (clientId <= 0) throw new BusinessException("ID Is Invalid");
+
+            return await _iCRMUow.CRMClientContactRepo.GetAllClientContactsByClientIdAsync(clientId);
+        }
+
+        public async Task<CRMClientDocumentSectionDto> GetClientDocumentsByClientIdAsync(long clientId)
+        {
+            if (clientId <= 0) throw new BusinessException("ID Is Invalid");
+
+            return await _iCRMUow.CRMClientDocumentRepo.GetAllDocumentsByClientIdAsync(clientId);
+        }
+
+
         #region Delete Client Contact
         public async Task<SuccessResponse> DeleteClientContact(long clientContactId)
         {
@@ -275,6 +293,31 @@ namespace CRM.Application
         #endregion
 
         #region Client Service
+
+        #region CRMClient Service Search
+        public virtual async Task<CRMClientServiceSearchDto> GetClientServiceSearchAsync()
+        {
+            return new CRMClientServiceSearchDto();
+        }
+
+        public virtual async Task<SearchResult<CRMClientServiceSearchResultsDto>> SearchCRMClientServiceAsync(CRMClientServiceSearchDto request)
+        {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
+            if (string.IsNullOrEmpty(request.OrderByColumnName))
+                request.OrderByColumnName = nameof(CRMClientServiceSearchResultsDto.ClientServiceId);
+
+            var result = await _iCRMUow.CRMClientServiceSearchRepo.SearchAsync(request);
+            if (result != null)
+            {
+                result.Msg ??= new AppMessage();
+                result.Msg.InfoMessage = result.TotalCount > 0
+                    ? _mapper.Map(await _iCRMUow.MessageRepo.GetMessageByNo(4, result.TotalCount), result.Msg.InfoMessage)
+                    : _mapper.Map(await _iCRMUow.MessageRepo.GetMessageByNo(3), result.Msg.InfoMessage);
+                return result;
+            }
+            return new SearchResult<CRMClientServiceSearchResultsDto>();
+        }
+        #endregion
 
         #region initial data        
         public async Task<DDLData> GetClientServiceInitialDataAsync()
@@ -319,7 +362,6 @@ namespace CRM.Application
 
             return response;
         }
-        #endregion
 
         private async Task<CRMClientService> GenerateClientServiceNo(CRMClientService ClientService)
         {
@@ -331,11 +373,13 @@ namespace CRM.Application
 
             return ClientService;
         }
+        #endregion
 
         #endregion
 
 
         #region Legal Officer
+
         #region initial data        
         public async Task<DDLData> GetLegalOfficerInitialDataAsync()
         {

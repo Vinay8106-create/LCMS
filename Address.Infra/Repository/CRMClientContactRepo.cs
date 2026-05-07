@@ -40,6 +40,23 @@ namespace CRM.Infra
             _mapper.Map(request, clientContact);
             return clientContact;
         }
+
+
+        public async Task<CRMClientContactSectionDto> GetAllClientContactsByClientIdAsync(long clientId)
+        {
+            // Step 1 - Fetch entities from DB
+            var contacts = await _dbContext.CRMClientContact
+                .Where(c => c.ClientId == clientId)
+                .OrderByDescending(c => c.Id)
+                .ToListAsync();
+
+            var mappedContacts = _mapper.Map<List<CRMClientContactDto>>(contacts);
+
+            return new CRMClientContactSectionDto
+            {
+                Items = mappedContacts
+            };
+        }
     }
 }
 

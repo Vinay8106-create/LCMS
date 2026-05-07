@@ -20,15 +20,19 @@ namespace CRM.Application
                 .ForMember(d => d.Msg, o => o.MapFrom<AppMessageResolver>())
                 .ReverseMap();
 
+
             CreateMap<Document, DocumentFileDto>()
                 .ForMember(d => d.Version, o => o.Ignore())
                 .ForMember(d => d.Msg, o => o.MapFrom<AppMessageResolver>())
                 .ReverseMap()
                 .ForMember(d => d.Version, o => o.Ignore());
 
+
             CreateMap<CRMClientContact, CRMClientContactDto>()
-                .ForMember(d => d.Msg, o => o.MapFrom<AppMessageResolver>())
-                .ReverseMap();
+            .ForMember(d => d.Msg, o => o.MapFrom<AppMessageResolver>())
+            .ForMember(d => d.ResidentialAddress, o => o.Ignore())
+            .ForMember(d => d.CommunicationAddress, o => o.Ignore())
+            .ReverseMap();
 
             CreateMap<CRMClientDocument, CRMClientDocumentDto>()
                 .ForMember(d => d.Msg, o => o.MapFrom<AppMessageResolver>())

@@ -33,6 +33,8 @@ namespace CRM.Infra
                 ClientId = x.ClientViewModel.ClientId,
                 ClientRefNo = x.ClientViewModel.ClientRefNo,
                 ClientName = x.ClientViewModel.ClientName ?? "-",
+                Type = x.ClientViewModel.ClientType ?? "-",
+                Priority = x.ClientViewModel.ClientSubType ?? "-",
                 ContactNo = x.ClientViewModel.ContactNo ?? "-",
                 EmailId = x.ClientViewModel.EmailId ?? "-",
                 Status = x.ClientViewModel.ClientStatus ?? "-",

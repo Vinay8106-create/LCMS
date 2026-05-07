@@ -48,6 +48,10 @@ namespace CRM.Domain
             {
                 errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "Service Status ConfigId is mandatory." });
             }
+            if (string.IsNullOrEmpty(AssignedTo))
+            {
+                errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "Assigned Officer is mandatory." });
+            }
         }
 
     }

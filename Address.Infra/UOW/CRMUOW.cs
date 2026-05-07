@@ -19,6 +19,7 @@ namespace CRM.Infra
         private ICRMClientDocumentRepo _CRMClientDocumentRepo;
         private ICRMClientSearchRepo _CRMClientSearchRepo;
         private ICRMClientServiceRepo _CRMClientServiceRepo;
+        private ICRMClientServiceSearchRepo _CRMClientServiceSearchRepo;
 
         private ILegalOfficerRepo _LegalOfficerRepo;
 
@@ -31,7 +32,7 @@ namespace CRM.Infra
         public ICRMClientDocumentRepo CRMClientDocumentRepo => _CRMClientDocumentRepo ??= new CRMClientDocumentRepo(dbContext, mapper);
         public ICRMClientSearchRepo CRMClientSearchRepo => _CRMClientSearchRepo ??= new CRMClientSearchRepo(dbContext);
         public ICRMClientServiceRepo CRMClientServiceRepo => _CRMClientServiceRepo ??= new CRMClientServiceRepo(dbContext, mapper);
-
+        public ICRMClientServiceSearchRepo CRMClientServiceSearchRepo => _CRMClientServiceSearchRepo ??= new CRMClientServiceSearchRepo(dbContext);
         public ILegalOfficerRepo LegalOfficerRepo => _LegalOfficerRepo ??= new LegalOfficerRepo(dbContext, mapper);
     }
 }
