@@ -38,6 +38,8 @@ namespace CRM.Application
         #endregion
 
         #region Legal Officer
+        Task<LegalOfficerSearchDto> GetLegalOfficerSearchAsync();
+        Task<SearchResult<LegalOfficerSearchResultsDto>> SearchLegalOfficerAsync(LegalOfficerSearchDto request);
         Task<DDLData> GetLegalOfficerInitialDataAsync();
         Task<LegalOfficerDto> CreateLegalOfficerAsync();
         Task<LegalOfficerDto> SaveLegalOfficerAsync(LegalOfficerDto request);

@@ -18,9 +18,14 @@ namespace LCMS.Dto
         public string? Specialization { get; set; }
         public string? Status { get; set; }
         public string? IDType { get; set; }
+        public string? EmailId { get; set; }
+        public string? ContactNo { get; set; }
+        public long? ResidentialAddressId { get; set; }
         public DocumentFileDto? Photo { get; set; } = new DocumentFileDto();
         public int Version { get; set; }
         public AppMessage? Message { get; set; } = new AppMessage();
+
+        public AddressDto? ResidentialAddress { get; set; } = new AddressDto();
     }
 }
 

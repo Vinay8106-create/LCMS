@@ -1,5 +1,4 @@
 ﻿using Galaxy.Domain.Models;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRM.Domain
 {
@@ -18,7 +17,5 @@ namespace CRM.Domain
         public string? Location { get; set; }
         public string? Notes { get; set; }
         public string? IsBooked { get; set; }
-
-
     }
 }

@@ -384,6 +384,31 @@ namespace CRM.Application
 
         #region Legal Officer
 
+        #region Legal Officer Search
+        public virtual async Task<LegalOfficerSearchDto> GetLegalOfficerSearchAsync()
+        {
+            return new LegalOfficerSearchDto();
+        }
+
+        public virtual async Task<SearchResult<LegalOfficerSearchResultsDto>> SearchLegalOfficerAsync(LegalOfficerSearchDto request)
+        {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
+            if (string.IsNullOrEmpty(request.OrderByColumnName))
+                request.OrderByColumnName = nameof(LegalOfficerSearchResultsDto.LegalOfficerId);
+            var result = await _iCRMUow.LegalOfficerSearchRepo.SearchAsync(request);
+            if (result != null)
+            {
+                result.Msg ??= new AppMessage();
+                result.Msg.InfoMessage = result.TotalCount > 0
+                    ? _mapper.Map(await _iCRMUow.MessageRepo.GetMessageByNo(4, result.TotalCount), result.Msg.InfoMessage)
+                    : _mapper.Map(await _iCRMUow.MessageRepo.GetMessageByNo(3), result.Msg.InfoMessage);
+                return result;
+            }
+
+            return new SearchResult<LegalOfficerSearchResultsDto>();
+        }
+        #endregion
+
         #region initial data        
         public async Task<DDLData> GetLegalOfficerInitialDataAsync()
         {
@@ -398,7 +423,7 @@ namespace CRM.Application
         }
         #endregion
 
-        #region Save Client Contact
+        #region Save Legal Officer
         public async Task<LegalOfficerDto> SaveLegalOfficerAsync(LegalOfficerDto request)
         {
             var LegalOfficer = _mapper.Map<LegalOfficer>(request);
@@ -409,14 +434,34 @@ namespace CRM.Application
 
             LegalOfficer.ValidateMandatoryFieldsForLegalOfficer();
 
-            if (LegalOfficer.HasError)
+            var Residentialaddress = _mapper.Map<Address>(request.ResidentialAddress);
+            Residentialaddress.ValidateMandatoryFields();
+
+            if (LegalOfficer.HasError || Residentialaddress.HasError)
                 throw new BusinessException(LegalOfficer.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
+
+            var savedResidentialAddress = await _iAddressService.SaveAddress(request.ResidentialAddress);
+
+            LegalOfficer.ResidentialAddressId = savedResidentialAddress.Id;
+            LegalOfficer.ResidentialAddress = null;
+            request.ResidentialAddress = null;
 
             LegalOfficer = LegalOfficer.Id > 0 ? await _iCRMUow.LegalOfficerRepo.UpdateLegalOfficer(request)
                 : await _iCRMUow.LegalOfficerRepo.InsertLegalOfficer(request);
 
             await _iCRMUow.SaveChangesAsync();
             var response = _mapper.Map<LegalOfficerDto>(LegalOfficer);
+            response.ResidentialAddress = _mapper.Map<AddressDto>(savedResidentialAddress);
+
+
+            var userDetails = await _iCRMUow.LegalOfficerRepo.GetDetailsFromITGUser(response.UserSerialId);
+
+            if (userDetails != null)
+            {
+                response.EmailId = userDetails.Constant;
+                response.ContactNo = userDetails.Description;
+            }
+
             await SetDescription(response);
 
             return response;
@@ -426,7 +471,9 @@ namespace CRM.Application
         #region Get Legal Officer By Id
         public async Task<LegalOfficerDto> GetLegalOfficerByLegalOfficerIdAsync(long LegalOfficerId)
         {
-            return _mapper.Map<LegalOfficerDto>(await _iCRMUow.LegalOfficerRepo.GetLegalOfficerById(LegalOfficerId));
+            var legalOfficer = await _iCRMUow.LegalOfficerRepo.GetLegalOfficerById(LegalOfficerId);
+
+            return _mapper.Map<LegalOfficerDto>(legalOfficer);
         }
         #endregion
 
@@ -441,7 +488,7 @@ namespace CRM.Application
             if (LegalOfficer != null && LegalOfficer.Id > 0)
             {
                 await _iCRMUow.BeginTransactionAsync();
-                _iCRMUow.LegalOfficerRepo.Delete(LegalOfficer);
+                _iCRMUow.LegalOfficerRepo.Delete(_mapper.Map<LegalOfficer>(LegalOfficer));
                 await _iCRMUow.SaveChangesAsync();
                 successResponse.IsDeleted = true;
                 successResponse.Msg.InfoMessage = _mapper.Map<uMessageDto>(await _iCRMUow.MessageRepo.GetMessageByNo(2026));

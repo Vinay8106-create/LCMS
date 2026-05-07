@@ -15,6 +15,9 @@ namespace CRM.Domain
         public long? PhotoId { get; set; }
         public int? IDTypeConfigId { get; set; }
         public long IDDocId { get; set; }
+        public long ResidentialAddressId { get; set; }
+
+        public virtual Address? ResidentialAddress { get; set; }
 
         [NotMapped]
         public virtual Document? Photo { get; set; }

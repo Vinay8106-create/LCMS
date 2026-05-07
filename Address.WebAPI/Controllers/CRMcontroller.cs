@@ -235,8 +235,28 @@ namespace CRM.WebAPI
         }
         #endregion
 
+        #region Legal Officer Search
+
+        [HttpGet("GetLegalOfficerSearch")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "GetLegalOfficerSearch")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerSearchDto))]
+        public async Task<IActionResult> GetLegalOfficerSearch()
+        {
+            return this.Ok(await _iCRMClientService.GetLegalOfficerSearchAsync());
+        }
+
+        [HttpPost("SearchLegalOfficer")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "SearchLegalOfficer")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SearchResult<LegalOfficerSearchResultsDto>))]
+        public async Task<IActionResult> SearchLegalOfficer(LegalOfficerSearchDto request)
+        {
+            return this.Ok(await _iCRMClientService.SearchLegalOfficerAsync(request));
+        }
+        #endregion
+
         #region Legal Officer
-        [AllowAnonymous]
+
+        #region GetLegalOfficerInitialData
         [HttpGet("GetLegalOfficerInitialData")]
         [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "GetLegalOfficerInitialData")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DDLData))]
@@ -244,6 +264,8 @@ namespace CRM.WebAPI
         {
             return this.Ok(await _iCRMClientService.GetLegalOfficerInitialDataAsync());
         }
+        #endregion
+
         #region Create LegalOfficer 
         [HttpGet("CreateLegalOfficer")]
         [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "CreateLegalOfficer")]

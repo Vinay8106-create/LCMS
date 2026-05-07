@@ -1,5 +1,4 @@
 ﻿using Galaxy.Domain.Models;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRM.Domain
 {
@@ -10,6 +9,6 @@ namespace CRM.Domain
         public string Slotdate { get; set; }
         public string? StartTime { get; set; }
         public string? EndTime { get; set; }
-        public string?  IsBooked {  get; set; }
+        public string? IsBooked { get; set; }
     }
 }

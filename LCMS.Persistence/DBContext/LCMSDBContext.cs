@@ -49,12 +49,15 @@ namespace LCMS.Persistence
         #endregion
 
         #region Legal Officer
+        public DbSet<LegalOfficerSearchViewModel> LegalOfficerSearch { get; set; }
         public DbSet<LegalOfficer> LegalOfficer { get; set; }
         public DbSet<LegalOfficerSchedules> LegalOfficerSchedules { get; set; }
         public DbSet<LegalOfficerAppoinmentSlots> LegalOfficerAppoinmentSlots { get; set; }
         public DbSet<LegalOfficerAppoinment> LegalOfficerAppoinment { get; set; }
 
+
         public DbSet<LegalOfficerBlockedDates> LegalOfficerBlockedDates { get; set; }
+
 
         #endregion
 

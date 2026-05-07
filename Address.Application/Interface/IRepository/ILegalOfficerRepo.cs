@@ -1,7 +1,7 @@
-﻿using Galaxy.Application;
-using LCMS.Dto;
-using CRM.Domain;
+﻿using CRM.Domain;
+using Galaxy.Application;
 using Galaxy.Dto;
+using LCMS.Dto;
 
 namespace CRM.Application
 {
@@ -9,12 +9,9 @@ namespace CRM.Application
     {
         Task<LegalOfficer> InsertLegalOfficer(LegalOfficerDto request);
         Task<LegalOfficer> UpdateLegalOfficer(LegalOfficerDto request);
-        Task<LegalOfficer> GetLegalOfficerById(long LegalOfficerId, bool isTracking = false);
+        Task<LegalOfficerDto> GetLegalOfficerById(long LegalOfficerId, bool isTracking = false);
         Task<DDLData> GetLegalOfficerInitialData();
-        
 
-
-
-
+        Task<DDLClass> GetDetailsFromITGUser(long UserSerialId);
     }
 }

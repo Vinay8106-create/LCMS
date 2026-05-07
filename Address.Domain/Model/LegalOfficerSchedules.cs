@@ -1,7 +1,4 @@
 ﻿using Galaxy.Domain.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Cryptography;
-
 namespace CRM.Domain
 {
     public class LegalOfficerSchedules : BaseEntity
@@ -9,6 +6,7 @@ namespace CRM.Domain
         public long Id { get; set; }
         public long LegalOfficerId { get; set; }
         public int DayOffWeek { get; set; }
+
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? EndTime { get; set; }
         public int? SlotDuration { get; set; }
@@ -24,11 +22,12 @@ namespace CRM.Domain
             {
                 errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "End Time is mandatory." });
             }
-            if (SlotDuration==0)
+            if (SlotDuration == 0)
             {
                 errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "Slot Duration is mandatory." });
             }
-           
+
         }
+
     }
 }

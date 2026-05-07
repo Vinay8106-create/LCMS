@@ -23,9 +23,43 @@ namespace CRM.Infra
             _mapper = mapper;
         }
 
-        public async Task<LegalOfficer> GetLegalOfficerById(long LegalOfficerId, bool isTracking = false)
+        public async Task<LegalOfficerDto> GetLegalOfficerById(long LegalOfficerId, bool isTracking = false)
         {
-            return await GetByIdAsync(LegalOfficerId, isTracking) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
+            var legalOfficer = await GetByIdAsync(LegalOfficerId, isTracking) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
+
+            return _mapper.Map<LegalOfficerDto>(legalOfficer);
+        }
+
+        public async Task<DDL> getAllITGUser()
+        {
+            var data = await _dbContext.Set<User>()
+                .Select(x => new DDLClass
+                {
+                    Id = EF.Property<long>(x, "Id"),
+                    Description = (x.FirstName ?? "") + " " +
+                      (x.MiddleName ?? "") + " " +
+                      (x.LastName ?? "")
+                }).AsNoTracking().ToListAsync();
+
+            return new DDL
+            {
+                Key = "DDLUser",
+                Value = data
+            };
+        }
+
+        public async Task<DDLClass> GetDetailsFromITGUser(long UserSerialId)
+        {
+            return await _dbContext.Set<User>()
+                .Where(u => u.Id == UserSerialId)
+                .Select(u => new DDLClass
+                {
+                    Id = u.Id,
+                    Constant = u.ContactNumber,
+                    Description = u.EmailId
+                })
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
         }
 
         public async Task<LegalOfficer> InsertLegalOfficer(LegalOfficerDto request)
@@ -79,24 +113,7 @@ namespace CRM.Infra
             };
         }
 
-        public async Task<DDL> getAllITGUser()
-        {
-            var data = await _dbContext.Set<User>()
-                .Select(x => new DDLClass
-                {
-                    Id = EF.Property<long>(x, "Id"),
-                    Description = (x.FirstName ?? "") + " " +
-                      (x.MiddleName ?? "") + " " +
-                      (x.LastName ?? "")
-                }).AsNoTracking().ToListAsync();
 
-            return new DDL
-            {
-                Key = "DDLUser",
-                Value = data
-            };
-
-        }
         public async Task<DDL> getAllLegalOfficer()
         {
             var data = await (

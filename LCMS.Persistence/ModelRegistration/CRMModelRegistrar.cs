@@ -32,6 +32,11 @@ namespace LCMS.Persistence
                 entity.ToView("vw_ClientServiceSearch");
             });
 
+            modelBuilder.Entity<LegalOfficerSearchViewModel>(entity => {
+                entity.HasNoKey();
+                entity.ToView("vw_LegalOfficerSearch");
+            });
+
         }
     }
 }
