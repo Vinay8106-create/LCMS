@@ -1,21 +1,23 @@
 ﻿using Galaxy.Domain.Models;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Cryptography;
 
 namespace CRM.Domain
 {
-    public class LegalOfficerSchedules : BaseEntity
+    public class LegalOfficerBlockedDates : BaseEntity
     {
         public long Id { get; set; }
         public long LegalOfficerId { get; set; }
-        public int DayOffWeek { get; set; }
-        public TimeSpan? StartTime { get; set; }
-        public TimeSpan? EndTime { get; set; }
-        public int? SlotDuration { get; set; }
-        public string? ISActive { get; set; }
-        public void ValidateMandatoryFieldsForLegalOfficerSchedule()
+        public string BlockDate { get; set; }
+        public string? StartTime { get; set; }
+        public string? EndTime { get; set; }
+        public string? Reason { get; set; }
+        public void ValidateMandatoryFieldsForLegalOfficerBlockDate()
         {
             errorMsgList = new List<uMessage>();
+            if (string.IsNullOrWhiteSpace(BlockDate.ToString()))
+            {
+                errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "Date is mandatory." });
+            }
             if (string.IsNullOrWhiteSpace(StartTime.ToString()))
             {
                 errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "Start Time is mandatory." });
@@ -24,11 +26,8 @@ namespace CRM.Domain
             {
                 errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "End Time is mandatory." });
             }
-            if (SlotDuration==0)
-            {
-                errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "Slot Duration is mandatory." });
-            }
-           
+
         }
+
     }
 }

@@ -8,6 +8,7 @@ using Galaxy.Infra;
 using LCMS.Dto;
 using LCMS.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Net;
 
 namespace CRM.Infra
@@ -120,6 +121,7 @@ namespace CRM.Infra
 
         }
 
+       
     }
 }
 

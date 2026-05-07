@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using CRM.Domain;
 using Galaxy.Domain.Exceptions;
 using Galaxy.Domain.Models;
@@ -458,6 +459,68 @@ namespace CRM.Application
         }
         #endregion
 
+        #region  GetLegalOfficerIdbyUserLoginId
+        public async Task<long> GetLegalOfficerIdbyUserLoginId(string userLoginId)
+        {
+            return await _iCRMUow.LegalOfficerScheduleRepo.GetLegalOfficerIdbyUserLoginId(userLoginId);
+        }
+
+        #endregion
+
+
+
+        #region Load LegalOfficer Schedule     
+        public async Task<List<LegalOfficerSchedulesDto>> LoadLegalOfficerSchedule(long LegalOfficerId)
+        {
+            return await _iCRMUow.LegalOfficerScheduleRepo.LoadLegalOfficerSchedule(LegalOfficerId);
+        }
+        #endregion
+        #region save Legal Officer Schedule
+        public async Task<List<LegalOfficerSchedulesDto>> SaveLegalOfficerSchedules(LegalOfficerSchedulesDto request)
+        {
+            List<LegalOfficerSchedulesDto> list = new List<LegalOfficerSchedulesDto>();
+            var LegalOfficerSchedule = _mapper.Map<LegalOfficerSchedules>(request);
+            LegalOfficerSchedule.ValidateMandatoryFieldsForLegalOfficerSchedule();
+
+            if (LegalOfficerSchedule.HasError)
+                throw new BusinessException(LegalOfficerSchedule.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
+
+            LegalOfficerSchedule = LegalOfficerSchedule.Id > 0 ? await _iCRMUow.LegalOfficerScheduleRepo.UpdateLegalOfficerSchedule(request)
+                : await _iCRMUow.LegalOfficerScheduleRepo.InsertLegalOfficerSchedule(request);
+
+            await _iCRMUow.SaveChangesAsync();
+            var response = _mapper.Map<LegalOfficerSchedulesDto>(LegalOfficerSchedule);
+            list = await _iCRMUow.LegalOfficerScheduleRepo.LoadLegalOfficerSchedule(request.LegalOfficerId);
+            return list;
+        }
+        #endregion
+
+        #region Create Legal Officer Block date
+        public async Task<LegalOfficerBlockedDatesDto> CreateLegalOfficerBlockDate()
+        {
+            return new LegalOfficerBlockedDatesDto();
+        }
+        #endregion
+
+        #region SaveLegalOfficerBlockDate
+        public async Task<List<LegalOfficerBlockedDatesDto>> SaveLegalOfficerBlockDate(LegalOfficerBlockedDatesDto request)
+        {
+            List<LegalOfficerBlockedDatesDto> list = new List<LegalOfficerBlockedDatesDto>();
+            var LegalOfficerBlockedDates = _mapper.Map<LegalOfficerBlockedDates>(request);
+            LegalOfficerBlockedDates.ValidateMandatoryFieldsForLegalOfficerBlockDate();
+
+            if (LegalOfficerBlockedDates.HasError)
+                throw new BusinessException(LegalOfficerBlockedDates.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
+
+            LegalOfficerBlockedDates = LegalOfficerBlockedDates.Id > 0 ? await _iCRMUow.LegalOfficerBlockDateRepo.UpdateLegalOfficerBlockedDates(request)
+                : await _iCRMUow.LegalOfficerBlockDateRepo.InsertLegalOfficerBlockedDates(request);
+
+            await _iCRMUow.SaveChangesAsync();
+            var response = _mapper.Map<LegalOfficerBlockedDatesDto>(LegalOfficerBlockedDates);
+            list = await _iCRMUow.LegalOfficerBlockDateRepo.LoadLegalOfficerBlockDate(request.LegalOfficerId);
+            return list;
+        }
+        #endregion
         #endregion
     }
 }

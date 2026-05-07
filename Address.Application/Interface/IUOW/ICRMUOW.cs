@@ -14,5 +14,7 @@ namespace CRM.Application
         ICRMClientServiceRepo CRMClientServiceRepo { get; }
         ICRMClientServiceSearchRepo CRMClientServiceSearchRepo { get; }
         ILegalOfficerRepo LegalOfficerRepo { get; }
+        ILegalOfficerScheduleRepo LegalOfficerScheduleRepo { get; }
+        ILegalOfficerBlockDateRepo LegalOfficerBlockDateRepo { get; }
     }
 }

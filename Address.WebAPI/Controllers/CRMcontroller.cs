@@ -264,15 +264,17 @@ namespace CRM.WebAPI
             return this.Ok(await _iCRMClientService.SaveLegalOfficerAsync(request));
         }
         #endregion
+
         #region Get LegalOfficer 
         [HttpGet("GetLegalOfficerByLegalOfficerId")]
         [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "GetLegalOfficerByLegalOfficerId")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerDto))]
-        public async Task<IActionResult> GetLegalOfficerByLegalOfficerIdAsync([FromQuery] long clientId)
+        public async Task<IActionResult> GetLegalOfficerByLegalOfficerIdAsync([FromQuery] long LegalOfficerId)
         {
-            return this.Ok(await _iCRMClientService.GetLegalOfficerByLegalOfficerIdAsync(clientId));
+            return this.Ok(await _iCRMClientService.GetLegalOfficerByLegalOfficerIdAsync(LegalOfficerId));
         }
         #endregion
+
         #region Delete LegalOfficer 
         [HttpDelete("DeleteLegalOfficer")]
         [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "DeleteLegalOfficer")]
@@ -280,6 +282,60 @@ namespace CRM.WebAPI
         public async Task<IActionResult> DeleteLegalOfficer([FromQuery] long LegalOfficerId)
         {
             return this.Ok(await _iCRMClientService.DeleteLegalOfficer(LegalOfficerId));
+        }
+        #endregion
+
+        #region GetLegalOfficerIdbyUserLoginId
+        [AllowAnonymous]
+        [HttpGet("GetLegalOfficerIdbyUserLoginId")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "GetLegalOfficerIdbyUserLoginId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(long))]
+        public async Task<IActionResult> GetLegalOfficerIdbyUserLoginId([FromQuery] string UserLoginId)
+        {
+            return this.Ok(await _iCRMClientService.GetLegalOfficerIdbyUserLoginId(UserLoginId));
+        }
+        #endregion
+
+        #region Load LegalOfficer Schedule
+        [AllowAnonymous]
+        [HttpGet("LoadLegalOfficerSchedule")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "LoadLegalOfficerSchedule")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<LegalOfficerSchedulesDto>))]
+        public async Task<IActionResult> LoadLegalOfficerSchedule([FromQuery] long LegalOfficerId)
+        {
+            return this.Ok(await _iCRMClientService.LoadLegalOfficerSchedule(LegalOfficerId));
+        }
+        #endregion
+        #region Save LegalOfficer Schedule
+        [AllowAnonymous]
+        [HttpPost("SaveLegalOfficerSchedule")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "SaveLegalOfficerSchedule")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<LegalOfficerSchedulesDto>))]
+        public async Task<IActionResult> SaveLegalOfficerSchedule(LegalOfficerSchedulesDto Request)
+        {
+            return this.Ok(await _iCRMClientService.SaveLegalOfficerSchedules(Request));
+        }
+        #endregion
+
+        #region Create LegalOfficer BlockDate 
+        [AllowAnonymous]
+        [HttpGet("CreateLegalOfficerBlockDate")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "CreateLegalOfficerBlockDate")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerBlockedDatesDto))]
+        public async Task<IActionResult> CreateLegalOfficerBlockDate()
+        {
+            return this.Ok(await _iCRMClientService.CreateLegalOfficerBlockDate());
+        }
+        #endregion
+
+        #region Save LegalOfficer BlockDate
+        [AllowAnonymous]
+        [HttpPost("SaveLegalOfficerBlockDate")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "SaveLegalOfficerBlockDate")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<LegalOfficerBlockedDatesDto>))]
+        public async Task<IActionResult> SaveLegalOfficerBlockDate(LegalOfficerBlockedDatesDto Request)
+        {
+            return this.Ok(await _iCRMClientService.SaveLegalOfficerBlockDate(Request));
         }
         #endregion
 

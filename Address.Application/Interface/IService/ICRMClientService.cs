@@ -43,6 +43,12 @@ namespace CRM.Application
         Task<LegalOfficerDto> SaveLegalOfficerAsync(LegalOfficerDto request);
         Task<LegalOfficerDto> GetLegalOfficerByLegalOfficerIdAsync(long LegalOfficerId);
         Task<SuccessResponse> DeleteLegalOfficer(long LegalOfficerId);
+        Task<long> GetLegalOfficerIdbyUserLoginId(string userLoginId);
+
+        Task<List<LegalOfficerSchedulesDto>> LoadLegalOfficerSchedule(long LegalOfficerId);
+        Task<List<LegalOfficerSchedulesDto>> SaveLegalOfficerSchedules(LegalOfficerSchedulesDto request);
+        Task<LegalOfficerBlockedDatesDto> CreateLegalOfficerBlockDate();
+        Task<List<LegalOfficerBlockedDatesDto>> SaveLegalOfficerBlockDate(LegalOfficerBlockedDatesDto Request);
         #endregion
     }
 }
