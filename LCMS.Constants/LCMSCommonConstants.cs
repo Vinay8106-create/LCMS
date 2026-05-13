@@ -161,5 +161,13 @@
             public const string PenaltyWaiver = "PENWA";
             public const string CreditMemoCancelled = "CRMCA";
         }
+
+        public static class AttachmentPath
+        {
+            public const int AttacthMentPathID = 20;
+            public const string AttachmentFolder = "ATFOL";
+            public const string AttachmentFolderMetadataName = "AttachmentFolder";
+
+        }
     }
 }

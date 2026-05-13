@@ -11,6 +11,7 @@ namespace CRM.Domain
         public int? Level1ConfigId { get; set; }
         public int? Level2ConfigId { get; set; }
         public int? Level3ConfigId { get; set; }
+        public string? PostBoxNo { get; set; }
 
         public void ValidateMandatoryFields()
         {

@@ -14,8 +14,6 @@ namespace CRM.Application
         Task<CRMClientDto> CreateClientAsync();
         Task<CRMClientDto> SaveClientAsync(CRMClientDto request);
 
-        Task<CRMClientDocumentDto> CreateClientDocument();
-        Task<CRMClientDto> GetClientByClientRefNo(string ClientRefNo);
         #endregion
 
         #region Client Contact
@@ -26,7 +24,13 @@ namespace CRM.Application
         Task<SuccessResponse> DeleteClientContact(long clientContactId);
 
         Task<CRMClientContactSectionDto> GetAllClientContactsByClientId(long clientId);
+        #endregion
+
+        #region Client Documents
+        Task<CRMClientDocumentDto> CreateClientDocumentAsync();
         Task<CRMClientDocumentSectionDto> GetClientDocumentsByClientIdAsync(long clientId);
+        Task<CRMClientDocumentDto> SaveClientDocumentAsync(CRMClientDocumentDto request);
+        Task<SuccessResponse> DeleteClientDocumentAsync(long clientDocumentId);
         #endregion
 
         #region Client Service
@@ -35,6 +39,9 @@ namespace CRM.Application
         Task<DDLData> GetClientServiceInitialDataAsync();
         Task<CRMClientServiceDto> CreateClientServiceAsync();
         Task<CRMClientServiceDto> SaveClientServiceAsync(CRMClientServiceDto request);
+        Task<CRMClientServiceDto> GetClientServiceByClientServiceIdAsync(long clientServiceId);
+        Task<CRMClientServiceSectionDto> GetAllClientServiceByClientId(long clientId);
+
         #endregion
 
         #region Legal Officer
@@ -51,6 +58,23 @@ namespace CRM.Application
         Task<List<LegalOfficerSchedulesDto>> SaveLegalOfficerSchedules(LegalOfficerSchedulesDto request);
         Task<LegalOfficerBlockedDatesDto> CreateLegalOfficerBlockDate();
         Task<List<LegalOfficerBlockedDatesDto>> SaveLegalOfficerBlockDate(LegalOfficerBlockedDatesDto Request);
+        #endregion
+
+        #region Legal Officer Appointment
+
+        Task<LegalOfficerAppoinmentDto> CreateLegalOfficerAppoinmentAsync();
+        Task<LegalOfficerAppoinmentDto> SaveLegalOfficerAppoinmentAsync(LegalOfficerAppoinmentDto request);
+        Task<List<AppoinmentCalendarDto>> GetAppoinmentCalendarAsync(long legalOfficerId, int month, int year);
+        Task<List<AppoinmentTimeSlotsDto>> GetAppoinmentTimeSlotsByDateAsync(long legalOfficerId, string date);
+
+        #endregion
+
+        #region Legal Officer Schedules
+
+        Task<LegalOfficerSchedulesDto> CreateLegalOfficerScheduleAsync();
+        //Task<LegalOfficerSchedulesDto> SaveLegalOfficerScheduleAsync(LegalOfficerSchedulesDto request);
+        Task<LegalOfficerSchedulesDto> LoadSlotPreview(LegalOfficerSchedulesDto request);
+
         #endregion
     }
 }

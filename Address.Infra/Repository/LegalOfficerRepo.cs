@@ -8,7 +8,6 @@ using Galaxy.Infra;
 using LCMS.Dto;
 using LCMS.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Net;
 
 namespace CRM.Infra
@@ -64,8 +63,16 @@ namespace CRM.Infra
 
         public async Task<LegalOfficer> InsertLegalOfficer(LegalOfficerDto request)
         {
+            var isLegalOfficerExists = await _dbContext.LegalOfficer
+                .AnyAsync(x => x.UserSerialId == request.UserSerialId);
+
+            if (isLegalOfficerExists)
+                throw new BusinessException($"A Legal Officer with UserLoginId '{request.UserSerialId}' already exists.");
+
+
             var legalOfficer = _mapper.Map<LegalOfficer>(request);
-            await AddAsync(legalOfficer);
+            await _dbContext.LegalOfficer.AddAsync(legalOfficer);
+            await _dbContext.SaveChangesAsync();
 
             return legalOfficer;
         }
@@ -91,7 +98,7 @@ namespace CRM.Infra
             dDLData.data.Add(MatterSubType);
             var ContactMode = await GetDDLAsync<config_IDType>("DDLIDType");
             dDLData.data.Add(ContactMode);
-            var User = await getAllITGUser();
+            var User = await getAllLegalOfficer();
             dDLData.data.Add(User);
 
             return dDLData;
@@ -135,10 +142,7 @@ namespace CRM.Infra
                 Key = "DDLLegalOfficer",
                 Value = data
             };
-
         }
-
-       
     }
 }
 

@@ -44,13 +44,25 @@ namespace CRM.Infra
 
         public async Task<CRMClientContactSectionDto> GetAllClientContactsByClientIdAsync(long clientId)
         {
-            // Step 1 - Fetch entities from DB
             var contacts = await _dbContext.CRMClientContact
                 .Where(c => c.ClientId == clientId)
-                .OrderByDescending(c => c.Id)
+                .Join(
+                    _dbContext.config_ClientStatus,
+                    contact => contact.StatusConfigId,
+                    status => status.Id,
+                    (contact, status) => new {
+                        Contact = contact,
+                        StatusDescription = status.Description
+                    }
+                )
+                .OrderByDescending(x => x.Contact.Id)
                 .ToListAsync();
 
-            var mappedContacts = _mapper.Map<List<CRMClientContactDto>>(contacts);
+            var mappedContacts = contacts.Select(x => {
+                var dto = _mapper.Map<CRMClientContactDto>(x.Contact);
+                dto.StatusDescription = x.StatusDescription;
+                return dto;
+            }).ToList();
 
             return new CRMClientContactSectionDto
             {

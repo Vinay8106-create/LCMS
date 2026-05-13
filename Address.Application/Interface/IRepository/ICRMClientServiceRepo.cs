@@ -13,5 +13,6 @@ namespace CRM.Application
 
         Task<CRMClientService> GenerateClientServiceRefNo(CRMClientService client);
         Task<DDLData> ClientServiceInitialData();
+        Task<CRMClientServiceSectionDto> GetAllClientServiceByClientIdAsync(long clientId);
     }
 }

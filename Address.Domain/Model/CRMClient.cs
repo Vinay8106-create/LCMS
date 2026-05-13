@@ -1,5 +1,4 @@
 ﻿using Galaxy.Domain.Models;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRM.Domain
 {
@@ -29,7 +28,7 @@ namespace CRM.Domain
 
         public virtual Address? ResidentialAddress { get; set; }
         public virtual Address? CommunicationAddress { get; set; }
-        [NotMapped]
+
         public virtual Document? Photo { get; set; }
         //public virtual Collection<CRMClientContact>? CRMClientContacts { get; set; }
         //public virtual Collection<CRMClientDocument>? CRMClientDocuments { get; set; }
@@ -56,6 +55,6 @@ namespace CRM.Domain
                 errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "Email Id is mandatory." });
             }
         }
-        
+
     }
 }

@@ -10,6 +10,11 @@
         public string? ServiceSubType { get; set; }
         public string? ContactMode { get; set; }
         public string? ServiceStatus { get; set; }
+        public long? ServiceTypeConfigId { get; set; }
+        public long? ServiceSubTypeConfigId { get; set; }
+        public long? ContactModeConfigId { get; set; }
+        public long? ServiceStatusConfigId { get; set; }
+
         public DateTime? EnteredOn { get; set; }
     }
 }

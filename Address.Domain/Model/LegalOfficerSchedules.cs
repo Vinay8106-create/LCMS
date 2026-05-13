@@ -11,6 +11,9 @@ namespace CRM.Domain
         public TimeSpan? EndTime { get; set; }
         public int? SlotDuration { get; set; }
         public string? ISActive { get; set; }
+        public TimeSpan? BreakStartTime { get; set; }
+        public TimeSpan? BreakEndTime { get; set; }
+
         public void ValidateMandatoryFieldsForLegalOfficerSchedule()
         {
             errorMsgList = new List<uMessage>();

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using CRM.Domain;
 using Galaxy.Domain.Exceptions;
 using Galaxy.Domain.Models;
@@ -76,54 +75,56 @@ namespace CRM.Application
         #region Save Client
         public async Task<CRMClientDto> SaveClientAsync(CRMClientDto request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(CRMClientDto));
-            var Client = _mapper.Map<CRMClient>(request);
+            if (request == null) throw new ArgumentNullException(nameof(request));
 
+            var client = _mapper.Map<CRMClient>(request);
             string groupName = CRMConstants.GroupName.CSO;
+            var validUser = await _s2SLogic.Admin
+                                 .IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
+            if (validUser != true)
+                throw new BusinessException(
+                    await _iCRMUow.MessageRepo.GetMessageByNo(1001), HttpStatusCode.BadRequest);
 
-            var validUser = await _s2SLogic.Admin.IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
+            client.ValidateMandatoryFields();
+            var residentialAddress = _mapper.Map<Address>(request.ResidentialAddress);
+            residentialAddress.ValidateMandatoryFields();
+            var communicationAddress = _mapper.Map<Address>(request.CommunicationAddress);
+            communicationAddress.ValidateMandatoryFields();
 
-            if (validUser != true) throw new BusinessException(await _iCRMUow.MessageRepo.GetMessageByNo(1001), HttpStatusCode.BadRequest);
+            if (client.HasError)
+                throw new BusinessException(
+                    client.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
+            if (residentialAddress.HasError)
+                throw new BusinessException(
+                    residentialAddress.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
+            if (communicationAddress.HasError)
+                throw new BusinessException(
+                    communicationAddress.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
 
-            Client.ValidateMandatoryFields();
 
-            var Residentialaddress = _mapper.Map<Address>(request.ResidentialAddress);
-            Residentialaddress.ValidateMandatoryFields();
-
-            var Communicationaddress = _mapper.Map<Address>(request.CommunicationAddress);
-            Communicationaddress.ValidateMandatoryFields();
-
-            if (Client.HasError)
-                throw new BusinessException(Client.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
-            if (Residentialaddress.HasError)
-                throw new BusinessException(Residentialaddress.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
-            if (Communicationaddress.HasError)
-                throw new BusinessException(Communicationaddress.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
-
-            var savedResidentialAddress = await _iAddressService.SaveAddress(request.ResidentialAddress);
-            var savedCommunicationAddress = await _iAddressService.SaveAddress(request.CommunicationAddress);
             var photo = await _iDocumentService.SaveDocumentFile(request.Photo);
+            if (photo.Id > 0)
+                client.Photo = null;
 
-            if (string.IsNullOrWhiteSpace(Client.RefNo))
-            {
-                await GenerateClientNo(Client);
-            }
+            if (string.IsNullOrWhiteSpace(client.RefNo))
+                await GenerateClientNo(client);
 
-            Client.ResidentialAddressId = savedResidentialAddress.Id;
-            Client.CommunicationAddressId = savedCommunicationAddress.Id;
 
-            // Break the object reference so EF doesn't re-insert them
-            Client.ResidentialAddress = null;
-            Client.CommunicationAddress = null;
+            client.ResidentialAddress = residentialAddress;
+            client.CommunicationAddress = communicationAddress;
+            client.PhotoId = photo.Id;
 
-            Client = Client.Id > 0 ? await _iCRMUow.CRMClientRepo.UpdateClient(request) : await _iCRMUow.CRMClientRepo.InsertClient(Client);
+
+            if (client.Id > 0)
+                await _iCRMUow.CRMClientRepo.UpdateClient(request);
+            else
+                await _iCRMUow.CRMClientRepo.InsertClient(client);
 
             await _iCRMUow.SaveChangesAsync();
-            var response = _mapper.Map<CRMClientDto>(Client);
-            response.ResidentialAddress = _mapper.Map<AddressDto>(savedResidentialAddress);
-            response.CommunicationAddress = _mapper.Map<AddressDto>(savedCommunicationAddress);
-            await SetDescription(response);
 
+            var response = _mapper.Map<CRMClientDto>(client);
+            response.Photo = photo;
+            await SetDescription(response);
             return response;
         }
 
@@ -137,6 +138,7 @@ namespace CRM.Application
 
             return client;
         }
+        #endregion
 
         private async Task SetDescription(CRMClientDto client)
         {
@@ -157,30 +159,56 @@ namespace CRM.Application
         {
             await _iCRMUow.ConfigRepo.SetDescription(legalOfficerDto);
         }
-        #endregion
+
+        private async Task SetDescription(LegalOfficerAppoinmentDto legalOfficerAppoinment)
+        {
+            await _iCRMUow.ConfigRepo.SetDescription(legalOfficerAppoinment);
+        }
+
+        private async Task SetDescription(AppoinmentTimeSlotsDto appoinmentTimeSlotsDto)
+        {
+            await _iCRMUow.ConfigRepo.SetDescription(appoinmentTimeSlotsDto);
+        }
+
 
         #region Get Client By Client Id
+
         public async Task<CRMClientDto> GetClientByClientIdAsync(long clientId)
         {
-            return _mapper.Map<CRMClientDto>(await _iCRMUow.CRMClientRepo.GetClientById(clientId));
+            var client = await _iCRMUow.CRMClientRepo.GetClientById(clientId);
+
+            if (client == null) return null;
+
+            var clientDto = _mapper.Map<CRMClientDto>(client);
+
+            await _iCRMUow.ConfigRepo.SetDescription(clientDto);
+            await _iCRMUow.ConfigRepo.SetAddressDescription(clientDto.ResidentialAddress);
+            await _iCRMUow.ConfigRepo.SetAddressDescription(clientDto.CommunicationAddress);
+
+            if (clientDto.Photo != null)
+                clientDto.Photo.base64FileContent = await GetBase64FromFile(
+                    clientDto.Photo.RelativePath,
+                    clientDto.Photo.FileName
+                );
+
+            return clientDto;
+        }
+
+        private async Task<string?> GetBase64FromFile(string? relativePath, string? fileName)
+        {
+            if (string.IsNullOrEmpty(relativePath) || string.IsNullOrEmpty(fileName))
+                return null;
+
+            // Combine path: D:\Build\LCMS\build\Files + filename
+            var fullPath = Path.Combine(relativePath, fileName);
+
+            if (!File.Exists(fullPath))
+                return null;
+
+            var fileBytes = await File.ReadAllBytesAsync(fullPath);
+            return Convert.ToBase64String(fileBytes);
         }
         #endregion
-
-        public Task<CRMClientDocumentDto> CreateClientDocument()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CRMClientDto> GetClientByClientRefNo(string ClientRefNo)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CRMClientContactDto> GetClientContactByClientContactId(long clientcontactId)
-        {
-            throw new NotImplementedException();
-        }
-
 
         #endregion
 
@@ -255,15 +283,6 @@ namespace CRM.Application
         }
         #endregion
 
-        #region Get All Client Documents By ClientId
-        public async Task<CRMClientDocumentSectionDto> GetClientDocumentsByClientIdAsync(long clientId)
-        {
-            if (clientId <= 0) throw new BusinessException("ID Is Invalid");
-
-            return await _iCRMUow.CRMClientDocumentRepo.GetAllDocumentsByClientIdAsync(clientId);
-        }
-        #endregion
-
         #region Delete Client Contact
         public async Task<SuccessResponse> DeleteClientContact(long clientContactId)
         {
@@ -288,6 +307,101 @@ namespace CRM.Application
                 successResponse.IsDeleted = false;
                 successResponse.Msg.ErrorMessage ??= new List<uMessageDto>();
                 var message = (await _iCRMUow.MessageRepo.GetMessageByNo(2038));
+                throw new BusinessException(message.Msg, HttpStatusCode.BadRequest);
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #region Client Documents
+
+        #region Create Client Documents
+        public async Task<CRMClientDocumentDto> CreateClientDocumentAsync()
+        {
+            return new CRMClientDocumentDto();
+        }
+        #endregion
+
+        #region Save Client Documents
+        public virtual async Task<CRMClientDocumentDto> SaveClientDocumentAsync(CRMClientDocumentDto request)
+        {
+            var savedFile = await _iDocumentService.SaveDocumentFile(request.DocumentFile);
+            request.DocumentId = savedFile.Id;
+            request.DocumentFile = null;
+
+            var clientDocument = _mapper.Map<CRMClientDocument>(request);
+
+            var savedEntity = clientDocument.Id > 0
+                ? await _iCRMUow.CRMClientDocumentRepo.UpdateCRMClientDocumentAsync(clientDocument)
+                : await _iCRMUow.CRMClientDocumentRepo.InsertCRMClientDocumentAsync(clientDocument);
+
+            await _iCRMUow.SaveChangesAsync();
+
+            var response = _mapper.Map<CRMClientDocumentDto>(savedEntity);
+            response.DocumentFile = savedFile;
+            var message = await _iCRMUow.MessageRepo.GetMessageByNo(7001);
+            response.Msg.InfoMessage = _mapper.Map<uMessageDto>(message);
+
+            return response;
+        }
+        #endregion
+
+        #region Get All Client Documents By ClientId
+        public async Task<CRMClientDocumentSectionDto> GetClientDocumentsByClientIdAsync(long clientId)
+        {
+            if (clientId <= 0) throw new BusinessException("ID Is Invalid");
+
+            return await _iCRMUow.CRMClientDocumentRepo.GetAllDocumentsByClientIdAsync(clientId);
+        }
+        #endregion
+
+        #region Delete Client Document
+        public virtual async Task<SuccessResponse> DeleteClientDocumentAsync(long id)
+        {
+            SuccessResponse successResponse = new SuccessResponse();
+            if (id <= 0)
+                successResponse.IsDeleted = false;
+
+            var clientDocument = _iCRMUow.CRMClientDocumentRepo
+                                    .GetByIdAsync(id).Result
+                                    ?? throw new BusinessException("Id not found");
+
+            if (clientDocument != null && clientDocument.Id > 0)
+            {
+                long documentId = clientDocument.DocumentId ?? 0;
+
+                await _iCRMUow.BeginTransactionAsync();
+
+                _iCRMUow.CRMClientDocumentRepo.Delete(clientDocument);
+                await _iCRMUow.SaveChangesAsync();
+
+                if (documentId > 0)
+                {
+                    try
+                    {
+                        await _iDocumentService.DeleteDocumentFile(documentId);
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                await _iCRMUow.CommitTransactionAsync();
+
+                successResponse.IsDeleted = true;
+                successResponse.Msg.InfoMessage = _mapper.Map<uMessageDto>(
+                    await _iCRMUow.MessageRepo.GetMessageByNo(2026));
+                successResponse.Msg.InfoMessage.Msg = string.Format(
+                    successResponse.Msg.InfoMessage.Msg, "Client Document");
+
+                return successResponse;
+            }
+            else
+            {
+                successResponse.IsDeleted = false;
+                successResponse.Msg.ErrorMessage ??= new List<uMessageDto>();
+                var message = await _iCRMUow.MessageRepo.GetMessageByNo(2038);
                 throw new BusinessException(message.Msg, HttpStatusCode.BadRequest);
             }
         }
@@ -379,8 +493,29 @@ namespace CRM.Application
         }
         #endregion
 
+        #region Get Client Service By Id
+        public async Task<CRMClientServiceDto> GetClientServiceByClientServiceIdAsync(long clientServicetId)
+        {
+            return _mapper.Map<CRMClientServiceDto>(await _iCRMUow.CRMClientServiceRepo.GetClientServiceById(clientServicetId));
+        }
         #endregion
 
+        #region Get All Client Services By ClientId
+        public async Task<CRMClientServiceSectionDto> GetAllClientServiceByClientId(long clientId)
+        {
+            if (clientId <= 0) throw new BusinessException("ID Is Invalid");
+            var result = await _iCRMUow.CRMClientServiceRepo.GetAllClientServiceByClientIdAsync(clientId);
+
+            foreach (var item in result.Items)
+            {
+                await _iCRMUow.ConfigRepo.SetDescription(item);
+            }
+
+            return result;
+        }
+        #endregion
+
+        #endregion
 
         #region Legal Officer
 
@@ -426,6 +561,7 @@ namespace CRM.Application
         #region Save Legal Officer
         public async Task<LegalOfficerDto> SaveLegalOfficerAsync(LegalOfficerDto request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(LegalOfficerDto));
             var LegalOfficer = _mapper.Map<LegalOfficer>(request);
 
             string groupName = CRMConstants.GroupName.LAO;
@@ -472,6 +608,14 @@ namespace CRM.Application
         public async Task<LegalOfficerDto> GetLegalOfficerByLegalOfficerIdAsync(long LegalOfficerId)
         {
             var legalOfficer = await _iCRMUow.LegalOfficerRepo.GetLegalOfficerById(LegalOfficerId);
+            var userDetails = await _iCRMUow.LegalOfficerRepo.GetDetailsFromITGUser(legalOfficer.UserSerialId);
+
+            if (userDetails != null)
+            {
+                legalOfficer.EmailId = userDetails.Constant;
+                legalOfficer.ContactNo = userDetails.Description;
+            }
+            await SetDescription(legalOfficer);
 
             return _mapper.Map<LegalOfficerDto>(legalOfficer);
         }
@@ -515,13 +659,13 @@ namespace CRM.Application
         #endregion
 
 
-
         #region Load LegalOfficer Schedule     
         public async Task<List<LegalOfficerSchedulesDto>> LoadLegalOfficerSchedule(long LegalOfficerId)
         {
             return await _iCRMUow.LegalOfficerScheduleRepo.LoadLegalOfficerSchedule(LegalOfficerId);
         }
         #endregion
+
         #region save Legal Officer Schedule
         public async Task<List<LegalOfficerSchedulesDto>> SaveLegalOfficerSchedules(LegalOfficerSchedulesDto request)
         {
@@ -565,9 +709,228 @@ namespace CRM.Application
             await _iCRMUow.SaveChangesAsync();
             var response = _mapper.Map<LegalOfficerBlockedDatesDto>(LegalOfficerBlockedDates);
             list = await _iCRMUow.LegalOfficerBlockDateRepo.LoadLegalOfficerBlockDate(request.LegalOfficerId);
+
             return list;
         }
         #endregion
+
+
+        #region Legal Officer Appointment
+
+        #region Create Legal Officer Appointment
+        public Task<LegalOfficerAppoinmentDto> CreateLegalOfficerAppoinmentAsync()
+        {
+            return Task.FromResult(new LegalOfficerAppoinmentDto());
+        }
+        #endregion
+
+        #region Save Legal Officer Appointment
+        public async Task<LegalOfficerAppoinmentDto> SaveLegalOfficerAppoinmentAsync(LegalOfficerAppoinmentDto request)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(LegalOfficerAppoinmentDto));
+
+            var appoinment = _mapper.Map<LegalOfficerAppoinment>(request);
+
+            appoinment.AppoinmentDate = DateTime.Parse(request.AppoinmentDate);
+            appoinment.StartTime = TimeSpan.Parse(request.StartTime);
+            appoinment.EndTime = TimeSpan.Parse(request.EndTime);
+
+            bool isOverlap = await _iCRMUow.LegalOfficerAppoinmentRepo.IsSlotAlreadyBookedAsync(
+                appoinment.LegalOfficerId,
+                appoinment.AppoinmentDate,
+                appoinment.StartTime,
+                appoinment.EndTime
+            );
+
+            if (isOverlap) throw new BusinessException(
+                    "This time slot is already booked. Please choose another.", HttpStatusCode.Conflict);
+
+            if (appoinment.Id > 0)
+            {
+                await _iCRMUow.LegalOfficerAppoinmentRepo.UpdateLegalOfficerAppoinmentAsync(request);
+            }
+            else
+            {
+                await GenerateAppointmentNo(appoinment);
+                await _iCRMUow.LegalOfficerAppoinmentRepo.InsertLegalOfficerAppoinmentAsync(appoinment);
+            }
+
+            await _iCRMUow.SaveChangesAsync();
+
+            var response = _mapper.Map<LegalOfficerAppoinmentDto>(appoinment);
+
+            await SetDescription(response);
+
+            return response;
+        }
+
+        private async Task<LegalOfficerAppoinment> GenerateAppointmentNo(LegalOfficerAppoinment appoinment)
+        {
+            await _iCRMUow.LegalOfficerAppoinmentRepo.GenerateAppointmentRefNo(appoinment);
+
+            if (string.IsNullOrWhiteSpace(appoinment.AppointmentNo))
+                throw new BusinessException(await _iCRMUow.MessageRepo.
+                    GetMessageByNo(CRMConstants.AppoinmentReferenceNumber.ErrorGeneratingRefNo,
+                        "Appointment Ref Number"),
+                    HttpStatusCode.BadRequest
+                );
+
+            return appoinment;
+        }
+        #endregion
+
+        #region Get Appoinment Calendar Async
+        public async Task<List<AppoinmentCalendarDto>> GetAppoinmentCalendarAsync(long legalOfficerId, int month, int year)
+        {
+            // Step 1: Validate inputs
+            if (legalOfficerId <= 0)
+                throw new BusinessException("Invalid Legal Officer Id.", HttpStatusCode.BadRequest);
+
+            if (month < 1 || month > 12)
+                throw new BusinessException("Invalid Month.", HttpStatusCode.BadRequest);
+
+            if (year < 2000)
+                throw new BusinessException("Invalid Year.", HttpStatusCode.BadRequest);
+
+            // Step 2: Get data from Repository
+            var result = await _iCRMUow.LegalOfficerAppoinmentRepo.GetAppoinmentCalendarAsync(legalOfficerId, month, year);
+
+            // Step 3: Return empty list if no appointments
+            // Never return null — frontend should handle empty list 
+            if (result == null || !result.Any())
+                return new List<AppoinmentCalendarDto>();
+
+            return result;
+        }
+        #endregion
+
+        #region Get Appoinment Time Slots By Date Async
+        public async Task<List<AppoinmentTimeSlotsDto>> GetAppoinmentTimeSlotsByDateAsync(long legalOfficerId, string date)
+        {
+            if (legalOfficerId <= 0) throw new BusinessException("Invalid Legal Officer Id.", HttpStatusCode.BadRequest);
+
+            if (string.IsNullOrWhiteSpace(date))
+                throw new BusinessException("Date is required.", HttpStatusCode.BadRequest);
+
+            if (!DateTime.TryParse(date, out DateTime parsedDate))
+                throw new BusinessException("Invalid Date format. Please use yyyy-MM-dd.", HttpStatusCode.BadRequest);
+
+            var appointments = await _iCRMUow.LegalOfficerAppoinmentRepo.GetAppoinmentTimeSlotsByDateAsync(legalOfficerId, parsedDate);
+
+            // Step 4: Return empty list if no slots
+            if (appointments == null || !appointments.Any())
+                return new List<AppoinmentTimeSlotsDto>();
+
+            var response = _mapper.Map<List<AppoinmentTimeSlotsDto>>(appointments);
+
+            foreach (var slot in response)
+            {
+
+                await SetDescription(slot);
+                slot.AppoinmentStatusDescription = slot.IsBooked == "Y" ? "Booked" : "Available";
+            }
+
+            return response;
+        }
+        #endregion
+
+        #endregion
+
+        #region Legal Officer Schedule
+
+        #region Create Legal Officer Schedule 
+        public Task<LegalOfficerSchedulesDto> CreateLegalOfficerScheduleAsync()
+        {
+            return Task.FromResult(new LegalOfficerSchedulesDto());
+        }
+        #endregion
+
+        #region Load Slot Preview
+        public async Task<LegalOfficerSchedulesDto> LoadSlotPreview(LegalOfficerSchedulesDto request)
+        {
+            // Step 1 — Validate inputs exist
+            // Strings coming from frontend can be null/empty — always guard
+            if (string.IsNullOrEmpty(request.StartTime) ||
+                string.IsNullOrEmpty(request.EndTime) ||
+                request.SlotDuration == null)
+                throw new BusinessException(
+                    new List<string> { "StartTime, EndTime and SlotDuration are required." },
+                    HttpStatusCode.BadRequest);
+
+            // Step 2 — Parse strings to TimeSpan for arithmetic
+            // "09:00 AM" → TimeSpan so we can do time math
+            // DateTime.Parse handles "09:00 AM" format correctly
+            var startTime = DateTime.Parse(request.StartTime).TimeOfDay;
+            var endTime = DateTime.Parse(request.EndTime).TimeOfDay;
+            var slotDuration = TimeSpan.FromMinutes(request.SlotDuration.Value);
+
+            // Step 3 — Parse optional break times
+            bool hasBreak = !string.IsNullOrEmpty(request.BreakStartTime) &&
+                            !string.IsNullOrEmpty(request.BreakEndTime);
+
+            TimeSpan? breakStart = hasBreak
+                ? DateTime.Parse(request.BreakStartTime!).TimeOfDay
+                : null;
+
+            TimeSpan? breakEnd = hasBreak
+                ? DateTime.Parse(request.BreakEndTime!).TimeOfDay
+                : null;
+
+            // Step 4 — Business rule validations
+            if (endTime <= startTime)
+                throw new BusinessException(
+                    new List<string> { "End time must be after Start time." },
+                    HttpStatusCode.BadRequest);
+
+            if (hasBreak && breakEnd <= breakStart)
+                throw new BusinessException(
+                    new List<string> { "Break end time must be after Break start time." },
+                    HttpStatusCode.BadRequest);
+
+            // Step 5 — Sliding window algorithm to generate slots
+            var slots = new List<SlotDto>();
+            var current = startTime;
+
+            while (current + slotDuration <= endTime)
+            {
+                var slotEnd = current + slotDuration;
+
+                // If slot overlaps break window → jump to break end
+                if (hasBreak &&
+                    current < breakEnd &&
+                    slotEnd > breakStart)
+                {
+                    current = breakEnd!.Value; // Resume after break
+                    continue;
+                }
+
+                slots.Add(new SlotDto
+                {
+                    SlotStart = FormatTime(current),
+                    SlotEnd = FormatTime(slotEnd)
+                });
+
+                current = slotEnd; // Slide window forward
+            }
+
+            // Step 6 — Build response reusing same request DTO (your pattern)
+            request.SlotPreview = slots;
+            request.BreakTimeLabel = hasBreak
+                ? $"Break Time {FormatTime(breakStart!.Value)} - {FormatTime(breakEnd!.Value)}"
+                : null;
+
+            return await Task.FromResult(request);
+        }
+
+        // Private helper — single place for time formatting
+        private string FormatTime(TimeSpan time)
+        {
+            return DateTime.Today.Add(time).ToString("hh:mm tt");
+        }
+        #endregion
+
+        #endregion
+
         #endregion
     }
 }

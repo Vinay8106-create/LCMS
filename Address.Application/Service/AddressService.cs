@@ -114,14 +114,7 @@ namespace CRM.Application
             var address = _mapper.Map<Address>(request);
             address = address.Id > 0 ? await _iCRMUow.AddressRepo.UpdateAddressAsync(request) :
                                                             await _iCRMUow.AddressRepo.InsertAddressAsync(address);
-            //try
-            //{
-            //    await _iCRMUow.SaveChangesAsync();
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw ex;
-            //}
+
 
             return _mapper.Map<AddressDto>(address);
         }

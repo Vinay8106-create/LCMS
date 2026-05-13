@@ -1,5 +1,5 @@
-﻿using Galaxy.Infra.EntityConfig;
-using CRM.Domain;
+﻿using CRM.Domain;
+using Galaxy.Infra.EntityConfig;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -29,6 +29,5 @@ namespace LCMS.Persistence
             //.IsRequired(false);
 
         }
-
     }
 }

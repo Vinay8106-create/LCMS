@@ -44,21 +44,21 @@ namespace CRM.Domain
         public int ConfigId { get; set; }
     }
 
-    public class config_AddressLevel1 : BaseEntity
+    public class config_Addresslevel1 : BaseEntity
     {
         public long Id { get; set; }
         public string Description { get; set; }
         public int ConfigId { get; set; }
     }
 
-    public class config_AddressLevel2 : BaseEntity
+    public class config_Addresslevel2 : BaseEntity
     {
         public long Id { get; set; }
         public string Description { get; set; }
         public int ConfigId { get; set; }
     }
 
-    public class config_AddressLevel3 : BaseEntity
+    public class config_Addresslevel3 : BaseEntity
     {
         public long Id { get; set; }
         public string Description { get; set; }
@@ -131,6 +131,27 @@ namespace CRM.Domain
 
     }
     public class config_IDType : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+        public int ConfigId { get; set; }
+    }
+
+    public class config_MeetingType : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+        public int ConfigId { get; set; }
+    }
+
+    public class config_PriorityLevel : BaseEntity
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+        public int ConfigId { get; set; }
+    }
+
+    public class config_BlockType : BaseEntity
     {
         public long Id { get; set; }
         public string Description { get; set; }

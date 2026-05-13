@@ -31,9 +31,9 @@ namespace LCMS.Persistence
         public DbSet<config_MaritalStatus> config_MaritalStatus { get; set; }//
         public DbSet<config_Relationship> config_Relationship { get; set; }///
         public DbSet<config_DocumentMaster> config_DocumentMaster { get; set; }
-        public DbSet<config_AddressLevel1> config_AddressLevel1 { get; set; }
-        public DbSet<config_AddressLevel2> config_AddressLevel2 { get; set; }
-        public DbSet<config_AddressLevel3> config_AddressLevel3 { get; set; }
+        public DbSet<config_Addresslevel1> config_Addresslevel1 { get; set; }
+        public DbSet<config_Addresslevel2> config_Addresslevel2 { get; set; }
+        public DbSet<config_Addresslevel3> config_Addresslevel3 { get; set; }
 
         public DbSet<config_Service> config_Service { get; set; }
         public DbSet<config_MatterType> config_MatterType { get; set; }
@@ -45,6 +45,8 @@ namespace LCMS.Persistence
         public DbSet<config_Specialization> config_Specialization { get; set; }
         public DbSet<config_LegalOfficerStatus> config_LegalOfficerStatus { get; set; }
         public DbSet<config_IDType> config_IDType { get; set; }
+        public DbSet<config_MeetingType> config_MeetingType { get; set; }
+        public DbSet<config_PriorityLevel> config_PriorityLevel { get; set; }
 
         #endregion
 

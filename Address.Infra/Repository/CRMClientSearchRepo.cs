@@ -33,11 +33,15 @@ namespace CRM.Infra
                 ClientId = x.ClientViewModel.ClientId,
                 ClientRefNo = x.ClientViewModel.ClientRefNo,
                 ClientName = x.ClientViewModel.ClientName ?? "-",
+
                 Type = x.ClientViewModel.ClientType ?? "-",
+                TypeConfigId = x.ClientViewModel.ClientTypeConfigId,
                 Priority = x.ClientViewModel.ClientSubType ?? "-",
+                PriorityConfigId = x.ClientViewModel.ClientSubTypeConfigId,
                 ContactNo = x.ClientViewModel.ContactNo ?? "-",
                 EmailId = x.ClientViewModel.EmailId ?? "-",
                 Status = x.ClientViewModel.ClientStatus ?? "-",
+                StatusConfigId = x.ClientViewModel.ClientStatusConfigId,
             });
         }
     }

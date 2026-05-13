@@ -38,7 +38,7 @@ namespace CRM.Infra
             var ContactMode = await GetDDLAsync<config_ContactMode>("DDLContactMode");
             dDLData.data.Add(ContactMode);
             var ServiceStatus = await GetDDLAsync<config_ServiceStatus>("DDLServiceStatus");
-            dDLData.data.Add(ServiceStatus); 
+            dDLData.data.Add(ServiceStatus);
             var legalOfficer = await getAllLegalOfficer();
             dDLData.data.Add(legalOfficer);
 
@@ -116,7 +116,7 @@ namespace CRM.Infra
         {
             await _referencenoLock.WaitAsync();
             string clientRefNo = null;
-            using var reader = await _dbContext.ExecuteSpAsync(CRMConstants.StoredProcedured.APP_SP_GetClientRefNumber);
+            using var reader = await _dbContext.ExecuteSpAsync(CRMConstants.StoredProcedures.APP_SP_GetClientRefNumber);
             var resultSets = await reader.ReadAsync();
             clientRefNo = resultSets.Select(x => x.CustomerReferenceNumber).FirstOrDefault();
             if (!string.IsNullOrWhiteSpace(clientRefNo))
@@ -155,7 +155,7 @@ namespace CRM.Infra
         {
             await _referencenoLock.WaitAsync();
             string serviceRefNo = null;
-            using var reader = await _dbContext.ExecuteSpAsync(CRMConstants.StoredProcedured.APP_SP_GetClientRefNumber);
+            using var reader = await _dbContext.ExecuteSpAsync(CRMConstants.StoredProcedures.APP_SP_GetClientRefNumber);
             var resultSets = await reader.ReadAsync();
             serviceRefNo = resultSets.Select(x => x.CustomerReferenceNumber).FirstOrDefault();
             if (!string.IsNullOrWhiteSpace(serviceRefNo))
@@ -186,7 +186,35 @@ namespace CRM.Infra
                 Key = "DDLLegalOfficer",
                 Value = data
             };
+        }
 
+
+        public async Task<CRMClientServiceSectionDto> GetAllClientServiceByClientIdAsync(long clientId)
+        {
+            var services = await _dbContext.CRMClientService
+                .Where(c => c.ClientId == clientId)
+                .Join(
+                    _dbContext.config_ServiceStatus,
+                    service => service.ServiceStatusConfigId,
+                    status => status.Id,
+                    (service, status) => new {
+                        Service = service,
+                        ServiceStatusDescription = status.Description
+                    }
+                )
+                .OrderByDescending(x => x.Service.Id)
+                .ToListAsync();
+
+            var mappedServices = services.Select(x => {
+                var dto = _mapper.Map<CRMClientServiceDto>(x.Service);
+                dto.ServiceStatusDescription = x.ServiceStatusDescription;
+                return dto;
+            }).ToList();
+
+            return new CRMClientServiceSectionDto
+            {
+                Items = mappedServices
+            };
         }
     }
 }

@@ -12,6 +12,7 @@ namespace CRM.Application
         Task<config_ClientType> UpdateConfigAsync(ConfigDto request);
         Task<config_ClientType> GetConfigById(long Id, bool isTracking = false);
         Task SetDescription<T>(T model) where T : class;
+        Task SetAddressDescription<T>(T model) where T : class;
         Task<DDLData> ClientInitialData();
 
     }

@@ -8,7 +8,7 @@ namespace CRM.Domain
         public long ClientId { get; set; }
         public long? DocumentMasterId { get; set; }
         public long? DocumentId { get; set; }
-        //public virtual Collection<Document>? Documents { get; set; }
+        public virtual Document? Document { get; set; }
 
     }
 }

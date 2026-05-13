@@ -8,9 +8,9 @@ namespace CRM.Domain
         public string? AppointmentNo { get; set; }
         public long ClientId { get; set; }
         public long LegalOfficerId { get; set; }
-        public string AppoinmentDate { get; set; }
-        public string? StartTime { get; set; }
-        public string? EndTime { get; set; }
+        public DateTime AppoinmentDate { get; set; }
+        public TimeSpan? StartTime { get; set; }
+        public TimeSpan? EndTime { get; set; }
         public int? AppoinmentStatusConfigId { get; set; }
         public int? PriorityLevelConfigId { get; set; }
         public int? MeetingTypeConfigId { get; set; }

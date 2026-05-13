@@ -11,9 +11,10 @@ namespace LCMS.Dto
         public int? Level1ConfigId { get; set; }
         public int? Level2ConfigId { get; set; }
         public int? Level3ConfigId { get; set; }
-        public string? Level1Config{ get; set; }
+        public string? Level1Config { get; set; }
         public string? Level2Config { get; set; }
         public string? Level3Config { get; set; }
+        public string? PostBoxNo { get; set; }
 
         public int Version { get; set; }
         public AppMessage? Msg { get; set; } = new AppMessage();

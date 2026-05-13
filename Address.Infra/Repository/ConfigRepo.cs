@@ -66,11 +66,13 @@ namespace Master.Infra
             dDLData.data.Add(config_MaritalStatus);
             var config_DocumentMaster = await GetDDLAsync<config_DocumentMaster>("DDLDocumentMaster");
             dDLData.data.Add(config_DocumentMaster);
-            var config_Addresslevel1 = await GetDDLAsync<config_AddressLevel1>("DDLAddressLevel1");
+            var config_Relationship = await GetDDLAsync<config_Relationship>("DDLRelationship");
+            dDLData.data.Add(config_Relationship);
+            var config_Addresslevel1 = await GetDDLAsync<config_Addresslevel1>("DDLAddresslevel1");
             dDLData.data.Add(config_Addresslevel1);
-            var config_Addresslevel2 = await GetDDLAsync<config_AddressLevel2>("DDLAddressLevel2");
+            var config_Addresslevel2 = await GetDDLAsync<config_Addresslevel2>("DDLAddresslevel2");
             dDLData.data.Add(config_Addresslevel2);
-            var config_Addresslevel3 = await GetDDLAsync<config_AddressLevel3>("DDLAddressLevel3");
+            var config_Addresslevel3 = await GetDDLAsync<config_Addresslevel3>("DDLAddresslevel3");
             dDLData.data.Add(config_Addresslevel3);
 
             return dDLData;
@@ -137,17 +139,17 @@ namespace Master.Infra
             (
                 GetPropertyValue<int?>(model, "configAddressLevel1Id"),
                 "config_AddressLevel1",
-                desc => SetPropertyValue(model, "configAddressLevel1", desc)
+                desc => SetPropertyValue(model, "level1Config", desc)
             ),
             (
                 GetPropertyValue<int?>(model, "configAddressLevel2Id"),
                 "config_AddressLevel2",
-                desc => SetPropertyValue(model, "configAddressLevel2", desc)
+                desc => SetPropertyValue(model, "level2Config", desc)
             ),
             (
                 GetPropertyValue<int?>(model, "configAddressLevel3Id"),
                 "config_AddressLevel3",
-                desc => SetPropertyValue(model, "configAddressLevel3", desc)
+                desc => SetPropertyValue(model, "level3Config", desc)
             ),
             (
                 GetPropertyValue<int?>(model, "ServiceConfigId"),
@@ -193,7 +195,22 @@ namespace Master.Infra
                 GetPropertyValue<int?>(model, "IDTypeConfigId"),
                 "config_IDType",
                 desc => SetPropertyValue(model, "IDType", desc)
-            )
+            ),
+            (
+                GetPropertyValue<int?>(model, "MeetingTypeConfigId"),
+                "config_MeetingType",
+                desc => SetPropertyValue(model, "MeetingTypeDescription", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "AppoinmentStatusConfigId"),
+                "config_ClientStatus",
+                desc => SetPropertyValue(model, "AppoinmentStatusDescription", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "PriorityLevelConfigId"),
+                "config_PriorityLevel",
+                desc => SetPropertyValue(model, "PriorityLevelDescription", desc)
+            ),
             };
 
             foreach (var (Configid, tableName, setter) in mappings)
@@ -206,6 +223,41 @@ namespace Master.Infra
                 setter(desc);
             }
         }
+
+        public async Task SetAddressDescription<T>(T model) where T : class
+        {
+            if (model == null) return;
+
+            var mappings = new List<(int? Configid, string tableName, Action<string?> setter)>
+            {
+            (
+                GetPropertyValue<int?>(model, "Level1ConfigId"),
+                "config_Addresslevel1",
+                desc => SetPropertyValue(model, "Level1Config", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "Level2ConfigId"),
+                "config_Addresslevel2",
+                desc => SetPropertyValue(model, "Level2Config", desc)
+            ),
+            (
+                GetPropertyValue<int?>(model, "Level3ConfigId"),
+                "config_Addresslevel3",
+                desc => SetPropertyValue(model, "Level3Config", desc)
+            ),
+            };
+
+            foreach (var (Configid, tableName, setter) in mappings)
+            {
+                Console.WriteLine($"TableName: {tableName} | ConfigId: {Configid}");
+                if (Configid == null || Configid == 0) continue;
+
+                var desc = await GetDescriptionFromCache(tableName, Configid.Value);
+                Console.WriteLine($"DESC RESULT: {desc}");
+                setter(desc);
+            }
+        }
+
 
         private async Task<string?> GetDescriptionFromCache(string tableName, int Configid)
         {
@@ -238,13 +290,13 @@ namespace Master.Infra
                     "config_DocumentMaster" => await _dbContext.config_DocumentMaster
                         .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
-                    "config_AddressLevel1" => await _dbContext.config_AddressLevel1
+                    "config_Addresslevel1" => await _dbContext.config_Addresslevel1
                         .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
-                    "config_AddressLevel2" => await _dbContext.config_AddressLevel2
+                    "config_Addresslevel2" => await _dbContext.config_Addresslevel2
                         .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
-                    "config_AddressLevel3" => await _dbContext.config_AddressLevel3
+                    "config_Addresslevel3" => await _dbContext.config_Addresslevel3
                         .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
                     "config_Service" => await _dbContext.config_Service
@@ -272,6 +324,12 @@ namespace Master.Infra
                         .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
                     "config_IDType" => await _dbContext.config_IDType
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_MeetingType" => await _dbContext.config_MeetingType
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_PriorityLevel" => await _dbContext.config_PriorityLevel
                         .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
                     _ => new Dictionary<int, string>()

@@ -58,6 +58,7 @@ namespace LCMS.Dto
         public long? PhotoId { get; set; }
         public long? configRelationshipId { get; set; }
         public int? StatusConfigId { get; set; }
+        public string? StatusDescription { get; set; }
         public AddressDto? ResidentialAddress { get; set; } = new AddressDto();
         public AddressDto? CommunicationAddress { get; set; } = new AddressDto();
         public int Version { get; set; }
@@ -74,9 +75,11 @@ namespace LCMS.Dto
     {
         public long Id { get; set; }
         public long ClientId { get; set; }
+        public string? docname { get; set; }
         public long? DocumentMasterId { get; set; }
         public long? DocumentId { get; set; }
         public int Version { get; set; }
+        public DocumentFileDto? DocumentFile { get; set; } = new DocumentFileDto();
         public AppMessage? Msg { get; set; } = new AppMessage();
     }
 

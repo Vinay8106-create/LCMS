@@ -121,8 +121,6 @@ namespace CRM.Application
 
             var document = _mapper.Map<Document>(request);
 
-            await ValidateDocumentFileMandatoryFields(document);
-
             if (document.HasError)
             {
                 throw new BusinessException(
@@ -135,11 +133,16 @@ namespace CRM.Application
             {
                 document.RelativePath = await ConstructDocumentFilePath(request.FolderName, request.SubFolderName);
             }
-            else
+            else if (!string.IsNullOrEmpty(request.RelativePath))
             {
                 document.RelativePath = request.RelativePath;
             }
+            else
+            {
+                document.RelativePath = await GetAttachmentPathFolder();
+            }
 
+            await ValidateDocumentFileMandatoryFields(document);
             if (string.IsNullOrWhiteSpace(document.RelativePath))
                 throw new BusinessException("Relative path is required", HttpStatusCode.BadRequest);
 
@@ -238,5 +241,15 @@ namespace CRM.Application
 
             return successResponse;
         }
+
+        #region GetAttachmentPathFolder
+        public virtual async Task<string> GetAttachmentPathFolder()
+        {
+            return await _imasterUow.ConfigMetaDataRepo.GetConfigMetadataValueByIdAndConstantAndMetadataName(LCMSCommonConstants.AttachmentPath.AttacthMentPathID,
+                LCMSCommonConstants.AttachmentPath.AttachmentFolder, LCMSCommonConstants.AttachmentPath.AttachmentFolderMetadataName) ?? string.Empty;
+
+        }
+
+        #endregion
     }
 }

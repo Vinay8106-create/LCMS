@@ -12,9 +12,11 @@
             public const int ErrorGeneratingRefNo = 1002;
         }
 
-        public static class StoredProcedured
+        public static class StoredProcedures
         {
             public const string APP_SP_GetClientRefNumber = "APP_SP_GetClientRefNumber";
+            public const string APP_SP_GetAppoinmentRefNumber = "APP_SP_GetAppoinmentRefNumber";
+            public const string APP_SP_GetAppoinmentCalendarByMonth = "APP_SP_GetAppoinmentCalendarByMonth";
 
         }
 
@@ -29,6 +31,11 @@
         {
             public const string CSO = "Customer Service Officer";
             public const string LAO = "Legal Administration Team";
+        }
+
+        public class AppoinmentReferenceNumber
+        {
+            public const int ErrorGeneratingRefNo = 2001;
         }
 
     }

@@ -6,8 +6,8 @@ namespace CRM.Application
 {
     public interface ICRMClientDocumentRepo : IRepository<CRMClientDocument>
     {
-        Task<CRMClientDocument> InsertCRMClientDocumentDetailAsync(CRMClientDocument request);
-        Task<CRMClientDocument> UpdateCRMClientDcumentDetailAsync(CRMClientDocument request);
+        Task<CRMClientDocument> InsertCRMClientDocumentAsync(CRMClientDocument request);
+        Task<CRMClientDocument> UpdateCRMClientDocumentAsync(CRMClientDocument request);
         Task<CRMClientDocument> GetCRMClientDocumentDetailById(long CRMClientContactDetailId, bool isTracking = false);
 
         Task<CRMClientDocumentSectionDto> GetAllDocumentsByClientIdAsync(long clientId);

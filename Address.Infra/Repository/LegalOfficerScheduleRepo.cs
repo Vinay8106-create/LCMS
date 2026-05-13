@@ -3,12 +3,10 @@ using CRM.Application;
 using CRM.Domain;
 using Galaxy.Domain.Exceptions;
 using Galaxy.Domain.Models;
-using Galaxy.Dto;
 using Galaxy.Infra;
 using LCMS.Dto;
 using LCMS.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Net;
 
 namespace CRM.Infra
@@ -23,7 +21,6 @@ namespace CRM.Infra
             _mapper = mapper;
         }
 
-       
 
         public async Task<List<LegalOfficerSchedulesDto>> LoadLegalOfficerSchedule(long LegalOfficerId)
         {
@@ -36,8 +33,7 @@ namespace CRM.Infra
                                       .ToListAsync();
 
                 list = Enumerable.Range(1, 7)
-                   .Select(day =>
-                   {
+                   .Select(day => {
                        var existing = schedules
                            .FirstOrDefault(x => x.DayOffWeek == day);
 
@@ -58,8 +54,9 @@ namespace CRM.Infra
                            StartTime = existing?.StartTime.ToString(),
                            EndTime = existing?.EndTime.ToString(),
                            SlotDuration = existing?.SlotDuration,
-                           ISActive = existing?.ISActive == "Y" ? "Y" : "N"
-
+                           ISActive = existing?.ISActive == "Y" ? "Y" : "N",
+                           BreakStartTime = Convert.ToString(existing?.BreakStartTime),
+                           BreakEndTime = Convert.ToString(existing?.BreakEndTime)
                        };
                    })
                    .ToList();
@@ -86,6 +83,7 @@ namespace CRM.Infra
 
             return LegalOfficerSchedules;
         }
+
         public async Task<long> GetLegalOfficerIdbyUserLoginId(string userLoginId)
         {
             var legalOfficerId = await (

@@ -1,5 +1,4 @@
 ﻿using Galaxy.Domain.Models;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRM.Domain
 {
@@ -7,10 +6,12 @@ namespace CRM.Domain
     {
         public long Id { get; set; }
         public long LegalOfficerId { get; set; }
-        public string BlockDate { get; set; }
-        public string? StartTime { get; set; }
-        public string? EndTime { get; set; }
+        public DateOnly BlockDate { get; set; }
+        public TimeSpan? StartTime { get; set; }
+        public TimeSpan? EndTime { get; set; }
         public string? Reason { get; set; }
+        public int? BlockTypeConfigId { get; set; }
+
         public void ValidateMandatoryFieldsForLegalOfficerBlockDate()
         {
             errorMsgList = new List<uMessage>();

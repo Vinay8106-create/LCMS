@@ -92,7 +92,7 @@ namespace CRM.Infra
         {
             await _referencenoLoack.WaitAsync();
             string clientRefNo = null;
-            using var reader = await _dbContext.ExecuteSpAsync(CRMConstants.StoredProcedured.APP_SP_GetClientRefNumber);
+            using var reader = await _dbContext.ExecuteSpAsync(CRMConstants.StoredProcedures.APP_SP_GetClientRefNumber);
             var resultSets = await reader.ReadAsync();
             clientRefNo = resultSets.Select(x => x.CustomerReferenceNumber).FirstOrDefault();
             if (!string.IsNullOrWhiteSpace(clientRefNo))
@@ -130,7 +130,15 @@ namespace CRM.Infra
 
         public async Task<CRMClient> GetClientById(long clientId, bool isTracking = false)
         {
-            return await GetByIdAsync(clientId, isTracking) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
+            var query = _dbContext.CRMClient
+                                  .Include(x => x.ResidentialAddress)
+                                  .Include(x => x.CommunicationAddress)
+                                  .Include(x => x.Photo)
+                                  .Where(x => x.Id == clientId);
+
+            return isTracking
+                ? await query.FirstOrDefaultAsync()
+                : await query.AsNoTracking().FirstOrDefaultAsync();
         }
 
 

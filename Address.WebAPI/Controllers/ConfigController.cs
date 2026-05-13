@@ -15,15 +15,12 @@ namespace CRM.WebAPI
     {
         private readonly IConfigService _configService;
 
-
-
         public ConfigController(IConfigService configService)
         {
             _configService = configService;
         }
 
         #region Config
-
 
         [HttpGet("GetConfig")]
         [SwaggerOperation(Tags = new[] { "Config" }, Summary = "GetConfig")]
@@ -52,7 +49,6 @@ namespace CRM.WebAPI
         }
 
         #endregion
-
     }
 }
 

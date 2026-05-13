@@ -26,6 +26,7 @@ namespace LCMS.Dto
         public string? Status { get; set; }
     }
 
+
     public class CRMClientSearchResultsDto
     {
         [SortableField("ClientViewModel.ClientId", IsDefaultSort = true)]
@@ -39,9 +40,11 @@ namespace LCMS.Dto
 
         [SortableField("ClientViewModel.ClientType")]
         public string? Type { get; set; }
+        public int? TypeConfigId { get; set; }
 
         [SortableField("ClientViewModel.ClientSubType")]
         public string? Priority { get; set; }
+        public int? PriorityConfigId { get; set; }
 
         [SortableField("ClientViewModel.ContactNo")]
         public string? ContactNo { get; set; }
@@ -51,6 +54,8 @@ namespace LCMS.Dto
 
         [SortableField("ClientViewModel.ClientStatus")]
         public string? Status { get; set; }
+        public int? StatusConfigId { get; set; }
     }
 }
+
 

@@ -71,7 +71,7 @@ namespace CRM.WebAPI
         [SwaggerOperation(Tags = new[] { "CRMClient" }, Summary = "SaveClient")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AppMessage))]
-        public async Task<IActionResult> SaveClient(CRMClientDto request)
+        public async Task<IActionResult> SaveClient([FromBody] CRMClientDto request)
         {
             return this.Ok(await _iCRMClientService.SaveClientAsync(request));
         }
@@ -145,12 +145,41 @@ namespace CRM.WebAPI
 
         #region CRMClient Documents
 
+        #region Create Client Documents
+        [HttpGet("CreateClientDocument")]
+        [SwaggerOperation(Tags = new[] { "CRMClientDocument" }, Summary = "CreateClientDocument")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientDocumentDto))]
+        public async Task<IActionResult> CreateClientDocument()
+        {
+            return this.Ok(await _iCRMClientService.CreateClientDocumentAsync());
+        }
+        #endregion
+
+        #region Save Client Document 
+        [HttpPost("SaveClientDocument")]
+        [SwaggerOperation(Tags = new[] { "CRMClientDocument" }, Summary = "SaveClientDocument")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientDocumentDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AppMessage))]
+        public async Task<IActionResult> SaveClientDocument(CRMClientDocumentDto request)
+        {
+            return this.Ok(await _iCRMClientService.SaveClientDocumentAsync(request));
+        }
+        #endregion
+
         [HttpGet("GetAllClientDocumentsByClientId")]
-        [SwaggerOperation(Tags = new[] { "CRMClientDocuments" }, Summary = "GetAllClientDocumentsByClientId")]
+        [SwaggerOperation(Tags = new[] { "CRMClientDocument" }, Summary = "GetAllClientDocumentsByClientId")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientDocumentSectionDto))]
         public async Task<IActionResult> GetAllClientDocumentsByClientIdAsync([FromQuery] long clientId)
         {
             return this.Ok(await _iCRMClientService.GetClientDocumentsByClientIdAsync(clientId));
+        }
+
+        [HttpDelete("DeleteClientDocument")]
+        [SwaggerOperation(Tags = new[] { "CRMClientDocument" }, Summary = "DeleteClientDocument")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessResponse))]
+        public async Task<IActionResult> DeleteClientDocument([FromQuery] long clientDocumentId)
+        {
+            return this.Ok(await _iCRMClientService.DeleteClientDocumentAsync(clientDocumentId));
         }
 
         #endregion
@@ -233,6 +262,28 @@ namespace CRM.WebAPI
         {
             return this.Ok(await _iCRMClientService.SaveClientServiceAsync(request));
         }
+
+        #region GetClientServiceByClientServiceIdAsync
+
+        [HttpGet("GetClientServiceByClientServiceIdAsync")]
+        [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "GetClientServiceByClientServiceIdAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientServiceDto))]
+        public async Task<IActionResult> GetClientServiceByClientServiceIdAsync([FromQuery] long clientServiceId)
+        {
+            return this.Ok(await _iCRMClientService.GetClientServiceByClientServiceIdAsync(clientServiceId));
+        }
+        #endregion
+
+        #region Get All Client Services By ClientId
+        [HttpGet("GetAllClientServicesByClientId")]
+        [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "GetAllClientServicesByClientId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CRMClientServiceSectionDto))]
+        public async Task<IActionResult> GetAllClientServicesByClientId([FromQuery] long clientId)
+        {
+            return this.Ok(await _iCRMClientService.GetAllClientServiceByClientId(clientId));
+        }
+        #endregion
+
         #endregion
 
         #region Legal Officer Search
@@ -328,6 +379,7 @@ namespace CRM.WebAPI
             return this.Ok(await _iCRMClientService.LoadLegalOfficerSchedule(LegalOfficerId));
         }
         #endregion
+
         #region Save LegalOfficer Schedule
         [AllowAnonymous]
         [HttpPost("SaveLegalOfficerSchedule")]
@@ -362,6 +414,60 @@ namespace CRM.WebAPI
         #endregion
 
         #endregion
+
+        #region Legal Officer Appointment
+
+        #region Create Legal Officer Appointment
+        [HttpGet("CreateLegalOfficerAppointment")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "CreateLegalOfficerAppointment")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerAppoinmentDto))]
+        public async Task<IActionResult> CreateLegalOfficerAppointment()
+        {
+            return this.Ok(await _iCRMClientService.CreateLegalOfficerAppoinmentAsync());
+        }
+        #endregion
+
+        #region Save Legal Officer Appoinment
+        [HttpPost("SaveLegalOfficerAppoinment")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "SaveLegalOfficerAppoinment")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerAppoinmentDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AppMessage))]
+        public async Task<IActionResult> SaveLegalOfficerAppoinment(LegalOfficerAppoinmentDto request)
+        {
+            return this.Ok(await _iCRMClientService.SaveLegalOfficerAppoinmentAsync(request));
+        }
+        #endregion
+
+        [HttpGet("GetAppoinmentCalendar")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "GetAppoinmentCalendar")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AppoinmentCalendarDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AppMessage))]
+        public async Task<IActionResult> GetAppoinmentCalendar([FromQuery] long legalOfficerId,
+                                 [FromQuery] int month,
+                                 [FromQuery] int year)
+        {
+            return this.Ok(await _iCRMClientService.GetAppoinmentCalendarAsync(legalOfficerId, month, year));
+        }
+
+        [HttpGet("GetAppoinmentTimeSlotsByDate")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "GetAppoinmentTimeSlotsByDate")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AppoinmentTimeSlotsDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AppMessage))]
+        public async Task<IActionResult> GetAppoinmentTimeSlotsByDate([FromQuery] long legalOfficerId, [FromQuery] string date)
+        {
+            return this.Ok(await _iCRMClientService.GetAppoinmentTimeSlotsByDateAsync(legalOfficerId, date));
+        }
+
+        [HttpPost("LoadSlotPreview")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "LoadSlotPreview")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerSchedulesDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AppMessage))]
+        public async Task<IActionResult> LoadSlotPreview([FromBody] LegalOfficerSchedulesDto request)
+        {
+            return this.Ok(await _iCRMClientService.LoadSlotPreview(request));
+        }
+        #endregion
+
 
     }
 }

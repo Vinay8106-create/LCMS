@@ -25,6 +25,7 @@ namespace CRM.Infra
 
         private ILegalOfficerScheduleRepo _LegalOfficerScheduleRepo;
         private ILegalOfficerBlockDateRepo _LegalOfficerBlockDateRepo;
+        private ILegalOfficerAppoinmentRepo _LegalOfficerAppoinmentRepo;
 
         private ILegalOfficerSearchRepo _LegalOfficerSearchRepo;
 
@@ -35,7 +36,7 @@ namespace CRM.Infra
         public IDocumentFileRepo DocumentFileRepo => _DocumentFileRepo ?? new DocumentFileRepo(dbContext, provider);
         public ICRMClientRepo CRMClientRepo => _CRMClientRepo ??= new CRMClientRepo(dbContext, mapper);
         public ICRMClientContactRepo CRMClientContactRepo => _CRMClientContactRepo ??= new CRMClientContactRepo(dbContext, mapper);
-        public ICRMClientDocumentRepo CRMClientDocumentRepo => _CRMClientDocumentRepo ??= new CRMClientDocumentRepo(dbContext, mapper);
+        public ICRMClientDocumentRepo CRMClientDocumentRepo => _CRMClientDocumentRepo ??= new CRMClientDocumentRepo(dbContext, mapper, memoryCache);
         public ICRMClientSearchRepo CRMClientSearchRepo => _CRMClientSearchRepo ??= new CRMClientSearchRepo(dbContext);
         public ICRMClientServiceRepo CRMClientServiceRepo => _CRMClientServiceRepo ??= new CRMClientServiceRepo(dbContext, mapper);
         public ICRMClientServiceSearchRepo CRMClientServiceSearchRepo => _CRMClientServiceSearchRepo ??= new CRMClientServiceSearchRepo(dbContext);
@@ -43,6 +44,7 @@ namespace CRM.Infra
 
         public ILegalOfficerScheduleRepo LegalOfficerScheduleRepo => _LegalOfficerScheduleRepo ??= new LegalOfficerScheduleRepo(dbContext, mapper);
         public ILegalOfficerBlockDateRepo LegalOfficerBlockDateRepo => _LegalOfficerBlockDateRepo ??= new LegalOfficerBlockDateRepo(dbContext, mapper);
+        public ILegalOfficerAppoinmentRepo LegalOfficerAppoinmentRepo => _LegalOfficerAppoinmentRepo ??= new LegalOfficerAppoinmentRepo(dbContext, mapper);
 
         public ILegalOfficerSearchRepo LegalOfficerSearchRepo => _LegalOfficerSearchRepo ??= new LegalOfficerSearchRepo(dbContext);
 

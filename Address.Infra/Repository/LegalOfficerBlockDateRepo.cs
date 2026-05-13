@@ -2,13 +2,10 @@
 using CRM.Application;
 using CRM.Domain;
 using Galaxy.Domain.Exceptions;
-using Galaxy.Domain.Models;
-using Galaxy.Dto;
 using Galaxy.Infra;
 using LCMS.Dto;
 using LCMS.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 using System.Net;
 
@@ -24,21 +21,21 @@ namespace CRM.Infra
             _mapper = mapper;
         }
 
-
-
         public async Task<List<LegalOfficerBlockedDatesDto>> LoadLegalOfficerBlockDate(long LegalOfficerId)
         {
-            List<LegalOfficerBlockedDatesDto> list = new List<LegalOfficerBlockedDatesDto>();
+            List<LegalOfficerBlockedDatesDto> list = new();
+
             if (LegalOfficerId != 0)
             {
-                var BlockDates = await _dbContext.LegalOfficerBlockedDates
-                                      .Where(x => x.LegalOfficerId == LegalOfficerId)
-                                      .AsNoTracking()
-                                      .ToListAsync();
+                var blockDates = await _dbContext.LegalOfficerBlockedDates
+                    .Where(x => x.LegalOfficerId == LegalOfficerId)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                list = _mapper.Map<List<LegalOfficerBlockedDatesDto>>(blockDates);
             }
+
             return list;
-
-
         }
 
         public async Task<LegalOfficerBlockedDates> InsertLegalOfficerBlockedDates(LegalOfficerBlockedDatesDto request)
@@ -58,7 +55,7 @@ namespace CRM.Infra
 
             return LegalOfficerBlockDates;
         }
-       
+
     }
 }
 
