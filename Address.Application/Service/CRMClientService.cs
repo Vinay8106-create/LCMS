@@ -68,7 +68,10 @@ namespace CRM.Application
         #region Create Client
         public async Task<CRMClientDto> CreateClientAsync()
         {
-            return new CRMClientDto();
+            return new CRMClientDto
+            {
+                ClientTypeConfigId = 1,
+            };
         }
         #endregion
 
@@ -561,46 +564,107 @@ namespace CRM.Application
         #region Save Legal Officer
         public async Task<LegalOfficerDto> SaveLegalOfficerAsync(LegalOfficerDto request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(LegalOfficerDto));
-            var LegalOfficer = _mapper.Map<LegalOfficer>(request);
+            // if (request == null) throw new ArgumentNullException(nameof(LegalOfficerDto));
+            // var LegalOfficer = _mapper.Map<LegalOfficer>(request);
 
+            // string groupName = CRMConstants.GroupName.LAO;
+            // var validUser = await _s2SLogic.Admin.IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
+            // if (validUser != true) throw new BusinessException(await _iCRMUow.MessageRepo.GetMessageByNo(1001), HttpStatusCode.BadRequest);
+
+            // LegalOfficer.ValidateMandatoryFieldsForLegalOfficer();
+
+            // var Residentialaddress = _mapper.Map<Address>(request.ResidentialAddress);            
+            // Residentialaddress.ValidateMandatoryFields();
+
+            // if (LegalOfficer.HasError || Residentialaddress.HasError)
+            //     throw new BusinessException(LegalOfficer.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
+            // request.ResidentialAddress = Residentialaddress;
+            //// var savedResidentialAddress = await _iAddressService.SaveAddress(request.ResidentialAddress);
+
+            // //LegalOfficer.ResidentialAddressId = savedResidentialAddress.Id;
+            // //LegalOfficer.ResidentialAddress = null;
+            // //request.ResidentialAddress = null;
+
+            // LegalOfficer = LegalOfficer.Id > 0 ? await _iCRMUow.LegalOfficerRepo.UpdateLegalOfficer(request)
+            //     : await _iCRMUow.LegalOfficerRepo.InsertLegalOfficer(request);
+
+            // await _iCRMUow.SaveChangesAsync();
+            // var response = _mapper.Map<LegalOfficerDto>(LegalOfficer);
+            // response.ResidentialAddress = _mapper.Map<AddressDto>(savedResidentialAddress);
+
+
+            // var userDetails = await _iCRMUow.LegalOfficerRepo.GetDetailsFromITGUser(response.UserSerialId);
+
+            // if (userDetails != null)
+            // {
+            //     response.EmailId = userDetails.Constant;
+            //     response.ContactNo = userDetails.Description;
+            // }
+
+            // await SetDescription(response);
+
+            // return response;
+
+
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            var legalOfficer = _mapper.Map<LegalOfficer>(request);
             string groupName = CRMConstants.GroupName.LAO;
-            var validUser = await _s2SLogic.Admin.IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
-            if (validUser != true) throw new BusinessException(await _iCRMUow.MessageRepo.GetMessageByNo(1001), HttpStatusCode.BadRequest);
+            var validUser = await _s2SLogic.Admin
+                                 .IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
+            if (validUser != true)
+                throw new BusinessException(
+                    await _iCRMUow.MessageRepo.GetMessageByNo(1001), HttpStatusCode.BadRequest);
 
-            LegalOfficer.ValidateMandatoryFieldsForLegalOfficer();
+            legalOfficer.ValidateMandatoryFieldsForLegalOfficer();
+            var residentialAddress = _mapper.Map<Address>(request.ResidentialAddress);
+            residentialAddress.ValidateMandatoryFields();
 
-            var Residentialaddress = _mapper.Map<Address>(request.ResidentialAddress);
-            Residentialaddress.ValidateMandatoryFields();
+            if (legalOfficer.HasError)
+                throw new BusinessException(
+                    legalOfficer.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
+            if (residentialAddress.HasError)
+                throw new BusinessException(
+                    residentialAddress.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
 
-            if (LegalOfficer.HasError || Residentialaddress.HasError)
-                throw new BusinessException(LegalOfficer.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
 
-            var savedResidentialAddress = await _iAddressService.SaveAddress(request.ResidentialAddress);
+            var photo = await _iDocumentService.SaveDocumentFile(request.Photo);
 
-            LegalOfficer.ResidentialAddressId = savedResidentialAddress.Id;
-            LegalOfficer.ResidentialAddress = null;
-            request.ResidentialAddress = null;
+            if (photo.Id > 0)
+                legalOfficer.Photo = null;
+            var doc = await _iDocumentService.SaveDocumentFile(request.Doc);
+            if (doc.Id > 0)
+                legalOfficer.Doc = null;
 
-            LegalOfficer = LegalOfficer.Id > 0 ? await _iCRMUow.LegalOfficerRepo.UpdateLegalOfficer(request)
-                : await _iCRMUow.LegalOfficerRepo.InsertLegalOfficer(request);
+            legalOfficer.ResidentialAddress = residentialAddress;
+            legalOfficer.PhotoId = photo.Id;
+            legalOfficer.IDDocId = doc.Id;
+
+
+            if (legalOfficer.Id > 0)
+                await _iCRMUow.LegalOfficerRepo.UpdateLegalOfficer(request);
+            else
+                await _iCRMUow.LegalOfficerRepo.InsertLegalOfficer(legalOfficer);
 
             await _iCRMUow.SaveChangesAsync();
-            var response = _mapper.Map<LegalOfficerDto>(LegalOfficer);
-            response.ResidentialAddress = _mapper.Map<AddressDto>(savedResidentialAddress);
 
-
-            var userDetails = await _iCRMUow.LegalOfficerRepo.GetDetailsFromITGUser(response.UserSerialId);
+            var response = _mapper.Map<LegalOfficerDto>(legalOfficer);
+            response.Photo = photo;
+            response.Doc = doc;
+            await SetDescription(response);
+            await _iCRMUow.ConfigRepo.SetAddressDescription(response.ResidentialAddress);
+            var userDetails = await _iCRMUow.LegalOfficerRepo.GetDetailsFromITGUser(legalOfficer.UserSerialId);
 
             if (userDetails != null)
             {
                 response.EmailId = userDetails.Constant;
                 response.ContactNo = userDetails.Description;
             }
-
-            await SetDescription(response);
-
             return response;
+
+
+
+
         }
         #endregion
 
@@ -616,6 +680,7 @@ namespace CRM.Application
                 legalOfficer.ContactNo = userDetails.Description;
             }
             await SetDescription(legalOfficer);
+            await _iCRMUow.ConfigRepo.SetAddressDescription(legalOfficer.ResidentialAddress);
 
             return _mapper.Map<LegalOfficerDto>(legalOfficer);
         }

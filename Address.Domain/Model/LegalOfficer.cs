@@ -21,6 +21,8 @@ namespace CRM.Domain
 
         [NotMapped]
         public virtual Document? Photo { get; set; }
+        [NotMapped]
+        public virtual Document? Doc { get; set; }
 
 
         public void ValidateMandatoryFieldsForLegalOfficer()

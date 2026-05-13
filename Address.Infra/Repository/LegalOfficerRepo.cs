@@ -61,18 +61,33 @@ namespace CRM.Infra
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<LegalOfficer> InsertLegalOfficer(LegalOfficerDto request)
+        //public async Task<LegalOfficer> InsertLegalOfficer(LegalOfficer request)
+        //{
+        //    var isLegalOfficerExists = await _dbContext.LegalOfficer
+        //        .AnyAsync(x => x.UserSerialId == request.UserSerialId);
+
+        //    if (isLegalOfficerExists)
+        //        throw new BusinessException($"A Legal Officer with UserLoginId '{request.UserSerialId}' already exists.");
+
+
+        //    var legalOfficer = _mapper.Map<LegalOfficer>(request);
+        //    await _dbContext.LegalOfficer.AddAsync(legalOfficer);
+        //    await _dbContext.SaveChangesAsync();
+
+        //    return legalOfficer;
+        //}
+
+        public async Task<LegalOfficer> InsertLegalOfficer(LegalOfficer legalOfficer)
         {
             var isLegalOfficerExists = await _dbContext.LegalOfficer
-                .AnyAsync(x => x.UserSerialId == request.UserSerialId);
+                .AnyAsync(x => x.UserSerialId == legalOfficer.UserSerialId);
 
             if (isLegalOfficerExists)
-                throw new BusinessException($"A Legal Officer with UserLoginId '{request.UserSerialId}' already exists.");
+                throw new BusinessException($"A Legal Officer with UserLoginId '{legalOfficer.UserSerialId}' already exists.");
 
-
-            var legalOfficer = _mapper.Map<LegalOfficer>(request);
-            await _dbContext.LegalOfficer.AddAsync(legalOfficer);
-            await _dbContext.SaveChangesAsync();
+            if (legalOfficer.ResidentialAddress != null && legalOfficer.ResidentialAddress.Id > 0)
+                _dbContext.Entry(legalOfficer.ResidentialAddress).State = EntityState.Unchanged;
+            await AddAsync(legalOfficer);
 
             return legalOfficer;
         }
