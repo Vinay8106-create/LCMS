@@ -213,6 +213,28 @@ namespace CRM.Application
         }
         #endregion
 
+        #region Get Client Appointments By Client Id
+
+        public async Task<List<LegalOfficerAppoinmentDto>> GetAppointmentsByClientIdAsync(long clientId)
+        {
+            List<LegalOfficerAppoinmentDto> list= new List<LegalOfficerAppoinmentDto> ();
+            var data = _iCRMUow.LegalOfficerAppoinmentRepo.Query(x => x.ClientId == clientId).ToList();
+            if (data != null && data.Count > 0)
+            {
+                var client = await _iCRMUow.CRMClientRepo.GetClientById(clientId);
+                var legalOfficer = _iCRMUow.LegalOfficerRepo.Query(x => x.Id == data[0].LegalOfficerId).ToList();
+                foreach (var item in data)
+                {
+                    item.ClientName = string.Concat(client.FirstName, client.MiddleName, client.LastName);
+                   
+
+                }
+            }
+            return list;
+
+        }
+        #endregion
+
         #endregion
 
         #region Client Contact

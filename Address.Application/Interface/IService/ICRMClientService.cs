@@ -11,8 +11,11 @@ namespace CRM.Application
         Task<SearchResult<CRMClientSearchResultsDto>> SearchCRMClient(CRMClientSearchDto request);
         Task<DDLData> GetClientInitialDataAsync();
         Task<CRMClientDto> GetClientByClientIdAsync(long clientId);
+        Task<List<LegalOfficerAppoinmentDto>> GetAppointmentsByClientIdAsync(long clientId);
         Task<CRMClientDto> CreateClientAsync();
         Task<CRMClientDto> SaveClientAsync(CRMClientDto request);
+
+       
 
         #endregion
 

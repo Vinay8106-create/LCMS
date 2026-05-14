@@ -20,6 +20,9 @@ namespace LCMS.Dto
         public string? AppoinmentStatusDescription { get; set; }
         public string? PriorityLevelDescription { get; set; }
         public string? MeetingTypeDescription { get; set; }
+
+        public string? ClientName { get; set; }
+        public string? LegalOfficerName { get; set; }
         public int Version { get; set; }
         public AppMessage? Message { get; set; } = new AppMessage();
     }

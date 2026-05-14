@@ -83,6 +83,14 @@ namespace CRM.WebAPI
         {
             return this.Ok(await _iCRMClientService.GetClientByClientIdAsync(clientId));
         }
+
+        [HttpGet("GetAppointmentsByClientId")]
+        [SwaggerOperation(Tags = new[] { "CRMClient" }, Summary = "GetAppointmentsByClientId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<LegalOfficerAppoinmentDto>))]
+        public async Task<IActionResult> GetAppointmentsByClientId([FromQuery] long clientId)
+        {
+            return this.Ok(await _iCRMClientService.GetAppointmentsByClientIdAsync(clientId));
+        }
         #endregion
 
         #region Client Contact 
