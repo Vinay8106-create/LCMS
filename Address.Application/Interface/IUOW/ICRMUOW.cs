@@ -20,6 +20,7 @@ namespace CRM.Application
         ILegalOfficerAppoinmentRepo LegalOfficerAppoinmentRepo { get; }
 
         ILegalOfficerSearchRepo LegalOfficerSearchRepo { get; }
+        ILegalOfficerBlockedDateSearchRepo LegalOfficerBlockedDateSearchRepo { get; }
 
     }
 }

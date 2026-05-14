@@ -660,11 +660,8 @@ namespace CRM.Application
                 response.EmailId = userDetails.Constant;
                 response.ContactNo = userDetails.Description;
             }
+
             return response;
-
-
-
-
         }
         #endregion
 
@@ -994,6 +991,35 @@ namespace CRM.Application
         }
         #endregion
 
+        #endregion
+
+        #endregion
+
+        #region Legal Officer Blocked Dates
+
+        #region Legal Officer Blocked Date Search
+        public virtual async Task<LegalOfficerBlockedDateSearchDto> GetLegalOfficerBlockedDatesSearchAsync()
+        {
+            return new LegalOfficerBlockedDateSearchDto();
+        }
+
+        public virtual async Task<SearchResult<LegalOfficerBlockedDateSearchResultsDto>> SearchLegalOfficerBlockedDatesAsync(LegalOfficerBlockedDateSearchDto request)
+        {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
+            if (string.IsNullOrEmpty(request.OrderByColumnName))
+                request.OrderByColumnName = nameof(LegalOfficerBlockedDateSearchResultsDto.LegalOfficerBlockedDateId);
+            var result = await _iCRMUow.LegalOfficerBlockedDateSearchRepo.SearchAsync(request);
+            if (result != null)
+            {
+                result.Msg ??= new AppMessage();
+                result.Msg.InfoMessage = result.TotalCount > 0
+                    ? _mapper.Map(await _iCRMUow.MessageRepo.GetMessageByNo(4, result.TotalCount), result.Msg.InfoMessage)
+                    : _mapper.Map(await _iCRMUow.MessageRepo.GetMessageByNo(3), result.Msg.InfoMessage);
+                return result;
+            }
+
+            return new SearchResult<LegalOfficerBlockedDateSearchResultsDto>();
+        }
         #endregion
 
         #endregion

@@ -286,6 +286,8 @@ namespace CRM.WebAPI
 
         #endregion
 
+        #region Legal Officer
+
         #region Legal Officer Search
 
         [HttpGet("GetLegalOfficerSearch")]
@@ -304,8 +306,6 @@ namespace CRM.WebAPI
             return this.Ok(await _iCRMClientService.SearchLegalOfficerAsync(request));
         }
         #endregion
-
-        #region Legal Officer
 
         #region GetLegalOfficerInitialData
         [HttpGet("GetLegalOfficerInitialData")]
@@ -468,6 +468,29 @@ namespace CRM.WebAPI
         }
         #endregion
 
+
+        #region Legal Officer Blocked Dates
+
+        #region Legal Officer Blocked Dates Search
+
+        [HttpGet("GetLegalOfficerBlockedDatesSearch")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerBlockedDates" }, Summary = "GetLegalOfficerBlockedDatesSearch")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerBlockedDateSearchDto))]
+        public async Task<IActionResult> GetLegalOfficerBlockedDatesSearch()
+        {
+            return this.Ok(await _iCRMClientService.GetLegalOfficerBlockedDatesSearchAsync());
+        }
+
+        [HttpPost("SearchLegalOfficerBlockedDates")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerBlockedDates" }, Summary = "SearchLegalOfficerBlockedDates")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SearchResult<LegalOfficerBlockedDateSearchResultsDto>))]
+        public async Task<IActionResult> SearchLegalOfficerBlockedDates(LegalOfficerBlockedDateSearchDto request)
+        {
+            return this.Ok(await _iCRMClientService.SearchLegalOfficerBlockedDatesAsync(request));
+        }
+        #endregion
+
+        #endregion
 
     }
 }

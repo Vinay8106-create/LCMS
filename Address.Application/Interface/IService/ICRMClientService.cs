@@ -76,5 +76,10 @@ namespace CRM.Application
         Task<LegalOfficerSchedulesDto> LoadSlotPreview(LegalOfficerSchedulesDto request);
 
         #endregion
+
+        #region Legal Officer Blocked Dates
+        Task<LegalOfficerBlockedDateSearchDto> GetLegalOfficerBlockedDatesSearchAsync();
+        Task<SearchResult<LegalOfficerBlockedDateSearchResultsDto>> SearchLegalOfficerBlockedDatesAsync(LegalOfficerBlockedDateSearchDto request);
+        #endregion
     }
 }
