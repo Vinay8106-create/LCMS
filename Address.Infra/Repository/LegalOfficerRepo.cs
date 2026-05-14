@@ -61,21 +61,7 @@ namespace CRM.Infra
                 .FirstOrDefaultAsync();
         }
 
-        //public async Task<LegalOfficer> InsertLegalOfficer(LegalOfficer request)
-        //{
-        //    var isLegalOfficerExists = await _dbContext.LegalOfficer
-        //        .AnyAsync(x => x.UserSerialId == request.UserSerialId);
-
-        //    if (isLegalOfficerExists)
-        //        throw new BusinessException($"A Legal Officer with UserLoginId '{request.UserSerialId}' already exists.");
-
-
-        //    var legalOfficer = _mapper.Map<LegalOfficer>(request);
-        //    await _dbContext.LegalOfficer.AddAsync(legalOfficer);
-        //    await _dbContext.SaveChangesAsync();
-
-        //    return legalOfficer;
-        //}
+      
 
         public async Task<LegalOfficer> InsertLegalOfficer(LegalOfficer legalOfficer)
         {
@@ -158,6 +144,24 @@ namespace CRM.Infra
                 Value = data
             };
         }
+        public async Task<string> SetUserName(long userSerialId)
+        {
+            string name = "";
+            var data = await (  from lo in _dbContext.LegalOfficer
+                                join u in _dbContext.Set<User>() on lo.UserSerialId equals u.Id
+                                select new DDLClass
+                                {
+                                    Description = (u.FirstName ?? "") + " " +
+                                                  (u.MiddleName ?? "") + " " +
+                                                  (u.LastName ?? "")
+                                })
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync();
+            name = data.Description;
+            return name;
+            
+        }
+
     }
 }
 

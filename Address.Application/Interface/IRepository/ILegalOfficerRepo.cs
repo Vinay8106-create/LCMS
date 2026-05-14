@@ -13,5 +13,6 @@ namespace CRM.Application
         Task<DDLData> GetLegalOfficerInitialData();
 
         Task<DDLClass> GetDetailsFromITGUser(long UserSerialId);
+        Task<string> SetUserName(long UserSerialId);
     }
 }

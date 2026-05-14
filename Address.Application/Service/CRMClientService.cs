@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using CRM.Domain;
 using Galaxy.Domain.Exceptions;
 using Galaxy.Domain.Models;
@@ -222,12 +223,14 @@ namespace CRM.Application
             if (data != null && data.Count > 0)
             {
                 var client = await _iCRMUow.CRMClientRepo.GetClientById(clientId);
-                var legalOfficer = _iCRMUow.LegalOfficerRepo.Query(x => x.Id == data[0].LegalOfficerId).ToList();
+                
                 foreach (var item in data)
                 {
                     item.ClientName = string.Concat(client.FirstName, client.MiddleName, client.LastName);
-                   
-
+                    var legalOfficer = _iCRMUow.LegalOfficerRepo.Query(x => x.Id == item.LegalOfficerId).FirstOrDefault();
+                    item.LegalOfficerName =await _iCRMUow.LegalOfficerRepo.SetUserName(legalOfficer.UserSerialId);
+                    var Appointment = _mapper.Map<LegalOfficerAppoinmentDto>(item);
+                    list.Add(Appointment);
                 }
             }
             return list;
