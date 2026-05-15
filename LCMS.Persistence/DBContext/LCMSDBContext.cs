@@ -4,6 +4,7 @@ using Galaxy.Infra;
 using Galaxy.Infra.EntityConfig;
 using Galaxy.Workflow.Runtime.Infra;
 using Galaxy.Workflow.Template.Infra;
+using LCMS.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace LCMS.Persistence
@@ -21,6 +22,11 @@ namespace LCMS.Persistence
         public DbSet<CRMClientContact> CRMClientContact { get; set; }
         public DbSet<CRMClientDocument> CRMClientDocument { get; set; }
         public DbSet<CRMClientService> CRMClientService { get; set; }
+
+        public DbSet<CRMClientServiceStatusHistory> CRMClientServiceStatusHistory { get; set; }
+        public DbSet<CRMClientServiceEmailHistory> CRMClientServiceEmailHistory { get; set; }
+        public DbSet<CRMClientServiceAssignedOfficer> CRMClientServiceAssignedOfficer { get; set; }
+        public DbSet<CRMClientServiceNotes> CRMClientServiceNotes { get; set; }
         #endregion
 
         #region Config

@@ -1,4 +1,5 @@
-﻿using Galaxy.Dto;
+﻿using Galaxy.Domain.Models;
+using Galaxy.Dto;
 
 namespace LCMS.Dto
 {
@@ -30,6 +31,56 @@ namespace LCMS.Dto
     public class CRMClientServiceSectionDto
     {
         public List<CRMClientServiceDto>? Items { get; set; }
+        public AppMessage? Message { get; set; } = new AppMessage();
+    }
+
+    public class CRMClientServiceStatusHistoryDto
+    {
+        public long Id { get; set; }
+        public long ClientServiceId { get; set; }
+        public string ChangedBy { get; set; } = null!;
+        public DateTime ChangedOn { get; set; }
+        public int StatusConfigId { get; set; }
+        public virtual User? ChangedByFullName { get; set; }
+        public int Version { get; set; }
+        public AppMessage? Message { get; set; } = new AppMessage();
+    }
+
+    public class CRMClientServiceEmailHistoryDto
+    {
+        public long Id { get; set; }
+        public long ClientServiceId { get; set; }
+        public Guid? EmailTrackingId { get; set; }
+        public int StatusConfigId { get; set; }
+        public virtual CommunicationTracking CommunicationTracking { get; set; }
+        public int Version { get; set; }
+        public AppMessage? Message { get; set; } = new AppMessage();
+    }
+
+    public class CRMClientServiceAssignedOfficerHistoryDto
+    {
+        public long Id { get; set; }
+        public long ClientServiceId { get; set; }
+        public string AssignedTo { get; set; } = null!;
+        public string AssignedBy { get; set; } = null!;
+        public DateTime AssignedDate { get; set; }
+        public int StatusConfigId { get; set; }      
+        public virtual User? AssignedByFullName { get; set; }
+        public virtual User? AssignedToFullName { get; set; }
+        public int Version { get; set; }
+        public AppMessage? Message { get; set; } = new AppMessage();
+    }
+
+    public class CRMClientServiceNotesDto
+    {
+        public long Id { get; set; }
+        public long ClientServiceId { get; set; }
+        public string Notes { get; set; } = null!;
+        public string EnteredBy { get; set; } = null!;
+        public DateTime EnteredOn { get; set; }
+        public int StatusConfigId { get; set; }        
+        public virtual User? EnteredByFullName { get; set; }
+        public int Version { get; set; }
         public AppMessage? Message { get; set; } = new AppMessage();
     }
 }

@@ -282,6 +282,50 @@ namespace CRM.WebAPI
         }
         #endregion
 
+        #region GetClientServiceStatusHistoryByClientServiceIdAsync
+
+        [HttpGet("GetClientServiceStatusHistoryByClientServiceIdAsync")]
+        [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "GetClientServiceStatusHistoryByClientServiceIdAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CRMClientServiceStatusHistoryDto>))]
+        public async Task<IActionResult> GetClientServiceStatusHistoryByClientServiceIdAsync([FromQuery] long clientServiceId)
+        {
+            return this.Ok(await _iCRMClientService.GetClientServiceStatusHistoryByClientServiceIdAsync(clientServiceId));
+        }
+        #endregion
+
+        #region GetClientServiceEmailHistoryByClientServiceIdAsync
+
+        [HttpGet("GetClientServiceEmailHistoryByClientServiceIdAsync")]
+        [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "GetClientServiceEmailHistoryByClientServiceIdAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CRMClientServiceEmailHistoryDto>))]
+        public async Task<IActionResult> GetClientServiceEmailHistoryByClientServiceIdAsync([FromQuery] long clientServiceId)
+        {
+            return this.Ok(await _iCRMClientService.GetClientServiceEmailHistoryByClientServiceIdAsync(clientServiceId));
+        }
+        #endregion
+
+        #region GetClientServiceAssignedOfficerHistoryByClientServiceIdAsync
+
+        [HttpGet("GetClientServiceAssignedOfficerHistoryByClientServiceIdAsync")]
+        [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "GetClientServiceAssignedOfficerHistoryByClientServiceIdAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CRMClientServiceAssignedOfficerHistoryDto>))]
+        public async Task<IActionResult> GetClientServiceAssignedOfficerHistoryByClientServiceIdAsync([FromQuery] long clientServiceId)
+        {
+            return this.Ok(await _iCRMClientService.GetClientServiceAssignedOfficerHistoryByClientServiceIdAsync(clientServiceId));
+        }
+        #endregion
+
+        #region GetClientServiceNotesByClientServiceIdAsync
+
+        [HttpGet("GetClientServiceNotesByClientServiceIdAsync")]
+        [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "GetClientServiceNotesByClientServiceIdAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CRMClientServiceNotesDto>))]
+        public async Task<IActionResult> GetClientServiceNotesByClientServiceIdAsync([FromQuery] long clientServiceId)
+        {
+            return this.Ok(await _iCRMClientService.GetClientServiceNotesByClientServiceIdAsync(clientServiceId));
+        }
+        #endregion
+
         #region Get All Client Services By ClientId
         [HttpGet("GetAllClientServicesByClientId")]
         [SwaggerOperation(Tags = new[] { "CRMClientService" }, Summary = "GetAllClientServicesByClientId")]

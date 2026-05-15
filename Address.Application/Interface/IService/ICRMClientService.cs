@@ -43,6 +43,11 @@ namespace CRM.Application
         Task<CRMClientServiceDto> CreateClientServiceAsync();
         Task<CRMClientServiceDto> SaveClientServiceAsync(CRMClientServiceDto request);
         Task<CRMClientServiceDto> GetClientServiceByClientServiceIdAsync(long clientServiceId);
+
+        Task<List<CRMClientServiceStatusHistoryDto>> GetClientServiceStatusHistoryByClientServiceIdAsync(long clientServiceId);
+        Task<List<CRMClientServiceEmailHistoryDto>> GetClientServiceEmailHistoryByClientServiceIdAsync(long clientServiceId);
+        Task<List<CRMClientServiceAssignedOfficerHistoryDto>> GetClientServiceAssignedOfficerHistoryByClientServiceIdAsync(long clientServiceId);
+        Task<List<CRMClientServiceNotesDto>> GetClientServiceNotesByClientServiceIdAsync(long clientServiceId);
         Task<CRMClientServiceSectionDto> GetAllClientServiceByClientId(long clientId);
 
         #endregion

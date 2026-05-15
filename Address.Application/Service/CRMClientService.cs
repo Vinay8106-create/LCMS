@@ -541,6 +541,34 @@ namespace CRM.Application
         }
         #endregion
 
+        #region Get Client Service Status History By Id
+        public async Task<List<CRMClientServiceStatusHistoryDto>> GetClientServiceStatusHistoryByClientServiceIdAsync(long clientServicetId)
+        {
+            return await _iCRMUow.CRMClientServiceRepo.GetClientServiceStatusHistoryById(clientServicetId);
+        }
+        #endregion
+
+        #region Get Client Service Email History By Id
+        public async Task<List<CRMClientServiceEmailHistoryDto>> GetClientServiceEmailHistoryByClientServiceIdAsync(long clientServicetId)
+        {
+            return await _iCRMUow.CRMClientServiceRepo.GetClientServiceEmailHistoryById(clientServicetId);
+        }
+        #endregion
+
+        #region Get Client Service Assigned Officer History By Id
+        public async Task<List<CRMClientServiceAssignedOfficerHistoryDto>> GetClientServiceAssignedOfficerHistoryByClientServiceIdAsync(long clientServicetId)
+        {
+            return await _iCRMUow.CRMClientServiceRepo.GetClientServiceAssignedOfficerHistoryById(clientServicetId);
+        }
+        #endregion
+
+        #region Get Client Service Notes By Id
+        public async Task<List<CRMClientServiceNotesDto>> GetClientServiceNotesByClientServiceIdAsync(long clientServicetId)
+        {
+            return await _iCRMUow.CRMClientServiceRepo.GetClientServiceNotesById(clientServicetId);
+        }
+        #endregion
+
         #region Get All Client Services By ClientId
         public async Task<CRMClientServiceSectionDto> GetAllClientServiceByClientId(long clientId)
         {

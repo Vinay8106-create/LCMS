@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CRM.Application;
 using CRM.Domain;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Galaxy.Domain.Exceptions;
 using Galaxy.Domain.Models;
 using Galaxy.Dto;
@@ -10,6 +11,7 @@ using LCMS.Constants;
 using LCMS.Dto;
 using LCMS.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Net;
 
 namespace CRM.Infra
@@ -149,6 +151,69 @@ namespace CRM.Infra
         public async Task<CRMClientService> GetClientServiceById(long clientServiceId, bool isTracking = false)
         {
             return await GetByIdAsync(clientServiceId, isTracking) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
+        }
+
+        public async Task<List<CRMClientServiceStatusHistoryDto>> GetClientServiceStatusHistoryById(long clientServiceId, bool isTracking = false)
+        {
+            var query = _dbContext.CRMClientServiceStatusHistory.AsQueryable();
+
+            if (!isTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            var data = await query
+                .Where(x => x.ClientServiceId == clientServiceId)
+                .ToListAsync();
+
+            return _mapper.Map<List<CRMClientServiceStatusHistoryDto>>(data);
+        }
+        public async Task<List<CRMClientServiceEmailHistoryDto>> GetClientServiceEmailHistoryById(long clientServiceId, bool isTracking = false)
+        {
+            var query = _dbContext.CRMClientServiceEmailHistory.AsQueryable();
+
+            if (!isTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            var data = await query
+                .Where(x => x.ClientServiceId == clientServiceId)
+                .ToListAsync();
+
+            return _mapper.Map<List<CRMClientServiceEmailHistoryDto>>(data);
+        }
+
+        public async Task<List<CRMClientServiceAssignedOfficerHistoryDto>> GetClientServiceAssignedOfficerHistoryById(long clientServiceId, bool isTracking = false)
+        {
+            var query = _dbContext.CRMClientServiceAssignedOfficer.AsQueryable();
+
+            if (!isTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            var data = await query
+                .Where(x => x.ClientServiceId == clientServiceId)
+                .ToListAsync();
+
+            return _mapper.Map<List<CRMClientServiceAssignedOfficerHistoryDto>>(data);
+        }
+
+        public async Task<List<CRMClientServiceNotesDto>> GetClientServiceNotesById(long clientServiceId, bool isTracking = false)
+        {
+            var query = _dbContext.CRMClientServiceNotes.AsQueryable();
+
+            if (!isTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            var data = await query
+                .Where(x => x.ClientServiceId == clientServiceId)
+                .ToListAsync();
+
+            return _mapper.Map<List<CRMClientServiceNotesDto>>(data);
         }
 
         public async Task<CRMClientService> GenerateClientServiceRefNo(CRMClientService clientService)
