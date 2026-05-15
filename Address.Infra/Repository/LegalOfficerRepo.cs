@@ -42,12 +42,10 @@ namespace CRM.Infra
         public async Task<LegalOfficerDto> GetLegalOfficerById(long legalOfficerId, bool isTracking = false)
         {
             var legalOfficer = await _dbContext.LegalOfficer
-                .Include(x => x.Photo)
-                .Include(x => x.Doc)
-                .Include(x => x.ResidentialAddress)
-                .Where(x => x.Id == legalOfficerId)
-                .FirstOrDefaultAsync()
-                ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
+            .Include(x => x.Photo)
+            .Include(x => x.Doc)
+            .FirstOrDefaultAsync(x => x.Id == legalOfficerId)
+            ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
 
             return _mapper.Map<LegalOfficerDto>(legalOfficer);
         }

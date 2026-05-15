@@ -742,6 +742,17 @@ namespace CRM.Application
                 legalOfficer.EmailId = userDetails.Description;
                 legalOfficer.Name = userDetails.FilterKey;
             }
+            if (legalOfficer.Photo != null)
+                legalOfficer.Photo.base64FileContent = await GetBase64FromFile(
+                    legalOfficer.Photo.RelativePath,
+                    legalOfficer.Photo.FileName
+                );
+            if (legalOfficer.Doc != null)
+                legalOfficer.Doc.base64FileContent = await GetBase64FromFile(
+                    legalOfficer.Doc.RelativePath,
+                    legalOfficer.Doc.FileName
+                );
+
             await SetDescription(legalOfficer);
             await _iCRMUow.ConfigRepo.SetAddressDescription(legalOfficer.ResidentialAddress);
 

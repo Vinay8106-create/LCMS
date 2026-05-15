@@ -18,6 +18,8 @@ namespace LCMS.Persistence
             new CRMClientConfiguration().Configure(modelBuilder.Entity<CRMClient>());
             new CRMClientContactConfiguration().Configure(modelBuilder.Entity<CRMClientContact>());
             new CRMClientDocumentConfiguration().Configure(modelBuilder.Entity<CRMClientDocument>());
+
+            new LegalOfficerConfiguration().Configure(modelBuilder.Entity<LegalOfficer>());
         }
 
         private static void RegisterViewsForSearch(ModelBuilder modelBuilder)
