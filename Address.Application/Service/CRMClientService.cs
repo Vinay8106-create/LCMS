@@ -544,28 +544,33 @@ namespace CRM.Application
         #region Get Client Service Status History By Id
         public async Task<List<CRMClientServiceStatusHistoryDto>> GetClientServiceStatusHistoryByClientServiceIdAsync(long clientServicetId)
         {
-            return await _iCRMUow.CRMClientServiceRepo.GetClientServiceStatusHistoryById(clientServicetId);
+            var list= await _iCRMUow.CRMClientServiceStatusHistoryRepo.GetClientServiceStatusHistoryById(clientServicetId);
+            foreach (var item in list)
+            {
+                await _iCRMUow.ConfigRepo.SetDescription(item);
+            }
+            return list;
         }
         #endregion
 
         #region Get Client Service Email History By Id
         public async Task<List<CRMClientServiceEmailHistoryDto>> GetClientServiceEmailHistoryByClientServiceIdAsync(long clientServicetId)
         {
-            return await _iCRMUow.CRMClientServiceRepo.GetClientServiceEmailHistoryById(clientServicetId);
+            return await _iCRMUow.CRMClientServiceEmailHistoryRepo.GetClientServiceEmailHistoryById(clientServicetId);
         }
         #endregion
 
         #region Get Client Service Assigned Officer History By Id
         public async Task<List<CRMClientServiceAssignedOfficerHistoryDto>> GetClientServiceAssignedOfficerHistoryByClientServiceIdAsync(long clientServicetId)
         {
-            return await _iCRMUow.CRMClientServiceRepo.GetClientServiceAssignedOfficerHistoryById(clientServicetId);
+            return await _iCRMUow.CRMClientServiceAssignedOfficerHistoryRepo.GetClientServiceAssignedOfficerHistoryById(clientServicetId);
         }
         #endregion
 
         #region Get Client Service Notes By Id
         public async Task<List<CRMClientServiceNotesDto>> GetClientServiceNotesByClientServiceIdAsync(long clientServicetId)
         {
-            return await _iCRMUow.CRMClientServiceRepo.GetClientServiceNotesById(clientServicetId);
+            return await _iCRMUow.CRMClientServiceNotesRepo.GetClientServiceNotesById(clientServicetId);
         }
         #endregion
 

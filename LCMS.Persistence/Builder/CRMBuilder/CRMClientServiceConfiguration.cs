@@ -21,20 +21,20 @@ namespace LCMS.Persistence
         }
         private void ConfigureModelRelationships(EntityTypeBuilder<CRMClientService> builder)
         {
-           
+
             builder.HasMany(p => p.CRMClientServiceStatusHistories)
                .WithOne(c => c.CRMClientService)
-               .HasPrincipalKey(p => p.Id)
+               .HasForeignKey(p => p.ClientServiceId)
                .OnDelete(DeleteBehavior.Cascade)
                .IsRequired(false);
             builder.HasMany(p => p.CRMClientServiceEmailHistories)
                .WithOne(c => c.CRMClientService)
-               .HasPrincipalKey(p => p.Id)
+               .HasForeignKey(p => p.ClientServiceId)
                .OnDelete(DeleteBehavior.Cascade)
                .IsRequired(false);
             builder.HasMany(p => p.CRMClientServiceAssignedOfficers)
               .WithOne(c => c.CRMClientService)
-              .HasPrincipalKey(p => p.Id)
+              .HasForeignKey(p => p.ClientServiceId)
               .OnDelete(DeleteBehavior.Cascade)
               .IsRequired(false);
         }

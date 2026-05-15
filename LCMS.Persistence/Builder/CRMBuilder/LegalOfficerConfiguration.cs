@@ -26,7 +26,7 @@ namespace LCMS.Persistence
             //.HasOne(c => c.Photo)
             //.WithMany() // assuming Document is reusable
             //.HasForeignKey(c => c.PhotoId)
-            //.HasPrincipalKey(d => d.Id);
+            //.HasForeignKey(d => d.Id);
 
 
             // Photo (nullable FK - long?)
