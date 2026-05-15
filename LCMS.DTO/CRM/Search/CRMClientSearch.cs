@@ -10,11 +10,11 @@ namespace LCMS.Dto
         [FilterMapping("ClientViewModel.ClientName", Operation = FilterOperation.Contains)]
         public string? ClientName { get; set; }
 
-        [FilterMapping("ClientViewModel.ClientType", Operation = FilterOperation.Contains)]
-        public string? Type { get; set; }
+        [FilterMapping("ClientViewModel.ClientTypeConfigId", Operation = FilterOperation.Equal)]
+        public int? TypeConfigId { get; set; }
 
-        [FilterMapping("ClientViewModel.ClientSubType", Operation = FilterOperation.Contains)]
-        public string? Priority { get; set; }
+        [FilterMapping("ClientViewModel.ClientSubTypeConfigId", Operation = FilterOperation.Equal)]
+        public int? SubTypeConfigId { get; set; }
 
         [FilterMapping("ClientViewModel.ContactNo", Operation = FilterOperation.Contains)]
         public string? ContactNo { get; set; }
@@ -22,8 +22,8 @@ namespace LCMS.Dto
         [FilterMapping("ClientViewModel.EmailId", Operation = FilterOperation.Contains)]
         public string? EmailId { get; set; }
 
-        [FilterMapping("ClientViewModel.ClientStatus", Operation = FilterOperation.Contains)]
-        public string? Status { get; set; }
+        [FilterMapping("ClientViewModel.ClientStatusConfigId", Operation = FilterOperation.Equal)]
+        public int? StatusConfigId { get; set; }
     }
 
 
@@ -39,12 +39,12 @@ namespace LCMS.Dto
         public string? ClientName { get; set; }
 
         [SortableField("ClientViewModel.ClientType")]
-        public string? Type { get; set; }
+        public string? ClientType { get; set; }
         public int? TypeConfigId { get; set; }
 
         [SortableField("ClientViewModel.ClientSubType")]
-        public string? Priority { get; set; }
-        public int? PriorityConfigId { get; set; }
+        public string? ClientSubType { get; set; }
+        public int? ClientSubTypeConfigId { get; set; }
 
         [SortableField("ClientViewModel.ContactNo")]
         public string? ContactNo { get; set; }

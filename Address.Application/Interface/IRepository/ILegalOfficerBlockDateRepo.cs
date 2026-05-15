@@ -1,7 +1,6 @@
-﻿using Galaxy.Application;
+﻿using CRM.Domain;
+using Galaxy.Application;
 using LCMS.Dto;
-using CRM.Domain;
-using Galaxy.Dto;
 
 namespace CRM.Application
 {
@@ -10,9 +9,6 @@ namespace CRM.Application
         Task<LegalOfficerBlockedDates> InsertLegalOfficerBlockedDates(LegalOfficerBlockedDatesDto request);
         Task<LegalOfficerBlockedDates> UpdateLegalOfficerBlockedDates(LegalOfficerBlockedDatesDto request);
         Task<List<LegalOfficerBlockedDatesDto>> LoadLegalOfficerBlockDate(long LegalOfficerId);
-        
-
-
-
+        Task<LegalOfficerBlockedDatesDto> GetLegalOfficerBlockedDateByBlockDateId(long legalOfficerBlockDateId, bool isTracking = false);
     }
 }

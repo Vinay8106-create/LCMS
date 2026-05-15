@@ -2,25 +2,17 @@
 {
     public class CRMClientSearchViewModel
     {
-        //public long ClientId { get; set; }
-        //public string? ClientRefNo { get; set; }
-        //public string? ClientName { get; set; }
-        //public string? ContactNo { get; set; }
-        //public string? EmailId { get; set; }
-        //public string? ClientStatus { get; set; }
-        //public string? ClientType { get; set; }
-        //public string? ClientSubType { get; set; }
 
         public long ClientId { get; set; }
         public string? ClientRefNo { get; set; }
         public string? ClientName { get; set; }
         public string? ContactNo { get; set; }
         public string? EmailId { get; set; }
-        // Descriptions
+
         public string? ClientStatus { get; set; }
         public string? ClientType { get; set; }
         public string? ClientSubType { get; set; }
-        // ✅ Add ConfigIds
+
         public int? ClientStatusConfigId { get; set; }
         public int? ClientTypeConfigId { get; set; }
         public int? ClientSubTypeConfigId { get; set; }

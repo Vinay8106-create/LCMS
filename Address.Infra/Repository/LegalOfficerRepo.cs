@@ -22,12 +22,36 @@ namespace CRM.Infra
             _mapper = mapper;
         }
 
-        public async Task<LegalOfficerDto> GetLegalOfficerById(long LegalOfficerId, bool isTracking = false)
+        //public async Task<LegalOfficerDto> GetLegalOfficerById(long LegalOfficerId, bool isTracking = false)
+        //{
+        //    //var legalOfficer = await GetByIdAsync(LegalOfficerId, isTracking) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
+
+        //    //return _mapper.Map<LegalOfficerDto>(legalOfficer);
+
+        //    IQueryable<LegalOfficer> query = _dbContext.LegalOfficer
+        //    .Include(lo => lo.Photo)
+        //    .Include(lo => lo.Doc)
+        //    .Include(lo => lo.ResidentialAddress);
+
+        //    if (!isTracking) query = query.AsNoTracking();
+
+        //    var legalOfficer = await query.FirstOrDefaultAsync(lo => lo.Id == LegalOfficerId) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
+        //    return _mapper.Map<LegalOfficerDto>(legalOfficer);
+        //}
+
+        public async Task<LegalOfficerDto> GetLegalOfficerById(long legalOfficerId, bool isTracking = false)
         {
-            var legalOfficer = await GetByIdAsync(LegalOfficerId, isTracking) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
+            var legalOfficer = await _dbContext.LegalOfficer
+                .Include(x => x.Photo)
+                .Include(x => x.Doc)
+                .Include(x => x.ResidentialAddress)
+                .Where(x => x.Id == legalOfficerId)
+                .FirstOrDefaultAsync()
+                ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
 
             return _mapper.Map<LegalOfficerDto>(legalOfficer);
         }
+
 
         public async Task<DDL> getAllITGUser()
         {
@@ -35,6 +59,8 @@ namespace CRM.Infra
                 .Select(x => new DDLClass
                 {
                     Id = EF.Property<long>(x, "Id"),
+                    Constant = x.ContactNumber,
+                    FilterKey = x.EmailId,
                     Description = (x.FirstName ?? "") + " " +
                       (x.MiddleName ?? "") + " " +
                       (x.LastName ?? "")
@@ -55,13 +81,16 @@ namespace CRM.Infra
                 {
                     Id = u.Id,
                     Constant = u.ContactNumber,
-                    Description = u.EmailId
+                    Description = u.EmailId,
+                    FilterKey = (u.FirstName ?? "") + " " +
+                      (u.MiddleName ?? "") + " " +
+                      (u.LastName ?? "")
                 })
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
         }
 
-      
+
 
         public async Task<LegalOfficer> InsertLegalOfficer(LegalOfficer legalOfficer)
         {
@@ -99,8 +128,15 @@ namespace CRM.Infra
             dDLData.data.Add(MatterSubType);
             var ContactMode = await GetDDLAsync<config_IDType>("DDLIDType");
             dDLData.data.Add(ContactMode);
+            var addresslevel1 = await GetDDLAsync<config_Addresslevel1>("DDLAddresslevel1");
+            dDLData.data.Add(addresslevel1);
+            var addresslevel2 = await GetDDLAsync<config_Addresslevel2>("DDLAddresslevel2");
+            dDLData.data.Add(addresslevel2);
             var User = await getAllLegalOfficer();
             dDLData.data.Add(User);
+            var ITGUser = await getAllITGUser();
+            dDLData.data.Add(ITGUser);
+
 
             return dDLData;
         }
@@ -147,19 +183,19 @@ namespace CRM.Infra
         public async Task<string> SetUserName(long userSerialId)
         {
             string name = "";
-            var data = await (  from lo in _dbContext.LegalOfficer
-                                join u in _dbContext.Set<User>() on lo.UserSerialId equals u.Id
-                                select new DDLClass
-                                {
-                                    Description = (u.FirstName ?? "") + " " +
-                                                  (u.MiddleName ?? "") + " " +
-                                                  (u.LastName ?? "")
-                                })
+            var data = await (from lo in _dbContext.LegalOfficer
+                              join u in _dbContext.Set<User>() on lo.UserSerialId equals u.Id
+                              select new DDLClass
+                              {
+                                  Description = (u.FirstName ?? "") + " " +
+                                                (u.MiddleName ?? "") + " " +
+                                                (u.LastName ?? "")
+                              })
                                 .AsNoTracking()
                                 .FirstOrDefaultAsync();
             name = data.Description;
             return name;
-            
+
         }
 
     }

@@ -34,7 +34,11 @@ namespace CRM.Infra
                 Officer = x.LegalOfficerViewModel.Officer,
                 RegNo = x.LegalOfficerViewModel.RegNo,
                 Designation = x.LegalOfficerViewModel.Designation,
+                designationConfigId = x.LegalOfficerViewModel.DesignationConfigId,
                 Specialization = x.LegalOfficerViewModel.Specialization,
+                specializationConfigId = x.LegalOfficerViewModel.SpecializationConfigId,
+                LegalOfficerStatus = x.LegalOfficerViewModel.LegalOfficerStatus,
+                legalOfficerStatusConfigId = x.LegalOfficerViewModel.LegalOfficerStatusConfigId,
                 ExpYears = x.LegalOfficerViewModel.ExpYears,
             });
         }

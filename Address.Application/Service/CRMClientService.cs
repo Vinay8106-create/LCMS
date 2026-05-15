@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using CRM.Domain;
 using Galaxy.Domain.Exceptions;
 using Galaxy.Domain.Models;
@@ -144,6 +143,8 @@ namespace CRM.Application
         }
         #endregion
 
+        #region Set Descriptions
+
         private async Task SetDescription(CRMClientDto client)
         {
             await _iCRMUow.ConfigRepo.SetDescription(client);
@@ -169,11 +170,17 @@ namespace CRM.Application
             await _iCRMUow.ConfigRepo.SetDescription(legalOfficerAppoinment);
         }
 
+        private async Task SetDescription(LegalOfficerBlockedDatesDto legalOfficerBlockedDate)
+        {
+            await _iCRMUow.ConfigRepo.SetDescription(legalOfficerBlockedDate);
+        }
+
         private async Task SetDescription(AppoinmentTimeSlotsDto appoinmentTimeSlotsDto)
         {
             await _iCRMUow.ConfigRepo.SetDescription(appoinmentTimeSlotsDto);
         }
 
+        #endregion
 
         #region Get Client By Client Id
 
@@ -218,23 +225,29 @@ namespace CRM.Application
 
         public async Task<List<LegalOfficerAppoinmentDto>> GetAppointmentsByClientIdAsync(long clientId)
         {
-            List<LegalOfficerAppoinmentDto> list= new List<LegalOfficerAppoinmentDto> ();
+            List<LegalOfficerAppoinmentDto> list = new List<LegalOfficerAppoinmentDto>();
             var data = _iCRMUow.LegalOfficerAppoinmentRepo.Query(x => x.ClientId == clientId).ToList();
             if (data != null && data.Count > 0)
             {
                 var client = await _iCRMUow.CRMClientRepo.GetClientById(clientId);
-                
+                if (client == null) throw new BusinessException("There is no Client With This Id, Use Valid ClientId");
+
                 foreach (var item in data)
                 {
-                    item.ClientName = string.Concat(client.FirstName, client.MiddleName, client.LastName);
+                    item.ClientName = (client.FirstName ?? "") + " " +
+                                                (client.MiddleName ?? "") + " " +
+                                                (client.LastName ?? "");
                     var legalOfficer = _iCRMUow.LegalOfficerRepo.Query(x => x.Id == item.LegalOfficerId).FirstOrDefault();
-                    item.LegalOfficerName =await _iCRMUow.LegalOfficerRepo.SetUserName(legalOfficer.UserSerialId);
+                    item.LegalOfficerName = await _iCRMUow.LegalOfficerRepo.SetUserName(legalOfficer.UserSerialId);
                     var Appointment = _mapper.Map<LegalOfficerAppoinmentDto>(item);
+
+                    await SetDescription(Appointment);
+
                     list.Add(Appointment);
                 }
             }
-            return list;
 
+            return list;
         }
         #endregion
 
@@ -638,8 +651,7 @@ namespace CRM.Application
             var validUser = await _s2SLogic.Admin
                                  .IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
             if (validUser != true)
-                throw new BusinessException(
-                    await _iCRMUow.MessageRepo.GetMessageByNo(1001), HttpStatusCode.BadRequest);
+                throw new BusinessException("Logged User is not allowed to perform this task");
 
             legalOfficer.ValidateMandatoryFieldsForLegalOfficer();
             var residentialAddress = _mapper.Map<Address>(request.ResidentialAddress);
@@ -698,8 +710,9 @@ namespace CRM.Application
 
             if (userDetails != null)
             {
-                legalOfficer.EmailId = userDetails.Constant;
-                legalOfficer.ContactNo = userDetails.Description;
+                legalOfficer.ContactNo = userDetails.Constant;
+                legalOfficer.EmailId = userDetails.Description;
+                legalOfficer.Name = userDetails.FilterKey;
             }
             await SetDescription(legalOfficer);
             await _iCRMUow.ConfigRepo.SetAddressDescription(legalOfficer.ResidentialAddress);
@@ -1044,6 +1057,18 @@ namespace CRM.Application
             }
 
             return new SearchResult<LegalOfficerBlockedDateSearchResultsDto>();
+        }
+        #endregion
+
+        #region Get Legal Officer Blocked Date By Id
+        public async Task<LegalOfficerBlockedDatesDto> GetLegalOfficerBlockedDateByLegalOfficerBlockDateIdAsync(long legalOfficerBlockDateId)
+        {
+            var BlockedDate = await _iCRMUow.LegalOfficerBlockDateRepo.GetLegalOfficerBlockedDateByBlockDateId(legalOfficerBlockDateId);
+
+            var legalOfficerBlockedDate = _mapper.Map<LegalOfficerBlockedDatesDto>(BlockedDate);
+            await SetDescription(legalOfficerBlockedDate);
+
+            return legalOfficerBlockedDate;
         }
         #endregion
 

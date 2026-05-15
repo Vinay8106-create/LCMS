@@ -336,6 +336,7 @@ namespace CRM.WebAPI
         #endregion
 
         #region Save LegalOfficer 
+        [AllowAnonymous]
         [HttpPost("SaveLegalOfficer")]
         [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "SaveLegalOfficer")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerDto))]
@@ -367,7 +368,6 @@ namespace CRM.WebAPI
         #endregion
 
         #region GetLegalOfficerIdbyUserLoginId
-        [AllowAnonymous]
         [HttpGet("GetLegalOfficerIdbyUserLoginId")]
         [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "GetLegalOfficerIdbyUserLoginId")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(long))]
@@ -377,8 +377,22 @@ namespace CRM.WebAPI
         }
         #endregion
 
+
+        //#region Get LegalOfficer 
+        //[HttpGet("GetLegalOfficerByLegalOfficerId")]
+        //[SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "GetLegalOfficerByLegalOfficerId")]
+        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerDto))]
+        //public async Task<IActionResult> GetLegalOfficerBlockDateByLegalOfficerBlockDateIdAsync([FromQuery] long LegalOfficerBlockDateId)
+        //{
+        //    return this.Ok(await _iCRMClientService.GetLegalOfficerByLegalOfficerIdAsync(LegalOfficerBlockDateId));
+        //}
+        //#endregion
+
+        #endregion
+
+        #region Legal Officer Schedule
+
         #region Load LegalOfficer Schedule
-        [AllowAnonymous]
         [HttpGet("LoadLegalOfficerSchedule")]
         [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "LoadLegalOfficerSchedule")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<LegalOfficerSchedulesDto>))]
@@ -389,35 +403,12 @@ namespace CRM.WebAPI
         #endregion
 
         #region Save LegalOfficer Schedule
-        [AllowAnonymous]
         [HttpPost("SaveLegalOfficerSchedule")]
         [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "SaveLegalOfficerSchedule")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<LegalOfficerSchedulesDto>))]
         public async Task<IActionResult> SaveLegalOfficerSchedule(LegalOfficerSchedulesDto Request)
         {
             return this.Ok(await _iCRMClientService.SaveLegalOfficerSchedules(Request));
-        }
-        #endregion
-
-        #region Create LegalOfficer BlockDate 
-        [AllowAnonymous]
-        [HttpGet("CreateLegalOfficerBlockDate")]
-        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "CreateLegalOfficerBlockDate")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerBlockedDatesDto))]
-        public async Task<IActionResult> CreateLegalOfficerBlockDate()
-        {
-            return this.Ok(await _iCRMClientService.CreateLegalOfficerBlockDate());
-        }
-        #endregion
-
-        #region Save LegalOfficer BlockDate
-        [AllowAnonymous]
-        [HttpPost("SaveLegalOfficerBlockDate")]
-        [SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "SaveLegalOfficerBlockDate")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<LegalOfficerBlockedDatesDto>))]
-        public async Task<IActionResult> SaveLegalOfficerBlockDate(LegalOfficerBlockedDatesDto Request)
-        {
-            return this.Ok(await _iCRMClientService.SaveLegalOfficerBlockDate(Request));
         }
         #endregion
 
@@ -476,7 +467,6 @@ namespace CRM.WebAPI
         }
         #endregion
 
-
         #region Legal Officer Blocked Dates
 
         #region Legal Officer Blocked Dates Search
@@ -495,6 +485,36 @@ namespace CRM.WebAPI
         public async Task<IActionResult> SearchLegalOfficerBlockedDates(LegalOfficerBlockedDateSearchDto request)
         {
             return this.Ok(await _iCRMClientService.SearchLegalOfficerBlockedDatesAsync(request));
+        }
+        #endregion
+
+        #region Create LegalOfficer BlockDate 
+        [HttpGet("CreateLegalOfficerBlockDate")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerBlockedDates" }, Summary = "CreateLegalOfficerBlockDate")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerBlockedDatesDto))]
+        public async Task<IActionResult> CreateLegalOfficerBlockDate()
+        {
+            return this.Ok(await _iCRMClientService.CreateLegalOfficerBlockDate());
+        }
+        #endregion
+
+        #region Save LegalOfficer BlockDate
+        [HttpPost("SaveLegalOfficerBlockDate")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerBlockedDates" }, Summary = "SaveLegalOfficerBlockDate")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<LegalOfficerBlockedDatesDto>))]
+        public async Task<IActionResult> SaveLegalOfficerBlockDate(LegalOfficerBlockedDatesDto Request)
+        {
+            return this.Ok(await _iCRMClientService.SaveLegalOfficerBlockDate(Request));
+        }
+        #endregion
+
+        #region Get Legal Officer Blocked Date
+        [HttpGet("GetLegalOfficerBlockedDateByLegalOfficerBlockedDateId")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerBlockedDates" }, Summary = "GetLegalOfficerBlockedDateByLegalOfficerBlockedDateId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerBlockedDatesDto))]
+        public async Task<IActionResult> GetLegalOfficerBlockedDateByLegalOfficerBlockedDateId([FromQuery] long LegalOfficerBlockedDateId)
+        {
+            return this.Ok(await _iCRMClientService.GetLegalOfficerBlockedDateByLegalOfficerBlockDateIdAsync(LegalOfficerBlockedDateId));
         }
         #endregion
 

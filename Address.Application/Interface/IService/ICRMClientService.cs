@@ -15,7 +15,7 @@ namespace CRM.Application
         Task<CRMClientDto> CreateClientAsync();
         Task<CRMClientDto> SaveClientAsync(CRMClientDto request);
 
-       
+
 
         #endregion
 
@@ -83,6 +83,7 @@ namespace CRM.Application
         #region Legal Officer Blocked Dates
         Task<LegalOfficerBlockedDateSearchDto> GetLegalOfficerBlockedDatesSearchAsync();
         Task<SearchResult<LegalOfficerBlockedDateSearchResultsDto>> SearchLegalOfficerBlockedDatesAsync(LegalOfficerBlockedDateSearchDto request);
+        Task<LegalOfficerBlockedDatesDto> GetLegalOfficerBlockedDateByLegalOfficerBlockDateIdAsync(long LegalOfficerBlockDateId);
         #endregion
     }
 }

@@ -32,8 +32,10 @@ namespace CRM.Infra
             {
                 LegalOfficerBlockedDateId = x.BlockedDateViewModel.LegalOfficerBlockedDateId,
                 FromDate = Convert.ToString(x.BlockedDateViewModel.FromDate),
-                ToDate = Convert.ToString(x.BlockedDateViewModel.ToDate),
-                Type = x.BlockedDateViewModel.Type
+                Type = x.BlockedDateViewModel.Type,
+                FromTime = x.BlockedDateViewModel.FromTime,
+                ToTime = x.BlockedDateViewModel.ToTime,
+                Reason = x.BlockedDateViewModel.Reason
             });
         }
     }

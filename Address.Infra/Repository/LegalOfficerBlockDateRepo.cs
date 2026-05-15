@@ -56,6 +56,13 @@ namespace CRM.Infra
             return LegalOfficerBlockDates;
         }
 
+        public async Task<LegalOfficerBlockedDatesDto> GetLegalOfficerBlockedDateByBlockDateId(long legalOfficerBlockDateId, bool isTracking = false)
+        {
+            var legalOfficerBlockedDate = await GetByIdAsync(legalOfficerBlockDateId, isTracking) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
+
+            return _mapper.Map<LegalOfficerBlockedDatesDto>(legalOfficerBlockedDate);
+        }
+
     }
 }
 

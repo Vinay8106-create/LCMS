@@ -47,6 +47,7 @@ namespace LCMS.Persistence
         public DbSet<config_IDType> config_IDType { get; set; }
         public DbSet<config_MeetingType> config_MeetingType { get; set; }
         public DbSet<config_PriorityLevel> config_PriorityLevel { get; set; }
+        public DbSet<config_BlockType> config_BlockType { get; set; }
 
         #endregion
 

@@ -211,6 +211,11 @@ namespace Master.Infra
                 "config_PriorityLevel",
                 desc => SetPropertyValue(model, "PriorityLevelDescription", desc)
             ),
+            (
+                GetPropertyValue<int?>(model, "BlockTypeConfigId"),
+                "config_BlockType",
+                desc => SetPropertyValue(model, "BlockTypeDescription", desc)
+            ),
             };
 
             foreach (var (Configid, tableName, setter) in mappings)
@@ -330,6 +335,9 @@ namespace Master.Infra
                         .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
                     "config_PriorityLevel" => await _dbContext.config_PriorityLevel
+                        .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
+
+                    "config_BlockType" => await _dbContext.config_BlockType
                         .ToDictionaryAsync(x => x.ConfigId, x => x.Description),
 
                     _ => new Dictionary<int, string>()

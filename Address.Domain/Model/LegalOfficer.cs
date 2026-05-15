@@ -1,5 +1,4 @@
 ﻿using Galaxy.Domain.Models;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRM.Domain
 {
@@ -16,12 +15,12 @@ namespace CRM.Domain
         public int? IDTypeConfigId { get; set; }
         public long IDDocId { get; set; }
         public long ResidentialAddressId { get; set; }
+        public string? Qualification { get; set; }
+        public int? StatusConfigId { get; set; }
 
         public virtual Address? ResidentialAddress { get; set; }
 
-        [NotMapped]
         public virtual Document? Photo { get; set; }
-        [NotMapped]
         public virtual Document? Doc { get; set; }
 
 

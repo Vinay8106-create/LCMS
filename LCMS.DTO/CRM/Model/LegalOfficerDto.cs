@@ -20,7 +20,8 @@ namespace LCMS.Dto
         public string? IDType { get; set; }
         public string? EmailId { get; set; }
         public string? ContactNo { get; set; }
-
+        public string? Qualification { get; set; }
+        public int? StatusConfigId { get; set; }
         public string? Name { get; set; }
         public long? ResidentialAddressId { get; set; }
         public DocumentFileDto? Photo { get; set; } = new DocumentFileDto();
