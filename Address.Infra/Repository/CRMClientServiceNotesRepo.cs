@@ -28,10 +28,10 @@ namespace CRM.Infra
         public async Task<List<CRMClientServiceNotesDto>> GetClientServiceNotesById(long clientServiceId, bool isTracking = false)
         {
             List<CRMClientServiceNotesDto> list = new List<CRMClientServiceNotesDto>();
-            var data = await _dbContext.CRMClientServiceNotes
-    .AsNoTracking()
-    .Where(cssh => cssh.ClientServiceId == clientServiceId)
-    .ToListAsync();
+                        var data = await _dbContext.CRMClientServiceNotes
+                .AsNoTracking()
+                .Where(cssh => cssh.ClientServiceId == clientServiceId)
+                .ToListAsync();
             foreach (var item in data)
             {
 

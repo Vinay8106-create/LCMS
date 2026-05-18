@@ -29,9 +29,9 @@ namespace CRM.Infra
         {
             List<CRMClientServiceAssignedOfficerHistoryDto> list = new List<CRMClientServiceAssignedOfficerHistoryDto>();
             var data = await _dbContext.CRMClientServiceAssignedOfficer
-    .AsNoTracking()
-    .Where(cssh => cssh.ClientServiceId == clientServiceId)
-    .ToListAsync();
+                            .AsNoTracking()
+                            .Where(cssh => cssh.ClientServiceId == clientServiceId)
+                            .ToListAsync();
             foreach (var item in data)
             {
 

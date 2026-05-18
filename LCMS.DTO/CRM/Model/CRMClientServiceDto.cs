@@ -84,6 +84,7 @@ namespace LCMS.Dto
         public virtual string? EnteredByFullName { get; set; }
         public int Version { get; set; }
         public AppMessage? Message { get; set; } = new AppMessage();
+        public virtual string? Status { get; set; }
     }
 }
 

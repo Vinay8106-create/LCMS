@@ -563,14 +563,24 @@ namespace CRM.Application
         #region Get Client Service Assigned Officer History By Id
         public async Task<List<CRMClientServiceAssignedOfficerHistoryDto>> GetClientServiceAssignedOfficerHistoryByClientServiceIdAsync(long clientServicetId)
         {
-            return await _iCRMUow.CRMClientServiceAssignedOfficerHistoryRepo.GetClientServiceAssignedOfficerHistoryById(clientServicetId);
+            var list= await _iCRMUow.CRMClientServiceAssignedOfficerHistoryRepo.GetClientServiceAssignedOfficerHistoryById(clientServicetId);
+            foreach (var item in list)
+            {
+                await _iCRMUow.ConfigRepo.SetDescription(item);
+            }
+            return list;
         }
         #endregion
 
         #region Get Client Service Notes By Id
         public async Task<List<CRMClientServiceNotesDto>> GetClientServiceNotesByClientServiceIdAsync(long clientServicetId)
         {
-            return await _iCRMUow.CRMClientServiceNotesRepo.GetClientServiceNotesById(clientServicetId);
+            var list= await _iCRMUow.CRMClientServiceNotesRepo.GetClientServiceNotesById(clientServicetId);
+            foreach (var item in list)
+            {
+                await _iCRMUow.ConfigRepo.SetDescription(item);
+            }
+            return list;
         }
         #endregion
 

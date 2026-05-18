@@ -23,6 +23,22 @@ namespace CRM.Application
              .ForMember(d => d.ChangedByFullName, o => o.MapFrom(src=>ConversionWrapper.GetUserFullName(src.ChangedByFullName)))
              .ReverseMap();
 
+            CreateMap<CRMClientServiceAssignedOfficer, CRMClientServiceAssignedOfficerHistoryDto>()
+            .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
+            .ForMember(d => d.AssignedToFullName, o => o.MapFrom(src => ConversionWrapper.GetUserFullName(src.AssignedToFullName)))
+            .ForMember(d => d.AssignedByFullName, o => o.MapFrom(src => ConversionWrapper.GetUserFullName(src.AssignedByFullName)))
+            .ReverseMap();
+
+            CreateMap<CRMClientServiceNotes, CRMClientServiceNotesDto>()
+          .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
+          .ForMember(d => d.EnteredByFullName, o => o.MapFrom(src => ConversionWrapper.GetUserFullName(src.EnteredByFullName)))         
+          .ReverseMap();
+
+            CreateMap<CRMClientServiceEmailHistory, CRMClientServiceEmailHistoryDto>()
+        .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())       
+        .ReverseMap();
+
+
             CreateMap<Address, AddressDto>()
                 .ForMember(d => d.Msg, o => o.MapFrom<AppMessageResolver>())
                 .ReverseMap();

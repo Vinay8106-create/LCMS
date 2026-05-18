@@ -19,6 +19,9 @@ namespace LCMS.Persistence
             new CRMClientConfiguration().Configure(modelBuilder.Entity<CRMClient>());
             new CRMClientServiceConfiguration().Configure(modelBuilder.Entity<CRMClientService>());
             new CRMClientServiceStatusHistoryConfiguration().Configure(modelBuilder.Entity<CRMClientServiceStatusHistory>());
+            new CRMClientServiceAssignedOfficerConfiguration().Configure(modelBuilder.Entity<CRMClientServiceAssignedOfficer>());
+            new CRMClientServiceNotesConfiguration().Configure(modelBuilder.Entity<CRMClientServiceNotes>());
+            new CRMClientServiceEmailHistoryConfiguration().Configure(modelBuilder.Entity<CRMClientServiceEmailHistory>());
             new CRMClientContactConfiguration().Configure(modelBuilder.Entity<CRMClientContact>());
             new CRMClientDocumentConfiguration().Configure(modelBuilder.Entity<CRMClientDocument>());
 

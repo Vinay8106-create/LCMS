@@ -23,19 +23,20 @@ namespace LCMS.Persistence
 
         private void ConfigureModelDescriptionProperties(EntityTypeBuilder<CRMClientServiceAssignedOfficer> builder)
         {
-             builder.HasOne(p => p.AssignedByFullName)
-            .WithMany()
-            .HasPrincipalKey(u => new { u.UserLoginId })
-            .HasForeignKey(p => new { p.AssignedBy })
-            .OnDelete(DeleteBehavior.NoAction)
-            .IsRequired(false);
+           
+            builder.HasOne(p => p.AssignedByFullName)
+                .WithMany()
+                .HasPrincipalKey(u => new { u.UserLoginId })
+                .HasForeignKey(p => new { p.AssignedBy })
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
 
             builder.HasOne(p => p.AssignedToFullName)
-            .WithMany()
-            .HasPrincipalKey(u => new { u.UserLoginId })
-            .HasForeignKey(p => new { p.AssignedTo })
-            .OnDelete(DeleteBehavior.NoAction)
-            .IsRequired(false);
+               .WithMany()
+               .HasPrincipalKey(u => new { u.UserLoginId })
+               .HasForeignKey(p => new { p.AssignedTo })
+               .OnDelete(DeleteBehavior.NoAction)
+               .IsRequired(false);
         }
 
         private void ConfigureModelRelationships(EntityTypeBuilder<CRMClientServiceAssignedOfficer> builder)
@@ -44,7 +45,7 @@ namespace LCMS.Persistence
             .WithMany(c => c.CRMClientServiceAssignedOfficers)
             .HasForeignKey(p => p.ClientServiceId)
             .OnDelete(DeleteBehavior.Cascade)
-            .IsRequired(true);
+            .IsRequired(true);            
         }
 
         private void ConfigureModelProperties(EntityTypeBuilder<CRMClientServiceAssignedOfficer> builder)
