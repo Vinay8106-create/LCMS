@@ -2,6 +2,7 @@
 using CRM.Application;
 using CRM.Domain;
 using Galaxy.Domain.Exceptions;
+using Galaxy.Dto;
 using Galaxy.Infra;
 using LCMS.Constants;
 using LCMS.Dto;
@@ -47,6 +48,36 @@ namespace CRM.Infra
             {
                 _appointmentRefNoLock.Release();
             }
+        }
+
+        public async Task<DDLData> GetLegalOfficerAppoinmentInitialData()
+        {
+            DDLData dDLData = new DDLData();
+            var appoinmentStatus = await GetDDLAsync<config_AppoinmentStatus>("DDLAppoinmentStatus");
+            dDLData.data.Add(appoinmentStatus);
+            var priorityLevel = await GetDDLAsync<config_PriorityLevel>("DDLPriorityLevel");
+            dDLData.data.Add(priorityLevel);
+            var meetingType = await GetDDLAsync<config_MeetingType>("DDLMeetingType");
+            dDLData.data.Add(meetingType);
+
+            return dDLData;
+        }
+
+        public async Task<DDL> GetDDLAsync<TEntity>(string key) where TEntity : class
+        {
+            var data = await _dbContext.Set<TEntity>()
+                .Select(x => new DDLClass
+                {
+                    Id = EF.Property<int>(x, "ConfigId"),
+                    Description = EF.Property<string>(x, "Description")
+                }).AsNoTracking().ToListAsync();
+
+            return new DDL
+
+            {
+                Key = key,
+                Value = data
+            };
         }
 
         public async Task<bool> IsSlotAlreadyBookedAsync(long officerId, DateTime date, TimeSpan? start, TimeSpan? end)

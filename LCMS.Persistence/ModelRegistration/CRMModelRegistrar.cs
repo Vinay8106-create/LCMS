@@ -44,6 +44,11 @@ namespace LCMS.Persistence
                 entity.ToView("vw_BlockedDateSearch");
             });
 
+            modelBuilder.Entity<LegalOfficerAppoinmentSearchViewModel>(entity => {
+                entity.HasNoKey();
+                entity.ToView("vw_LegalOfficerAppoinmentSearch");
+            });
+
         }
     }
 }

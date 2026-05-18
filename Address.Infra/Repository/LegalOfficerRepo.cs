@@ -135,7 +135,6 @@ namespace CRM.Infra
             var ITGUser = await getAllITGUser();
             dDLData.data.Add(ITGUser);
 
-
             return dDLData;
         }
 
@@ -154,7 +153,6 @@ namespace CRM.Infra
                 Value = data
             };
         }
-
 
         public async Task<DDL> getAllLegalOfficer()
         {

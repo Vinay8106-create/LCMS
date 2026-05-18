@@ -29,6 +29,7 @@ namespace CRM.Infra
 
         private ILegalOfficerSearchRepo _LegalOfficerSearchRepo;
         private ILegalOfficerBlockedDateSearchRepo _LegalOfficerBlockedDateSearchRepo;
+        private ILegalOfficerAppoinmentSearchRepo _LegalOfficerAppoinmentSearchRepo;
 
 
         public IConfigRepo ConfigRepo => _configRepo ?? new ConfigRepo(dbContext, mapper, memoryCache);
@@ -49,6 +50,7 @@ namespace CRM.Infra
 
         public ILegalOfficerSearchRepo LegalOfficerSearchRepo => _LegalOfficerSearchRepo ??= new LegalOfficerSearchRepo(dbContext);
         public ILegalOfficerBlockedDateSearchRepo LegalOfficerBlockedDateSearchRepo => _LegalOfficerBlockedDateSearchRepo ??= new LegalOfficerBlockedDateSearchRepo(dbContext);
+        public ILegalOfficerAppoinmentSearchRepo LegalOfficerAppoinmentSearchRepo => _LegalOfficerAppoinmentSearchRepo ??= new LegalOfficerAppoinmentSearchRepo(dbContext);
 
     }
 }

@@ -18,14 +18,12 @@ namespace CRM.WebAPI
         private readonly IDocumentFileService _DocumentFileService;
         private readonly ICRMClientService _iCRMClientService;
 
-
         public CRMController(IAddressService addressService, IDocumentFileService DocumentFileService, ICRMClientService iCRMClientService)
         {
             _addressService = addressService;
 
             _DocumentFileService = DocumentFileService;
             _iCRMClientService = iCRMClientService;
-
         }
 
 
@@ -421,17 +419,6 @@ namespace CRM.WebAPI
         }
         #endregion
 
-
-        //#region Get LegalOfficer 
-        //[HttpGet("GetLegalOfficerByLegalOfficerId")]
-        //[SwaggerOperation(Tags = new[] { "LegalOfficer" }, Summary = "GetLegalOfficerByLegalOfficerId")]
-        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerDto))]
-        //public async Task<IActionResult> GetLegalOfficerBlockDateByLegalOfficerBlockDateIdAsync([FromQuery] long LegalOfficerBlockDateId)
-        //{
-        //    return this.Ok(await _iCRMClientService.GetLegalOfficerByLegalOfficerIdAsync(LegalOfficerBlockDateId));
-        //}
-        //#endregion
-
         #endregion
 
         #region Legal Officer Schedule
@@ -460,6 +447,35 @@ namespace CRM.WebAPI
 
         #region Legal Officer Appointment
 
+        #region GetLegalOfficerAppoinmentInitialData
+        [HttpGet("GetLegalOfficerAppoinmentInitialData")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "GetLegalOfficerAppoinmentInitialData")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DDLData))]
+        public async Task<IActionResult> GetLegalOfficerAppoinmentInitialData()
+        {
+            return this.Ok(await _iCRMClientService.GetLegalOfficerAppoinmentInitialDataAsync());
+        }
+        #endregion
+
+        #region Legal Officer Appointment Search
+
+        [HttpGet("GetLegalOfficerAppoinmentSearch")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "GetLegalOfficerAppoinmentSearch")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerAppoinmentSearchDto))]
+        public async Task<IActionResult> GetLegalOfficerAppoinmentSearch()
+        {
+            return this.Ok(await _iCRMClientService.GetLegalOfficerAppoinmentSearchAsync());
+        }
+
+        [HttpPost("SearchLegalOfficerAppoinment")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "SearchLegalOfficerAppoinment")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SearchResult<LegalOfficerAppoinmentSearchResultsDto>))]
+        public async Task<IActionResult> SearchLegalOfficerAppoinment(LegalOfficerAppoinmentSearchDto request)
+        {
+            return this.Ok(await _iCRMClientService.SearchLegalOfficerAppoinmentAsync(request));
+        }
+        #endregion
+
         #region Create Legal Officer Appointment
         [HttpGet("CreateLegalOfficerAppointment")]
         [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "CreateLegalOfficerAppointment")]
@@ -481,6 +497,7 @@ namespace CRM.WebAPI
         }
         #endregion
 
+        #region GetAppoinment Calender
         [HttpGet("GetAppoinmentCalendar")]
         [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "GetAppoinmentCalendar")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AppoinmentCalendarDto>))]
@@ -491,7 +508,10 @@ namespace CRM.WebAPI
         {
             return this.Ok(await _iCRMClientService.GetAppoinmentCalendarAsync(legalOfficerId, month, year));
         }
+        #endregion
 
+
+        #region GetAppoinment Time Slots By Date
         [HttpGet("GetAppoinmentTimeSlotsByDate")]
         [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "GetAppoinmentTimeSlotsByDate")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AppoinmentTimeSlotsDto>))]
@@ -500,7 +520,9 @@ namespace CRM.WebAPI
         {
             return this.Ok(await _iCRMClientService.GetAppoinmentTimeSlotsByDateAsync(legalOfficerId, date));
         }
+        #endregion
 
+        #region Load Slot Preview
         [HttpPost("LoadSlotPreview")]
         [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "LoadSlotPreview")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerSchedulesDto))]
@@ -509,6 +531,8 @@ namespace CRM.WebAPI
         {
             return this.Ok(await _iCRMClientService.LoadSlotPreview(request));
         }
+        #endregion
+
         #endregion
 
         #region Legal Officer Blocked Dates

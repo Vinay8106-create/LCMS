@@ -1,12 +1,13 @@
 ﻿using CRM.Domain;
 using Galaxy.Application;
+using Galaxy.Dto;
 using LCMS.Dto;
 
 namespace CRM.Application
 {
     public interface ILegalOfficerAppoinmentRepo : IRepository<LegalOfficerAppoinment>
     {
-
+        Task<DDLData> GetLegalOfficerAppoinmentInitialData();
         Task<LegalOfficerAppoinment> InsertLegalOfficerAppoinmentAsync(LegalOfficerAppoinment request);
         Task<bool> IsSlotAlreadyBookedAsync(long officerId, DateTime date, TimeSpan? start, TimeSpan? end);
         Task<LegalOfficerAppoinment> UpdateLegalOfficerAppoinmentAsync(LegalOfficerAppoinmentDto request);

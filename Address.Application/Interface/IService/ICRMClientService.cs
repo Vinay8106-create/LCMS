@@ -69,7 +69,9 @@ namespace CRM.Application
         #endregion
 
         #region Legal Officer Appointment
-
+        Task<DDLData> GetLegalOfficerAppoinmentInitialDataAsync();
+        Task<LegalOfficerAppoinmentSearchDto> GetLegalOfficerAppoinmentSearchAsync();
+        Task<SearchResult<LegalOfficerAppoinmentSearchResultsDto>> SearchLegalOfficerAppoinmentAsync(LegalOfficerAppoinmentSearchDto request);
         Task<LegalOfficerAppoinmentDto> CreateLegalOfficerAppoinmentAsync();
         Task<LegalOfficerAppoinmentDto> SaveLegalOfficerAppoinmentAsync(LegalOfficerAppoinmentDto request);
         Task<List<AppoinmentCalendarDto>> GetAppoinmentCalendarAsync(long legalOfficerId, int month, int year);

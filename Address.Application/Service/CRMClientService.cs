@@ -630,48 +630,6 @@ namespace CRM.Application
         #region Save Legal Officer
         public async Task<LegalOfficerDto> SaveLegalOfficerAsync(LegalOfficerDto request)
         {
-            // if (request == null) throw new ArgumentNullException(nameof(LegalOfficerDto));
-            // var LegalOfficer = _mapper.Map<LegalOfficer>(request);
-
-            // string groupName = CRMConstants.GroupName.LAO;
-            // var validUser = await _s2SLogic.Admin.IsUserBasedOnConfiguredGroup(_UserProfile.CurrentUser, groupName);
-            // if (validUser != true) throw new BusinessException(await _iCRMUow.MessageRepo.GetMessageByNo(1001), HttpStatusCode.BadRequest);
-
-            // LegalOfficer.ValidateMandatoryFieldsForLegalOfficer();
-
-            // var Residentialaddress = _mapper.Map<Address>(request.ResidentialAddress);            
-            // Residentialaddress.ValidateMandatoryFields();
-
-            // if (LegalOfficer.HasError || Residentialaddress.HasError)
-            //     throw new BusinessException(LegalOfficer.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
-            // request.ResidentialAddress = Residentialaddress;
-            //// var savedResidentialAddress = await _iAddressService.SaveAddress(request.ResidentialAddress);
-
-            // //LegalOfficer.ResidentialAddressId = savedResidentialAddress.Id;
-            // //LegalOfficer.ResidentialAddress = null;
-            // //request.ResidentialAddress = null;
-
-            // LegalOfficer = LegalOfficer.Id > 0 ? await _iCRMUow.LegalOfficerRepo.UpdateLegalOfficer(request)
-            //     : await _iCRMUow.LegalOfficerRepo.InsertLegalOfficer(request);
-
-            // await _iCRMUow.SaveChangesAsync();
-            // var response = _mapper.Map<LegalOfficerDto>(LegalOfficer);
-            // response.ResidentialAddress = _mapper.Map<AddressDto>(savedResidentialAddress);
-
-
-            // var userDetails = await _iCRMUow.LegalOfficerRepo.GetDetailsFromITGUser(response.UserSerialId);
-
-            // if (userDetails != null)
-            // {
-            //     response.EmailId = userDetails.Constant;
-            //     response.ContactNo = userDetails.Description;
-            // }
-
-            // await SetDescription(response);
-
-            // return response;
-
-
             if (request == null) throw new ArgumentNullException(nameof(request));
 
             var legalOfficer = _mapper.Map<LegalOfficer>(request);
@@ -691,7 +649,6 @@ namespace CRM.Application
             if (residentialAddress.HasError)
                 throw new BusinessException(
                     residentialAddress.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
-
 
             var photo = await _iDocumentService.SaveDocumentFile(request.Photo);
 
@@ -825,36 +782,39 @@ namespace CRM.Application
         }
         #endregion
 
-        #region Create Legal Officer Block date
-        public async Task<LegalOfficerBlockedDatesDto> CreateLegalOfficerBlockDate()
-        {
-            return new LegalOfficerBlockedDatesDto();
-        }
-        #endregion
-
-        #region SaveLegalOfficerBlockDate
-        public async Task<List<LegalOfficerBlockedDatesDto>> SaveLegalOfficerBlockDate(LegalOfficerBlockedDatesDto request)
-        {
-            List<LegalOfficerBlockedDatesDto> list = new List<LegalOfficerBlockedDatesDto>();
-            var LegalOfficerBlockedDates = _mapper.Map<LegalOfficerBlockedDates>(request);
-            LegalOfficerBlockedDates.ValidateMandatoryFieldsForLegalOfficerBlockDate();
-
-            if (LegalOfficerBlockedDates.HasError)
-                throw new BusinessException(LegalOfficerBlockedDates.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
-
-            LegalOfficerBlockedDates = LegalOfficerBlockedDates.Id > 0 ? await _iCRMUow.LegalOfficerBlockDateRepo.UpdateLegalOfficerBlockedDates(request)
-                : await _iCRMUow.LegalOfficerBlockDateRepo.InsertLegalOfficerBlockedDates(request);
-
-            await _iCRMUow.SaveChangesAsync();
-            var response = _mapper.Map<LegalOfficerBlockedDatesDto>(LegalOfficerBlockedDates);
-            list = await _iCRMUow.LegalOfficerBlockDateRepo.LoadLegalOfficerBlockDate(request.LegalOfficerId);
-
-            return list;
-        }
-        #endregion
-
-
         #region Legal Officer Appointment
+
+        #region Legal Officer Appointment initial data        
+        public async Task<DDLData> GetLegalOfficerAppoinmentInitialDataAsync()
+        {
+            return await _iCRMUow.LegalOfficerAppoinmentRepo.GetLegalOfficerAppoinmentInitialData();
+        }
+        #endregion
+
+        #region Legal Officer Appoinment Search
+        public virtual async Task<LegalOfficerAppoinmentSearchDto> GetLegalOfficerAppoinmentSearchAsync()
+        {
+            return new LegalOfficerAppoinmentSearchDto();
+        }
+
+        public virtual async Task<SearchResult<LegalOfficerAppoinmentSearchResultsDto>> SearchLegalOfficerAppoinmentAsync(LegalOfficerAppoinmentSearchDto request)
+        {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
+            if (string.IsNullOrEmpty(request.OrderByColumnName))
+                request.OrderByColumnName = nameof(LegalOfficerAppoinmentSearchResultsDto.LegalOfficerAppoinmentId);
+            var result = await _iCRMUow.LegalOfficerAppoinmentSearchRepo.SearchAsync(request);
+            if (result != null)
+            {
+                result.Msg ??= new AppMessage();
+                result.Msg.InfoMessage = result.TotalCount > 0
+                    ? _mapper.Map(await _iCRMUow.MessageRepo.GetMessageByNo(4, result.TotalCount), result.Msg.InfoMessage)
+                    : _mapper.Map(await _iCRMUow.MessageRepo.GetMessageByNo(3), result.Msg.InfoMessage);
+                return result;
+            }
+
+            return new SearchResult<LegalOfficerAppoinmentSearchResultsDto>();
+        }
+        #endregion
 
         #region Create Legal Officer Appointment
         public Task<LegalOfficerAppoinmentDto> CreateLegalOfficerAppoinmentAsync()
@@ -1096,6 +1056,34 @@ namespace CRM.Application
             }
 
             return new SearchResult<LegalOfficerBlockedDateSearchResultsDto>();
+        }
+        #endregion
+
+        #region Create Legal Officer Block date
+        public async Task<LegalOfficerBlockedDatesDto> CreateLegalOfficerBlockDate()
+        {
+            return new LegalOfficerBlockedDatesDto();
+        }
+        #endregion
+
+        #region SaveLegalOfficerBlockDate
+        public async Task<List<LegalOfficerBlockedDatesDto>> SaveLegalOfficerBlockDate(LegalOfficerBlockedDatesDto request)
+        {
+            List<LegalOfficerBlockedDatesDto> list = new List<LegalOfficerBlockedDatesDto>();
+            var LegalOfficerBlockedDates = _mapper.Map<LegalOfficerBlockedDates>(request);
+            LegalOfficerBlockedDates.ValidateMandatoryFieldsForLegalOfficerBlockDate();
+
+            if (LegalOfficerBlockedDates.HasError)
+                throw new BusinessException(LegalOfficerBlockedDates.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
+
+            LegalOfficerBlockedDates = LegalOfficerBlockedDates.Id > 0 ? await _iCRMUow.LegalOfficerBlockDateRepo.UpdateLegalOfficerBlockedDates(request)
+                : await _iCRMUow.LegalOfficerBlockDateRepo.InsertLegalOfficerBlockedDates(request);
+
+            await _iCRMUow.SaveChangesAsync();
+            var response = _mapper.Map<LegalOfficerBlockedDatesDto>(LegalOfficerBlockedDates);
+            list = await _iCRMUow.LegalOfficerBlockDateRepo.LoadLegalOfficerBlockDate(request.LegalOfficerId);
+
+            return list;
         }
         #endregion
 

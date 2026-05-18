@@ -2,6 +2,6 @@
 {
     public class LegalOfficerAppoinmentSearchCombined
     {
-        public LegalOfficerAppoinmentSearchViewModel LegalOfficerAppoinmentSearchViewModel { get; set; }
+        public LegalOfficerAppoinmentSearchViewModel LegalOfficerAppoinmentViewModel { get; set; }
     }
 }

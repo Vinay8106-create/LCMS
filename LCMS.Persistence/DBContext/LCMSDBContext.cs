@@ -67,6 +67,7 @@ namespace LCMS.Persistence
 
         public DbSet<LegalOfficerBlockedDates> LegalOfficerBlockedDates { get; set; }
         public DbSet<BlockedDateSearchViewModel> BlockedDateSearch { get; set; }
+        public DbSet<LegalOfficerAppoinmentSearchViewModel> LegalOfficerAppoinmentSearch { get; set; }
 
 
         #endregion
