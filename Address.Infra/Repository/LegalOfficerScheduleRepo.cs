@@ -56,8 +56,10 @@ namespace CRM.Infra
                            SlotDuration = existing?.SlotDuration,
                            ISActive = existing?.ISActive == "Y" ? "Y" : "N",
                            BreakStartTime = Convert.ToString(existing?.BreakStartTime),
-                           BreakEndTime = Convert.ToString(existing?.BreakEndTime)
-                       };
+                           BreakEndTime = Convert.ToString(existing?.BreakEndTime),
+                           Version = existing?.Version ?? 0
+
+                   };
                    })
                    .ToList();
             }

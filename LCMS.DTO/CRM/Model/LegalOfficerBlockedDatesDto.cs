@@ -15,5 +15,11 @@ namespace LCMS.Dto
         public int Version { get; set; }
         public AppMessage? Message { get; set; } = new AppMessage();
     }
+
+    public class LegalOfficerBlockedCalenderDto
+    {
+        public DateOnly Date  { get; set; }
+        public string Status { get; set; }
+    }
 }
 

@@ -91,6 +91,7 @@ namespace CRM.Application
         Task<LegalOfficerBlockedDateSearchDto> GetLegalOfficerBlockedDatesSearchAsync();
         Task<SearchResult<LegalOfficerBlockedDateSearchResultsDto>> SearchLegalOfficerBlockedDatesAsync(LegalOfficerBlockedDateSearchDto request);
         Task<LegalOfficerBlockedDatesDto> GetLegalOfficerBlockedDateByLegalOfficerBlockDateIdAsync(long LegalOfficerBlockDateId);
+        Task<List<LegalOfficerBlockedCalenderDto>> GetLegalOfficerBlockedDateCalenderAsync(long LegalOfficerId);
         #endregion
     }
 }

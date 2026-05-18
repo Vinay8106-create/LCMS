@@ -510,7 +510,6 @@ namespace CRM.WebAPI
         }
         #endregion
 
-
         #region GetAppoinment Time Slots By Date
         [HttpGet("GetAppoinmentTimeSlotsByDate")]
         [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "GetAppoinmentTimeSlotsByDate")]
@@ -583,6 +582,16 @@ namespace CRM.WebAPI
         public async Task<IActionResult> GetLegalOfficerBlockedDateByLegalOfficerBlockedDateId([FromQuery] long LegalOfficerBlockedDateId)
         {
             return this.Ok(await _iCRMClientService.GetLegalOfficerBlockedDateByLegalOfficerBlockDateIdAsync(LegalOfficerBlockedDateId));
+        }
+        #endregion
+
+        #region Get Legal Officer Blocked Date Calender
+        [HttpGet("GetLegalOfficerBlockedDateCalender")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerBlockedDates" }, Summary = "GetLegalOfficerBlockedDateCalender")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<LegalOfficerBlockedCalenderDto>))]
+        public async Task<IActionResult> GetLegalOfficerBlockedDateCalender([FromQuery] long LegalOfficerId)
+        {
+            return this.Ok(await _iCRMClientService.GetLegalOfficerBlockedDateCalenderAsync(LegalOfficerId));
         }
         #endregion
 

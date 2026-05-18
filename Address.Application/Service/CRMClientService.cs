@@ -1104,6 +1104,14 @@ namespace CRM.Application
         }
         #endregion
 
+        #region Get Legal Officer Blocked Date By Id
+        public async Task<List<LegalOfficerBlockedCalenderDto>> GetLegalOfficerBlockedDateCalenderAsync(long legalOfficerId)
+        {
+            var BlockedDates = await _iCRMUow.LegalOfficerBlockDateRepo.GetLegalOfficerBlockedDateCalender(legalOfficerId);
+            return BlockedDates;
+        }
+        #endregion
+
         #endregion
     }
 }

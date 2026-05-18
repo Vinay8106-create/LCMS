@@ -63,6 +63,23 @@ namespace CRM.Infra
             return _mapper.Map<LegalOfficerBlockedDatesDto>(legalOfficerBlockedDate);
         }
 
+        public async Task<List<LegalOfficerBlockedCalenderDto>> GetLegalOfficerBlockedDateCalender(long legalOfficerId, bool isTracking = false)
+        {
+            if (legalOfficerId == 0)
+                return new List<LegalOfficerBlockedCalenderDto>();
+
+            return await _dbContext.LegalOfficerBlockedDates
+                        .Where(x => x.LegalOfficerId == legalOfficerId)
+                        .AsNoTracking()
+                        .GroupBy(x => x.BlockDate)
+                        .Select(g => new LegalOfficerBlockedCalenderDto
+                        {
+                            Date = g.Key,
+                            Status = g.Any(x => x.BlockTypeConfigId == 41) ? "F" : "P"
+                        })
+                        .ToListAsync();
+                            }
+
     }
 }
 

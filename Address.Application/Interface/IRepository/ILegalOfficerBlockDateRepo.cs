@@ -10,5 +10,7 @@ namespace CRM.Application
         Task<LegalOfficerBlockedDates> UpdateLegalOfficerBlockedDates(LegalOfficerBlockedDatesDto request);
         Task<List<LegalOfficerBlockedDatesDto>> LoadLegalOfficerBlockDate(long LegalOfficerId);
         Task<LegalOfficerBlockedDatesDto> GetLegalOfficerBlockedDateByBlockDateId(long legalOfficerBlockDateId, bool isTracking = false);
+
+        Task<List<LegalOfficerBlockedCalenderDto>> GetLegalOfficerBlockedDateCalender(long legalOfficerBlockDateId, bool isTracking = false);
     }
 }
