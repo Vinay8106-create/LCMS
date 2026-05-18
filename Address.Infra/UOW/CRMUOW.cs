@@ -20,6 +20,11 @@ namespace CRM.Infra
         private ICRMClientSearchRepo _CRMClientSearchRepo;
         private ICRMClientServiceRepo _CRMClientServiceRepo;
         private ICRMClientServiceSearchRepo _CRMClientServiceSearchRepo;
+        private ICRMClientServiceStatusHistoryRepo _CRMClientServiceStatusHistoryRepo;
+        private ICRMClientServiceAssignedOfficerHistoryRepo _CRMClientServiceAssignedOfficerHistoryRepo;
+        private ICRMClientServiceEmailHistoryRepo _CRMClientServiceEmailHistoryRepo;
+        private ICRMClientServiceNotesRepo _CRMClientServiceNotesRepo;
+      
 
         private ILegalOfficerRepo _LegalOfficerRepo;
 
@@ -41,6 +46,10 @@ namespace CRM.Infra
         public ICRMClientDocumentRepo CRMClientDocumentRepo => _CRMClientDocumentRepo ??= new CRMClientDocumentRepo(dbContext, mapper, memoryCache);
         public ICRMClientSearchRepo CRMClientSearchRepo => _CRMClientSearchRepo ??= new CRMClientSearchRepo(dbContext);
         public ICRMClientServiceRepo CRMClientServiceRepo => _CRMClientServiceRepo ??= new CRMClientServiceRepo(dbContext, mapper);
+        public ICRMClientServiceStatusHistoryRepo CRMClientServiceStatusHistoryRepo => _CRMClientServiceStatusHistoryRepo ??= new CRMClientServiceStatusHistoryRepo(dbContext, mapper);
+        public ICRMClientServiceAssignedOfficerHistoryRepo CRMClientServiceAssignedOfficerHistoryRepo => _CRMClientServiceAssignedOfficerHistoryRepo ??= new CRMClientServiceAssignedOfficerHistoryRepo(dbContext, mapper);
+        public ICRMClientServiceEmailHistoryRepo CRMClientServiceEmailHistoryRepo => _CRMClientServiceEmailHistoryRepo ??= new CRMClientServiceEmailHistoryRepo(dbContext, mapper);
+        public ICRMClientServiceNotesRepo CRMClientServiceNotesRepo => _CRMClientServiceNotesRepo ??= new CRMClientServiceNotesRepo(dbContext, mapper);
         public ICRMClientServiceSearchRepo CRMClientServiceSearchRepo => _CRMClientServiceSearchRepo ??= new CRMClientServiceSearchRepo(dbContext);
         public ILegalOfficerRepo LegalOfficerRepo => _LegalOfficerRepo ??= new LegalOfficerRepo(dbContext, mapper);
 

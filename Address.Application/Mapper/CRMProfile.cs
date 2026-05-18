@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using CRM.Domain;
 using Galaxy.Application.Mapper;
+using ITGAccounts.Utility;
+using LCMS.Domain;
 using LCMS.Dto;
 
 namespace CRM.Application
@@ -15,6 +17,10 @@ namespace CRM.Application
 
             CreateMap<CRMClientService, CRMClientServiceDto>()
              .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
+             .ReverseMap();
+            CreateMap<CRMClientServiceStatusHistory, CRMClientServiceStatusHistoryDto>()
+             .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
+             .ForMember(d => d.ChangedByFullName, o => o.MapFrom(src=>ConversionWrapper.GetUserFullName(src.ChangedByFullName)))
              .ReverseMap();
 
             CreateMap<Address, AddressDto>()

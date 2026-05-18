@@ -41,7 +41,8 @@ namespace LCMS.Dto
         public string ChangedBy { get; set; } = null!;
         public DateTime ChangedOn { get; set; }
         public int StatusConfigId { get; set; }
-        public virtual User? ChangedByFullName { get; set; }
+        public virtual string? Status { get; set; }
+        public virtual string? ChangedByFullName { get; set; }
         public int Version { get; set; }
         public AppMessage? Message { get; set; } = new AppMessage();
     }
@@ -64,9 +65,10 @@ namespace LCMS.Dto
         public string AssignedTo { get; set; } = null!;
         public string AssignedBy { get; set; } = null!;
         public DateTime AssignedDate { get; set; }
-        public int StatusConfigId { get; set; }      
-        public virtual User? AssignedByFullName { get; set; }
-        public virtual User? AssignedToFullName { get; set; }
+        public int StatusConfigId { get; set; }
+        public virtual string? Status { get; set; }
+        public virtual string? AssignedByFullName { get; set; }
+        public virtual string? AssignedToFullName { get; set; }
         public int Version { get; set; }
         public AppMessage? Message { get; set; } = new AppMessage();
     }
@@ -79,7 +81,7 @@ namespace LCMS.Dto
         public string EnteredBy { get; set; } = null!;
         public DateTime EnteredOn { get; set; }
         public int StatusConfigId { get; set; }        
-        public virtual User? EnteredByFullName { get; set; }
+        public virtual string? EnteredByFullName { get; set; }
         public int Version { get; set; }
         public AppMessage? Message { get; set; } = new AppMessage();
     }

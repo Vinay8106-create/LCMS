@@ -1,4 +1,5 @@
 ﻿using CRM.Domain;
+using LCMS.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace LCMS.Persistence
@@ -16,6 +17,8 @@ namespace LCMS.Persistence
             new ConfigConfiguration().Configure(modelBuilder.Entity<config_ClientType>());
             new AddressConfiguration().Configure(modelBuilder.Entity<Address>());
             new CRMClientConfiguration().Configure(modelBuilder.Entity<CRMClient>());
+            new CRMClientServiceConfiguration().Configure(modelBuilder.Entity<CRMClientService>());
+            new CRMClientServiceStatusHistoryConfiguration().Configure(modelBuilder.Entity<CRMClientServiceStatusHistory>());
             new CRMClientContactConfiguration().Configure(modelBuilder.Entity<CRMClientContact>());
             new CRMClientDocumentConfiguration().Configure(modelBuilder.Entity<CRMClientDocument>());
 

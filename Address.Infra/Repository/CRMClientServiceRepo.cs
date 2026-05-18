@@ -153,21 +153,7 @@ namespace CRM.Infra
             return await GetByIdAsync(clientServiceId, isTracking) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
         }
 
-        public async Task<List<CRMClientServiceStatusHistoryDto>> GetClientServiceStatusHistoryById(long clientServiceId, bool isTracking = false)
-        {
-            var query = _dbContext.CRMClientServiceStatusHistory.AsQueryable();
-
-            if (!isTracking)
-            {
-                query = query.AsNoTracking();
-            }
-
-            var data = await query
-                .Where(x => x.ClientServiceId == clientServiceId)
-                .ToListAsync();
-
-            return _mapper.Map<List<CRMClientServiceStatusHistoryDto>>(data);
-        }
+      
         public async Task<List<CRMClientServiceEmailHistoryDto>> GetClientServiceEmailHistoryById(long clientServiceId, bool isTracking = false)
         {
             var query = _dbContext.CRMClientServiceEmailHistory.AsQueryable();
