@@ -4,58 +4,58 @@ namespace LCMS.DTO
 {
     public class LegalOfficerAppoinmentSearchDto : BaseSearch
     {
-        [FilterMapping("LegalOfficerAppoinmentSearchViewModel.AppointmentNo", Operation = FilterOperation.Contains)]
-        public string? AppointmentNo { get; set; }
+        [FilterMapping("LegalOfficerAppoinmentViewModel.AppoinmentNo", Operation = FilterOperation.Contains)]
+        public string? AppoinmentNo { get; set; }
 
-        [FilterMapping("LegalOfficerAppoinmentSearchViewModel.ClientName", Operation = FilterOperation.Contains)]
+        [FilterMapping("LegalOfficerAppoinmentViewModel.ClientName", Operation = FilterOperation.Contains)]
         public string? ClientName { get; set; }
 
-        [FilterMapping("LegalOfficerAppoinmentSearchViewModel.LegalOfficerName", Operation = FilterOperation.Contains)]
+        [FilterMapping("LegalOfficerAppoinmentViewModel.LegalOfficerName", Operation = FilterOperation.Contains)]
         public string? LegalOfficerName { get; set; }
 
         [FilterMapping("LegalOfficerAppoinmentSearchViewModel.FromDate", Operation = FilterOperation.Contains)]
         public DateTime? FromDate { get; set; }
 
-        [FilterMapping("LegalOfficerAppoinmentSearchViewModel.ToDate", Operation = FilterOperation.Contains)]
+        [FilterMapping("LegalOfficerAppoinmentViewModel.ToDate", Operation = FilterOperation.Contains)]
         public DateTime? ToDate { get; set; }
 
-        [FilterMapping("LegalOfficerAppoinmentSearchViewModel.AppoinmentStatusConfigId", Operation = FilterOperation.Equal)]
+        [FilterMapping("LegalOfficerAppoinmentViewModel.AppoinmentStatusConfigId", Operation = FilterOperation.Equal)]
         public int? AppoinmentStatusConfigId { get; set; }
     }
 
     public class LegalOfficerAppoinmentSearchResultsDto : BaseSearch
     {
-        [SortableField("LegalOfficerAppoinmentSearchViewModel.LegalOfficerAppoinmentId", IsDefaultSort = true)]
+        [SortableField("LegalOfficerAppoinmentViewModel.LegalOfficerAppoinmentId", IsDefaultSort = true)]
         public long? LegalOfficerAppoinmentId { get; set; }
 
-        [SortableField("LegalOfficerAppoinmentSearchViewModel.AppointmentNo")]
-        public string? AppointmentNo { get; set; }
+        [SortableField("LegalOfficerAppoinmentViewModel.AppoinmentNo")]
+        public string? AppoinmentNo { get; set; }
 
-        [SortableField("LegalOfficerAppoinmentSearchViewModel.ClientName")]
+        [SortableField("LegalOfficerAppoinmentViewModel.ClientName")]
         public string? ClientName { get; set; }
 
-        [SortableField("LegalOfficerAppoinmentSearchViewModel.LegalOfficerName")]
+        [SortableField("LegalOfficerAppoinmentViewModel.LegalOfficerName")]
         public string? LegalOfficerName { get; set; }
 
-        [SortableField("LegalOfficerAppoinmentSearchViewModel.AppoinmentDate")]
+        [SortableField("LegalOfficerAppoinmentViewModel.AppoinmentDate")]
         public DateTime? AppoinmentDate { get; set; }
 
-        [SortableField("LegalOfficerAppoinmentSearchViewModel.FromDate")]
+        [SortableField("LegalOfficerAppoinmentViewModel.FromDate")]
         public DateTime? FromDate { get; set; }
 
-        [SortableField("LegalOfficerAppoinmentSearchViewModel.ToDate")]
+        [SortableField("LegalOfficerAppoinmentViewModel.ToDate")]
         public DateTime? ToDate { get; set; }
 
-        [SortableField("LegalOfficerAppoinmentSearchViewModel.StartTime")]
+        [SortableField("LegalOfficerAppoinmentViewModel.StartTime")]
         public TimeSpan? StartTime { get; set; }
 
-        [SortableField("LegalOfficerAppoinmentSearchViewModel.EndTime")]
+        [SortableField("LegalOfficerAppoinmentViewModel.EndTime")]
         public TimeSpan? EndTime { get; set; }
 
-        [SortableField("LegalOfficerAppoinmentSearchViewModel.Notes")]
+        [SortableField("LegalOfficerAppoinmentViewModel.Notes")]
         public string? Notes { get; set; }
 
-        [SortableField("LegalOfficerAppoinmentSearchViewModel.AppoinmentStatus")]
+        [SortableField("LegalOfficerAppoinmentViewModel.AppoinmentStatus")]
         public string? AppoinmentStatus { get; set; }
         public int? AppoinmentStatusConfigId { get; set; }
     }

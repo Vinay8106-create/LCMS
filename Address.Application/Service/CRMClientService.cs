@@ -311,7 +311,11 @@ namespace CRM.Application
         #region Get Client Contact By Id
         public async Task<CRMClientContactDto> GetClientContactByClientContactIdAsync(long clientContactId)
         {
-            return _mapper.Map<CRMClientContactDto>(await _iCRMUow.CRMClientContactRepo.GetCRMClientContactByClientContactId(clientContactId));
+            var clientcontact = _mapper.Map<CRMClientContactDto>(await _iCRMUow.CRMClientContactRepo.GetCRMClientContactByClientContactId(clientContactId));
+            await _iCRMUow.ConfigRepo.SetDescription(clientcontact);
+            await _iCRMUow.ConfigRepo.SetAddressDescription(clientcontact.ResidentialAddress);
+            await _iCRMUow.ConfigRepo.SetAddressDescription(clientcontact.CommunicationAddress);
+            return clientcontact;
         }
         #endregion
 
@@ -488,14 +492,19 @@ namespace CRM.Application
         #region Create Client Service
         public async Task<CRMClientServiceDto> CreateClientServiceAsync()
         {
-            return new CRMClientServiceDto();
+            return new CRMClientServiceDto
+            {
+                ServiceStatusConfigId = 23,
+                ServiceStatusDescription = "Open"
+            };
         }
+
         #endregion
 
         #region Save Client Service
         public async Task<CRMClientServiceDto> SaveClientServiceAsync(CRMClientServiceDto request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(CRMClientDto));
+            if (request == null) throw new ArgumentNullException(nameof(CRMClientServiceDto));
             var ClientService = _mapper.Map<CRMClientService>(request);
 
             string groupName = CRMConstants.GroupName.CSO;
@@ -544,7 +553,7 @@ namespace CRM.Application
         #region Get Client Service Status History By Id
         public async Task<List<CRMClientServiceStatusHistoryDto>> GetClientServiceStatusHistoryByClientServiceIdAsync(long clientServicetId)
         {
-            var list= await _iCRMUow.CRMClientServiceStatusHistoryRepo.GetClientServiceStatusHistoryById(clientServicetId);
+            var list = await _iCRMUow.CRMClientServiceStatusHistoryRepo.GetClientServiceStatusHistoryById(clientServicetId);
             foreach (var item in list)
             {
                 await _iCRMUow.ConfigRepo.SetDescription(item);

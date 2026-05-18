@@ -20,7 +20,7 @@ namespace CRM.Application
              .ReverseMap();
             CreateMap<CRMClientServiceStatusHistory, CRMClientServiceStatusHistoryDto>()
              .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
-             .ForMember(d => d.ChangedByFullName, o => o.MapFrom(src=>ConversionWrapper.GetUserFullName(src.ChangedByFullName)))
+             .ForMember(d => d.ChangedByFullName, o => o.MapFrom(src => ConversionWrapper.GetUserFullName(src.ChangedByFullName)))
              .ReverseMap();
 
             CreateMap<CRMClientServiceAssignedOfficer, CRMClientServiceAssignedOfficerHistoryDto>()
@@ -52,8 +52,6 @@ namespace CRM.Application
 
             CreateMap<CRMClientContact, CRMClientContactDto>()
             .ForMember(d => d.Msg, o => o.MapFrom<AppMessageResolver>())
-            .ForMember(d => d.ResidentialAddress, o => o.Ignore())
-            .ForMember(d => d.CommunicationAddress, o => o.Ignore())
             .ReverseMap();
 
             CreateMap<CRMClientDocument, CRMClientDocumentDto>()

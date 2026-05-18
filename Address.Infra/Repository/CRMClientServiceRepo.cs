@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CRM.Application;
 using CRM.Domain;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Galaxy.Domain.Exceptions;
 using Galaxy.Domain.Models;
 using Galaxy.Dto;
@@ -11,7 +10,6 @@ using LCMS.Constants;
 using LCMS.Dto;
 using LCMS.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Net;
 
 namespace CRM.Infra
@@ -153,7 +151,7 @@ namespace CRM.Infra
             return await GetByIdAsync(clientServiceId, isTracking) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
         }
 
-      
+
         public async Task<List<CRMClientServiceEmailHistoryDto>> GetClientServiceEmailHistoryById(long clientServiceId, bool isTracking = false)
         {
             var query = _dbContext.CRMClientServiceEmailHistory.AsQueryable();
@@ -244,13 +242,17 @@ namespace CRM.Infra
         {
             var services = await _dbContext.CRMClientService
                 .Where(c => c.ClientId == clientId)
-                .Join(
+                .GroupJoin(
                     _dbContext.config_ServiceStatus,
                     service => service.ServiceStatusConfigId,
                     status => status.Id,
-                    (service, status) => new {
-                        Service = service,
-                        ServiceStatusDescription = status.Description
+                    (service, statusGroup) => new { service, statusGroup }
+                )
+                .SelectMany(
+                    x => x.statusGroup.DefaultIfEmpty(),
+                    (x, status) => new {
+                        Service = x.service,
+                        ServiceStatusDescription = status != null ? status.Description : null
                     }
                 )
                 .OrderByDescending(x => x.Service.Id)

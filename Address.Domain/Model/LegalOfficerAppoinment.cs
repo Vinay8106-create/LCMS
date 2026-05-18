@@ -19,7 +19,7 @@ namespace CRM.Domain
         public string? Notes { get; set; }
         public string? IsBooked { get; set; }
 
-        [NotMapped]
+
         public string? ClientName { get; set; }
         [NotMapped]
         public string? LegalOfficerName { get; set; }

@@ -20,10 +20,33 @@ namespace CRM.Infra
             _mapper = mapper;
         }
 
-        public async Task<CRMClientContact> GetCRMClientContactByClientContactId(long CRMClientContactId, bool isTracking = false)
+        //public async Task<CRMClientContact> GetCRMClientContactByClientContactId(long CRMClientContactId, bool isTracking = false)
+        //{
+        //    return await GetByIdAsync(CRMClientContactId, isTracking) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
+        //}
+
+
+        public async Task<CRMClientContact> GetCRMClientContactByClientContactId(
+    long CRMClientContactId,
+    bool isTracking = false)
         {
-            return await GetByIdAsync(CRMClientContactId, isTracking) ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
+            var query = _dbContext.CRMClientContact
+                .Include(c => c.ResidentialAddress)
+                .Include(c => c.CommunicationAddress)
+                .AsQueryable();
+
+            // ✅ Respect the tracking flag
+            if (!isTracking)
+                query = query.AsNoTracking();
+
+            var contact = await query
+                .FirstOrDefaultAsync(c => c.Id == CRMClientContactId);
+
+            return contact ?? throw new BusinessException("Id not found", HttpStatusCode.NotFound);
         }
+
+
+
 
         public async Task<CRMClientContact> InsertCRMClientContactAsync(CRMClientContactDto request)
         {

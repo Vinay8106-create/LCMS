@@ -3,7 +3,7 @@
     public class LegalOfficerAppoinmentSearchViewModel
     {
         public long? LegalOfficerAppoinmentId { get; set; }
-        public string? AppointmentNo { get; set; }
+        public string? AppoinmentNo { get; set; }
         public string? ClientName { get; set; }
         public string? LegalOfficerName { get; set; }
         public DateTime? FromDate { get; set; }

@@ -31,7 +31,7 @@ namespace CRM.Infra
             return query.Select(x => new LegalOfficerAppoinmentSearchResultsDto
             {
                 LegalOfficerAppoinmentId = x.LegalOfficerAppoinmentViewModel.LegalOfficerAppoinmentId,
-                AppointmentNo = x.LegalOfficerAppoinmentViewModel.AppointmentNo,
+                AppoinmentNo = x.LegalOfficerAppoinmentViewModel.AppoinmentNo,
                 ClientName = x.LegalOfficerAppoinmentViewModel.ClientName,
                 LegalOfficerName = x.LegalOfficerAppoinmentViewModel.LegalOfficerName,
                 FromDate = x.LegalOfficerAppoinmentViewModel.FromDate,
