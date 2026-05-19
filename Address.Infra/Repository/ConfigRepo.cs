@@ -174,8 +174,8 @@ namespace Master.Infra
             (
                 GetPropertyValue<int?>(model, "ServiceStatusConfigId"),
                 "config_ServiceStatus",
-                desc => SetPropertyValue(model, "ServiceStatus", desc)
-            ),//
+                desc => SetPropertyValue(model, "ServiceStatusDescription", desc)
+            ),
             (
                 GetPropertyValue<int?>(model, "DesignationConfigId"),
                 "config_Designation",

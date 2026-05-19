@@ -6,7 +6,7 @@ namespace CRM.Domain
     public class LegalOfficerAppoinment : BaseEntity
     {
         public long Id { get; set; }
-        public string? AppointmentNo { get; set; }
+        public string? AppoinmentNo { get; set; }
         public long ClientId { get; set; }
         public long LegalOfficerId { get; set; }
         public DateTime AppoinmentDate { get; set; }
@@ -19,8 +19,11 @@ namespace CRM.Domain
         public string? Notes { get; set; }
         public string? IsBooked { get; set; }
 
+        public virtual CRMClient? Client { get; set; }
 
+        [NotMapped]
         public string? ClientName { get; set; }
+
         [NotMapped]
         public string? LegalOfficerName { get; set; }
     }

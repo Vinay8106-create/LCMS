@@ -17,6 +17,7 @@ namespace CRM.Application
 
             CreateMap<CRMClientService, CRMClientServiceDto>()
              .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
+             .ForMember(x => x.Version, opt => opt.Ignore())
              .ReverseMap();
             CreateMap<CRMClientServiceStatusHistory, CRMClientServiceStatusHistoryDto>()
              .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
@@ -31,11 +32,11 @@ namespace CRM.Application
 
             CreateMap<CRMClientServiceNotes, CRMClientServiceNotesDto>()
           .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
-          .ForMember(d => d.EnteredByFullName, o => o.MapFrom(src => ConversionWrapper.GetUserFullName(src.EnteredByFullName)))         
+          .ForMember(d => d.EnteredByFullName, o => o.MapFrom(src => ConversionWrapper.GetUserFullName(src.EnteredByFullName)))
           .ReverseMap();
 
             CreateMap<CRMClientServiceEmailHistory, CRMClientServiceEmailHistoryDto>()
-        .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())       
+        .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
         .ReverseMap();
 
 
@@ -97,20 +98,16 @@ namespace CRM.Application
                     s.AppoinmentDate.ToString("yyyy-MM-dd")))
                 .ForMember(d => d.StartTime, o => o.MapFrom(s =>
                     s.StartTime.HasValue
-                    ? s.StartTime.Value.ToString(@"hh\:mm")
+                    ? s.StartTime.Value.ToString()
                     : null))
                 .ForMember(d => d.EndTime, o => o.MapFrom(s =>
                     s.EndTime.HasValue
-                    ? s.EndTime.Value.ToString(@"hh\:mm")
+                    ? s.EndTime.Value.ToString()
                     : null))
-                .ForMember(d => d.AppoinmentStatusConfigId, o => o.MapFrom(s =>
-                    s.AppoinmentStatusConfigId))
-
-                .ForMember(d => d.PriorityLevelConfigId, o => o.MapFrom(s =>
-                    s.PriorityLevelConfigId))
-
-                .ForMember(d => d.AppoinmentStatusDescription, o => o.Ignore())
-                .ForMember(d => d.PriorityLevelDescription, o => o.Ignore())
+                .ForMember(d => d.ClientName, o => o.MapFrom(s => s.Client != null
+                    ? string.Join(" ", new[] { s.Client.FirstName, s.Client.MiddleName, s.Client.LastName }
+                    .Where(n => !string.IsNullOrWhiteSpace(n))) : null))
+                .ForMember(d => d.Notes, o => o.MapFrom(s => s.Notes))
                 .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
                 .ReverseMap();
         }

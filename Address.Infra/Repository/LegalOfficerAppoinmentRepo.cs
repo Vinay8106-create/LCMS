@@ -2,6 +2,7 @@
 using CRM.Application;
 using CRM.Domain;
 using Galaxy.Domain.Exceptions;
+using Galaxy.Domain.Models;
 using Galaxy.Dto;
 using Galaxy.Infra;
 using LCMS.Constants;
@@ -40,7 +41,7 @@ namespace CRM.Infra
                     .FirstOrDefault();
 
                 if (!string.IsNullOrWhiteSpace(appointmentRefNo))
-                    appointment.AppointmentNo = appointmentRefNo;
+                    appointment.AppoinmentNo = appointmentRefNo;
 
                 return appointment;
             }
@@ -59,8 +60,35 @@ namespace CRM.Infra
             dDLData.data.Add(priorityLevel);
             var meetingType = await GetDDLAsync<config_MeetingType>("DDLMeetingType");
             dDLData.data.Add(meetingType);
+            var blockType = await GetDDLAsync<config_BlockType>("DDLBlockType");
+            dDLData.data.Add(blockType);
+            var legalOfficer = await getAllLegalOfficer();
+            dDLData.data.Add(legalOfficer);
 
             return dDLData;
+        }
+
+        public async Task<DDL> getAllLegalOfficer()
+        {
+            var data = await (
+                                from lo in _dbContext.LegalOfficer
+                                join u in _dbContext.Set<User>() on lo.UserSerialId equals u.Id
+                                select new DDLClass
+                                {
+                                    Id = lo.Id,
+                                    Constant = u.UserLoginId,
+                                    Description = (u.FirstName ?? "") + " " +
+                                                  (u.MiddleName ?? "") + " " +
+                                                  (u.LastName ?? "")
+                                })
+                                .AsNoTracking()
+                                .ToListAsync();
+
+            return new DDL
+            {
+                Key = "DDLLegalOfficer",
+                Value = data
+            };
         }
 
         public async Task<DDL> GetDDLAsync<TEntity>(string key) where TEntity : class
@@ -110,36 +138,29 @@ namespace CRM.Infra
             return appointment;
         }
 
-        public async Task<List<AppoinmentCalendarDto>> GetAppoinmentCalendarAsync(long legalOfficerId, int month, int year)
-        {
-            var parameters = new {
-                LegalOfficerId = legalOfficerId,
-                Month = month,
-                Year = year
-            };
+        //public async Task<List<AppoinmentCalendarDto>> GetAppoinmentCalendarAsync(long legalOfficerId, int month, int year)
+        //{
 
-            using var reader = await _dbContext.ExecuteSpAsync(
-                CRMConstants.StoredProcedures.APP_SP_GetAppoinmentCalendarByMonth,
-                parameters);
 
-            var resultSets = await reader.ReadAsync();
+        //    var resultSets = await reader.ReadAsync();
 
-            return resultSets.Select(x => new AppoinmentCalendarDto
-            {
-                AppoinmentDate = x.AppoinmentDate != null
-                 ? ((DateTime)x.AppoinmentDate).ToString("yyyy-MM-dd") : null,
-                TotalAppointments = (int)x.TotalAppointments,
-                BookedCount = (int)x.BookedCount,
-                AvailableCount = (int)x.AvailableCount,
-                PendingCount = (int)x.PendingCount,
-                DayStatus = (string)x.DayStatus
-            }).ToList();
-        }
+        //    return resultSets.Select(x => new AppoinmentCalendarDto
+        //    {
+        //        AppoinmentDate = x.AppoinmentDate != null
+        //         ? ((DateTime)x.AppoinmentDate).ToString("yyyy-MM-dd") : null,
+        //        TotalAppointments = (int)x.TotalAppointments,
+        //        BookedCount = (int)x.BookedCount,
+        //        AvailableCount = (int)x.AvailableCount,
+        //        PendingCount = (int)x.PendingCount,
+        //        DayStatus = (string)x.DayStatus
+        //    }).ToList();
+        //}
 
 
         public async Task<List<LegalOfficerAppoinment>> GetAppoinmentTimeSlotsByDateAsync(long legalOfficerId, DateTime date)
         {
             return await _dbContext.LegalOfficerAppoinment
+                .Include(a => a.Client)
                 .Where(a => a.LegalOfficerId == legalOfficerId &&
                             a.AppoinmentDate == date)
                 .OrderBy(a => a.StartTime)

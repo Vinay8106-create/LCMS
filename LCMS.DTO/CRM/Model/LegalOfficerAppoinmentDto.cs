@@ -5,7 +5,7 @@ namespace LCMS.Dto
     public class LegalOfficerAppoinmentDto
     {
         public long Id { get; set; }
-        public string? AppointmentNo { get; set; }
+        public string? AppoinmentNo { get; set; }
         public long ClientId { get; set; }
         public long LegalOfficerId { get; set; }
         public string AppoinmentDate { get; set; }
@@ -44,10 +44,8 @@ namespace LCMS.Dto
         public string StartTime { get; set; }
         public string EndTime { get; set; }
         public string IsBooked { get; set; }
-        public int? AppoinmentStatusConfigId { get; set; }
-        public string AppoinmentStatusDescription { get; set; }
-        public int? PriorityLevelConfigId { get; set; }
-        public string? PriorityLevelDescription { get; set; }
+        public string? ClientName { get; set; }
+        public string? Notes { get; set; }
         public AppMessage? Message { get; set; } = new AppMessage();
     }
 }

@@ -12,7 +12,7 @@ namespace CRM.Application
         Task<bool> IsSlotAlreadyBookedAsync(long officerId, DateTime date, TimeSpan? start, TimeSpan? end);
         Task<LegalOfficerAppoinment> UpdateLegalOfficerAppoinmentAsync(LegalOfficerAppoinmentDto request);
         Task<LegalOfficerAppoinment> GenerateAppointmentRefNo(LegalOfficerAppoinment appointment);
-        Task<List<AppoinmentCalendarDto>> GetAppoinmentCalendarAsync(long legalOfficerId, int month, int year);
+        //Task<List<AppoinmentCalendarDto>> GetAppoinmentCalendarAsync(long legalOfficerId, int month, int year);
         Task<List<LegalOfficerAppoinment>> GetAppoinmentTimeSlotsByDateAsync(long legalOfficerId, DateTime date);
     }
 }

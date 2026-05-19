@@ -34,7 +34,7 @@ namespace CRM.Infra
                 AppoinmentNo = x.LegalOfficerAppoinmentViewModel.AppoinmentNo,
                 ClientName = x.LegalOfficerAppoinmentViewModel.ClientName,
                 LegalOfficerName = x.LegalOfficerAppoinmentViewModel.LegalOfficerName,
-                FromDate = x.LegalOfficerAppoinmentViewModel.FromDate,
+                AppoinmentDate = x.LegalOfficerAppoinmentViewModel.AppoinmentDate,
                 AppoinmentStatusConfigId = x.LegalOfficerAppoinmentViewModel.AppoinmentStatusConfigId,
                 AppoinmentStatus = x.LegalOfficerAppoinmentViewModel.AppoinmentStatus,
                 Notes = x.LegalOfficerAppoinmentViewModel.Notes,

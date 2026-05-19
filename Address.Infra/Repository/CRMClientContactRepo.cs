@@ -27,15 +27,15 @@ namespace CRM.Infra
 
 
         public async Task<CRMClientContact> GetCRMClientContactByClientContactId(
-    long CRMClientContactId,
-    bool isTracking = false)
+        long CRMClientContactId,
+        bool isTracking = false)
         {
             var query = _dbContext.CRMClientContact
                 .Include(c => c.ResidentialAddress)
                 .Include(c => c.CommunicationAddress)
                 .AsQueryable();
 
-            // ✅ Respect the tracking flag
+            // Respect the tracking flag
             if (!isTracking)
                 query = query.AsNoTracking();
 

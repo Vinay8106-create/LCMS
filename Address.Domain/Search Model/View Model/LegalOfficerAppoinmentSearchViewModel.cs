@@ -6,8 +6,7 @@
         public string? AppoinmentNo { get; set; }
         public string? ClientName { get; set; }
         public string? LegalOfficerName { get; set; }
-        public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
+        public DateOnly? AppoinmentDate { get; set; }
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? EndTime { get; set; }
         public string? Notes { get; set; }

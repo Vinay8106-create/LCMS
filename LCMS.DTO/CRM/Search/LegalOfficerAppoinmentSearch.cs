@@ -13,11 +13,8 @@ namespace LCMS.DTO
         [FilterMapping("LegalOfficerAppoinmentViewModel.LegalOfficerName", Operation = FilterOperation.Contains)]
         public string? LegalOfficerName { get; set; }
 
-        [FilterMapping("LegalOfficerAppoinmentSearchViewModel.FromDate", Operation = FilterOperation.Contains)]
-        public DateTime? FromDate { get; set; }
-
-        [FilterMapping("LegalOfficerAppoinmentViewModel.ToDate", Operation = FilterOperation.Contains)]
-        public DateTime? ToDate { get; set; }
+        [FilterMapping("LegalOfficerAppoinmentViewModel.AppoinmentDate", Operation = FilterOperation.Equal)]
+        public DateOnly? AppoinmentDate { get; set; }
 
         [FilterMapping("LegalOfficerAppoinmentViewModel.AppoinmentStatusConfigId", Operation = FilterOperation.Equal)]
         public int? AppoinmentStatusConfigId { get; set; }
@@ -38,13 +35,7 @@ namespace LCMS.DTO
         public string? LegalOfficerName { get; set; }
 
         [SortableField("LegalOfficerAppoinmentViewModel.AppoinmentDate")]
-        public DateTime? AppoinmentDate { get; set; }
-
-        [SortableField("LegalOfficerAppoinmentViewModel.FromDate")]
-        public DateTime? FromDate { get; set; }
-
-        [SortableField("LegalOfficerAppoinmentViewModel.ToDate")]
-        public DateTime? ToDate { get; set; }
+        public DateOnly? AppoinmentDate { get; set; }
 
         [SortableField("LegalOfficerAppoinmentViewModel.StartTime")]
         public TimeSpan? StartTime { get; set; }

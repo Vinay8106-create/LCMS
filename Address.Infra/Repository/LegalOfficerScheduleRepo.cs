@@ -32,7 +32,7 @@ namespace CRM.Infra
                                       .AsNoTracking()
                                       .ToListAsync();
 
-                list = Enumerable.Range(1, 7)
+                list = Enumerable.Range(0, 7)
                    .Select(day => {
                        var existing = schedules
                            .FirstOrDefault(x => x.DayOffWeek == day);
@@ -49,7 +49,8 @@ namespace CRM.Infra
                                day == 4 ? "Thursday" :
                                day == 5 ? "Friday" :
                                day == 6 ? "Saturday" :
-                               "Sunday",
+                                day == 0 ? "Sunday" : "",
+
 
                            StartTime = existing?.StartTime.ToString(),
                            EndTime = existing?.EndTime.ToString(),
@@ -59,7 +60,7 @@ namespace CRM.Infra
                            BreakEndTime = Convert.ToString(existing?.BreakEndTime),
                            Version = existing?.Version ?? 0
 
-                   };
+                       };
                    })
                    .ToList();
             }

@@ -546,7 +546,10 @@ namespace CRM.Application
         #region Get Client Service By Id
         public async Task<CRMClientServiceDto> GetClientServiceByClientServiceIdAsync(long clientServicetId)
         {
-            return _mapper.Map<CRMClientServiceDto>(await _iCRMUow.CRMClientServiceRepo.GetClientServiceById(clientServicetId));
+            var clientService = _mapper.Map<CRMClientServiceDto>(await _iCRMUow.CRMClientServiceRepo.GetClientServiceById(clientServicetId));
+            await _iCRMUow.ConfigRepo.SetDescription(clientService);
+
+            return clientService;
         }
         #endregion
 
@@ -572,7 +575,7 @@ namespace CRM.Application
         #region Get Client Service Assigned Officer History By Id
         public async Task<List<CRMClientServiceAssignedOfficerHistoryDto>> GetClientServiceAssignedOfficerHistoryByClientServiceIdAsync(long clientServicetId)
         {
-            var list= await _iCRMUow.CRMClientServiceAssignedOfficerHistoryRepo.GetClientServiceAssignedOfficerHistoryById(clientServicetId);
+            var list = await _iCRMUow.CRMClientServiceAssignedOfficerHistoryRepo.GetClientServiceAssignedOfficerHistoryById(clientServicetId);
             foreach (var item in list)
             {
                 await _iCRMUow.ConfigRepo.SetDescription(item);
@@ -584,7 +587,7 @@ namespace CRM.Application
         #region Get Client Service Notes By Id
         public async Task<List<CRMClientServiceNotesDto>> GetClientServiceNotesByClientServiceIdAsync(long clientServicetId)
         {
-            var list= await _iCRMUow.CRMClientServiceNotesRepo.GetClientServiceNotesById(clientServicetId);
+            var list = await _iCRMUow.CRMClientServiceNotesRepo.GetClientServiceNotesById(clientServicetId);
             foreach (var item in list)
             {
                 await _iCRMUow.ConfigRepo.SetDescription(item);
@@ -891,7 +894,7 @@ namespace CRM.Application
         {
             await _iCRMUow.LegalOfficerAppoinmentRepo.GenerateAppointmentRefNo(appoinment);
 
-            if (string.IsNullOrWhiteSpace(appoinment.AppointmentNo))
+            if (string.IsNullOrWhiteSpace(appoinment.AppoinmentNo))
                 throw new BusinessException(await _iCRMUow.MessageRepo.
                     GetMessageByNo(CRMConstants.AppoinmentReferenceNumber.ErrorGeneratingRefNo,
                         "Appointment Ref Number"),
@@ -905,6 +908,7 @@ namespace CRM.Application
         #region Get Appoinment Calendar Async
         public async Task<List<AppoinmentCalendarDto>> GetAppoinmentCalendarAsync(long legalOfficerId, int month, int year)
         {
+            List<AppoinmentCalendarDto> calender = new List<AppoinmentCalendarDto>();
             // Step 1: Validate inputs
             if (legalOfficerId <= 0)
                 throw new BusinessException("Invalid Legal Officer Id.", HttpStatusCode.BadRequest);
@@ -915,21 +919,57 @@ namespace CRM.Application
             if (year < 2000)
                 throw new BusinessException("Invalid Year.", HttpStatusCode.BadRequest);
 
-            // Step 2: Get data from Repository
-            var result = await _iCRMUow.LegalOfficerAppoinmentRepo.GetAppoinmentCalendarAsync(legalOfficerId, month, year);
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1);
 
-            // Step 3: Return empty list if no appointments
-            // Never return null — frontend should handle empty list 
-            if (result == null || !result.Any())
-                return new List<AppoinmentCalendarDto>();
+            for (var date = startDate; date < endDate; date = date.AddDays(1))
+            {
+                var appointments = await _iCRMUow.LegalOfficerAppoinmentRepo.GetAppoinmentTimeSlotsByDateAsync(legalOfficerId, date);
+                var respones = _mapper.Map<List<AppoinmentTimeSlotsDto>>(appointments);
+                var data = await _iCRMUow.LegalOfficerScheduleRepo.LoadLegalOfficerSchedule(legalOfficerId);
+                var currentDay = (int)Convert.ToDateTime(date).Date.DayOfWeek;
+                var items = data.Where(x => x.DayOffWeek == currentDay).FirstOrDefault();
+                AppoinmentCalendarDto cal = new AppoinmentCalendarDto();
+                cal.AppoinmentDate = date.ToString();
+                cal.BookedCount = appointments.Count;
+                var dto = LoadSlotPreview(items);
+                if (items.ISActive == "Y")
+                {
+                    cal.TotalAppointments = dto.Result.SlotPreview.Count;
+                    cal.AvailableCount = dto.Result.SlotPreview.Count - appointments.Count;
+                    if (appointments.Count == dto.Result.SlotPreview.Count)
+                    {
 
-            return result;
+                        cal.DayStatus = "Full";
+                    }
+                    else if (appointments.Count == 0)
+                    {
+
+                        cal.DayStatus = "Available";
+                    }
+                    else
+                    {
+                        cal.DayStatus = "Partial";
+                    }
+                }
+                else
+                {
+                    cal.AvailableCount = 0;
+                    cal.DayStatus = "NotAvailable";
+                }
+
+                calender.Add(cal);
+            }
+
+            var response = _mapper.Map<List<AppoinmentCalendarDto>>(calender);
+            return response;
         }
         #endregion
 
         #region Get Appoinment Time Slots By Date Async
         public async Task<List<AppoinmentTimeSlotsDto>> GetAppoinmentTimeSlotsByDateAsync(long legalOfficerId, string date)
         {
+            List<AppoinmentTimeSlotsDto> app = new List<AppoinmentTimeSlotsDto>();
             if (legalOfficerId <= 0) throw new BusinessException("Invalid Legal Officer Id.", HttpStatusCode.BadRequest);
 
             if (string.IsNullOrWhiteSpace(date))
@@ -939,20 +979,38 @@ namespace CRM.Application
                 throw new BusinessException("Invalid Date format. Please use yyyy-MM-dd.", HttpStatusCode.BadRequest);
 
             var appointments = await _iCRMUow.LegalOfficerAppoinmentRepo.GetAppoinmentTimeSlotsByDateAsync(legalOfficerId, parsedDate);
+            var respones = _mapper.Map<List<AppoinmentTimeSlotsDto>>(appointments);
 
-            // Step 4: Return empty list if no slots
-            if (appointments == null || !appointments.Any())
-                return new List<AppoinmentTimeSlotsDto>();
-
-            var response = _mapper.Map<List<AppoinmentTimeSlotsDto>>(appointments);
-
-            foreach (var slot in response)
+            var data = await _iCRMUow.LegalOfficerScheduleRepo.LoadLegalOfficerSchedule(legalOfficerId);
+            var currentDay = (int)Convert.ToDateTime(date).Date.DayOfWeek;
+            var items = data.Where(x => x.DayOffWeek == currentDay).FirstOrDefault();
+            if (items.ISActive == "Y")
             {
+                var dto = LoadSlotPreview(items);
+                app = dto.Result.SlotPreview
+                        .Select(x => {
+                            var matchedAppointment = respones.FirstOrDefault(y =>
+                                y.StartTime == x.SlotStart &&
+                                y.EndTime == x.SlotEnd);
 
-                await SetDescription(slot);
-                slot.AppoinmentStatusDescription = slot.IsBooked == "Y" ? "Booked" : "Available";
+                            return new AppoinmentTimeSlotsDto
+                            {
+                                StartTime = x.SlotStart,
+                                EndTime = x.SlotEnd,
+
+                                IsBooked = matchedAppointment?.IsBooked ?? "N",
+                                ClientName = matchedAppointment?.ClientName ?? string.Empty,
+                                Notes = matchedAppointment?.Notes ?? string.Empty
+                            };
+                        })
+                        .ToList();
             }
 
+            var response = _mapper.Map<List<AppoinmentTimeSlotsDto>>(app);
+            foreach (var slot in response)
+            {
+                await SetDescription(slot);
+            }
             return response;
         }
         #endregion
@@ -1029,8 +1087,8 @@ namespace CRM.Application
 
                 slots.Add(new SlotDto
                 {
-                    SlotStart = FormatTime(current),
-                    SlotEnd = FormatTime(slotEnd)
+                    SlotStart = current.ToString(),
+                    SlotEnd = slotEnd.ToString()
                 });
 
                 current = slotEnd; // Slide window forward
@@ -1039,17 +1097,14 @@ namespace CRM.Application
             // Step 6 — Build response reusing same request DTO (your pattern)
             request.SlotPreview = slots;
             request.BreakTimeLabel = hasBreak
-                ? $"Break Time {FormatTime(breakStart!.Value)} - {FormatTime(breakEnd!.Value)}"
+                ? $"Break Time {breakStart!.Value} - {breakEnd!.Value}"
                 : null;
 
             return await Task.FromResult(request);
         }
 
         // Private helper — single place for time formatting
-        private string FormatTime(TimeSpan time)
-        {
-            return DateTime.Today.Add(time).ToString("hh:mm tt");
-        }
+
         #endregion
 
         #endregion
