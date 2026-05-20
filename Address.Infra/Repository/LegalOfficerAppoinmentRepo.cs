@@ -162,7 +162,7 @@ namespace CRM.Infra
             return await _dbContext.LegalOfficerAppoinment
                 .Include(a => a.Client)
                 .Where(a => a.LegalOfficerId == legalOfficerId &&
-                            a.AppoinmentDate == date)
+                            a.AppoinmentDate == date && a.IsBooked=="Y")
                 .OrderBy(a => a.StartTime)
                 .AsNoTracking()
                 .ToListAsync();

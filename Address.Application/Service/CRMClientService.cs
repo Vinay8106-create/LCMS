@@ -1230,7 +1230,6 @@ namespace CRM.Application
 
         #endregion
 
-
         #region Get Legal Officer Monthly Calendar
 
         public async Task<LegalOfficerMonthlyCalendarDto> GetLegalOfficerMonthlyCalendarAsync(long legalOfficerId, int year, int month)
