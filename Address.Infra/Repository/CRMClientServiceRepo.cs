@@ -141,6 +141,9 @@ namespace CRM.Infra
 
         public async Task<CRMClientService> InsertClientService(CRMClientService clientService)
         {
+            if (clientService.LegalOfficerAppoinment != null && clientService.LegalOfficerAppoinment.Id > 0)
+                _dbContext.Entry(clientService.LegalOfficerAppoinment).State = EntityState.Unchanged;
+
             await AddAsync(clientService);
 
             return clientService;

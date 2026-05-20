@@ -194,6 +194,28 @@ namespace CRM.Infra
 
         }
 
+
+        public async Task<List<LegalOfficerAppoinment>> GetAppointmentsAsync(long legalOfficerId, int year, int month)
+        {
+            return await _dbContext.LegalOfficerAppoinment
+                .Where(a =>
+                    a.LegalOfficerId == legalOfficerId &&
+                    a.AppoinmentDate.Year == year &&
+                    a.AppoinmentDate.Month == month)
+                .OrderBy(a => a.AppoinmentDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<LegalOfficerBlockedDates>> GetBlockedDatesAsync(long legalOfficerId, int year, int month)
+        {
+            return await _dbContext.LegalOfficerBlockedDates
+                .Where(b =>
+                    b.LegalOfficerId == legalOfficerId &&
+                    b.BlockDate.Year == year &&
+                    b.BlockDate.Month == month)
+                .OrderBy(b => b.BlockDate)
+                .ToListAsync();
+        }
     }
 }
 

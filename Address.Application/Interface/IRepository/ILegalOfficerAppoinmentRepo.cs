@@ -14,5 +14,6 @@ namespace CRM.Application
         Task<LegalOfficerAppoinment> GenerateAppointmentRefNo(LegalOfficerAppoinment appointment);
         //Task<List<AppoinmentCalendarDto>> GetAppoinmentCalendarAsync(long legalOfficerId, int month, int year);
         Task<List<LegalOfficerAppoinment>> GetAppoinmentTimeSlotsByDateAsync(long legalOfficerId, DateTime date);
+        Task<LegalOfficerAppoinment> GetLegalOfficerAppoinmentById(long appoinmentId, bool isTracking = false);
     }
 }

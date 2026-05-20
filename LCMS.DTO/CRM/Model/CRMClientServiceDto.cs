@@ -7,6 +7,7 @@ namespace LCMS.Dto
     {
         public long Id { get; set; }
         public long ClientId { get; set; }
+        public long? LegalOfficerAppoinmentId { get; set; }
         public string? ServiceRefNo { get; set; }
         public long? ServiceConfigId { get; set; }
         public long? MatterTypeConfigId { get; set; }
@@ -17,12 +18,14 @@ namespace LCMS.Dto
         public string? EnteredBy { get; set; }
         public DateTime? EnteredOn { get; set; }
 
+        public virtual string? EnteredByFullName { get; set; }
         public string? ServiceType { get; set; }
         public string? MatterType { get; set; }
         public string? MatterSubType { get; set; }
         public string? ContactMode { get; set; }
         public string? ServiceStatusDescription { get; set; }
         public string? AssignedTo { get; set; }
+        public LegalOfficerAppoinmentDto? LegalOfficerAppoinment { get; set; } = new LegalOfficerAppoinmentDto();
         public int Version { get; set; }
         public AppMessage? Message { get; set; } = new AppMessage();
     }
@@ -80,7 +83,7 @@ namespace LCMS.Dto
         public string Notes { get; set; } = null!;
         public string EnteredBy { get; set; } = null!;
         public DateTime EnteredOn { get; set; }
-        public int StatusConfigId { get; set; }        
+        public int StatusConfigId { get; set; }
         public virtual string? EnteredByFullName { get; set; }
         public int Version { get; set; }
         public AppMessage? Message { get; set; } = new AppMessage();

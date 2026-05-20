@@ -167,5 +167,11 @@ namespace CRM.Infra
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+
+        public async Task<LegalOfficerAppoinment> GetLegalOfficerAppoinmentById(long appoinmentId, bool isTracking = false)
+        {
+            return await GetByIdAsync(appoinmentId, isTracking);
+        }
     }
 }

@@ -14,5 +14,9 @@ namespace CRM.Application
 
         Task<DDLClass> GetDetailsFromITGUser(long UserSerialId);
         Task<string> SetUserName(long UserSerialId);
+
+        Task<List<LegalOfficerAppoinment>> GetAppointmentsAsync(long legalOfficerId, int year, int month);
+
+        Task<List<LegalOfficerBlockedDates>> GetBlockedDatesAsync(long legalOfficerId, int year, int month);
     }
 }

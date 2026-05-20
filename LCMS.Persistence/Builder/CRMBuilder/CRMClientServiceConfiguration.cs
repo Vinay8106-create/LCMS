@@ -11,13 +11,14 @@ namespace LCMS.Persistence
         {
             ConfigureModelProperties(builder);
             ConfigureModelRelationships(builder);
+            ConfigureModelDescriptionProperties(builder);
             base.Configure(builder);
         }
 
         public virtual void ConfigureModelProperties(EntityTypeBuilder<CRMClientService> builder)
         {
             builder.ToTable("CRMClientService");
-            builder.Property(c => c.ServiceRefNo).HasMaxLength(20);          
+            builder.Property(c => c.ServiceRefNo).HasMaxLength(20);
         }
         private void ConfigureModelRelationships(EntityTypeBuilder<CRMClientService> builder)
         {
@@ -37,6 +38,17 @@ namespace LCMS.Persistence
               .HasForeignKey(p => p.ClientServiceId)
               .OnDelete(DeleteBehavior.Cascade)
               .IsRequired(false);
+        }
+
+        private void ConfigureModelDescriptionProperties(EntityTypeBuilder<CRMClientService> builder)
+        {
+
+            builder.HasOne(p => p.EnteredByFullName)
+                .WithMany()
+                .HasPrincipalKey(u => new { u.UserLoginId })
+                .HasForeignKey(p => new { p.EnteredBy })
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
         }
     }
 }

@@ -497,6 +497,14 @@ namespace CRM.WebAPI
         }
         #endregion
 
+        [HttpGet("GetLegalOfficerAppoinmentByAppoinmentId")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "GetLegalOfficerAppoinmentByAppoinmentId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerAppoinmentDto))]
+        public async Task<IActionResult> GetLegalOfficerAppoinmentByAppoinmentId([FromQuery] long LegalOfficerAppoinmentId)
+        {
+            return this.Ok(await _iCRMClientService.GetLegalOfficerAppoinmentByAppoinmentIdAsync(LegalOfficerAppoinmentId));
+        }
+
         #region GetAppoinment Calender
         [HttpGet("GetAppoinmentCalendar")]
         [SwaggerOperation(Tags = new[] { "LegalOfficerAppoinment" }, Summary = "GetAppoinmentCalendar")]
@@ -592,6 +600,16 @@ namespace CRM.WebAPI
         public async Task<IActionResult> GetLegalOfficerBlockedDateCalender([FromQuery] long LegalOfficerId)
         {
             return this.Ok(await _iCRMClientService.GetLegalOfficerBlockedDateCalenderAsync(LegalOfficerId));
+        }
+        #endregion
+
+        #region Get Legal Officer Calender with Appointments and Blocked Dates
+        [HttpGet("GetLegalOfficerCalenderWithAppoinmentsAndBlockedDates")]
+        [SwaggerOperation(Tags = new[] { "LegalOfficerMonthlyCalender" }, Summary = "GetLegalOfficerCalenderWithAppoinmentsAndBlockedDates")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LegalOfficerMonthlyCalendarDto))]
+        public async Task<IActionResult> GetLegalOfficerCalender([FromQuery] long LegalOfficerId, [FromQuery] int year, [FromQuery] int month)
+        {
+            return this.Ok(await _iCRMClientService.GetLegalOfficerMonthlyCalendarAsync(LegalOfficerId, year, month));
         }
         #endregion
 

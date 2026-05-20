@@ -9,6 +9,7 @@ namespace CRM.Domain
         public string? AppoinmentNo { get; set; }
         public long ClientId { get; set; }
         public long LegalOfficerId { get; set; }
+        public long ClientServiceId { get; set; }
         public DateTime AppoinmentDate { get; set; }
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? EndTime { get; set; }
@@ -26,5 +27,19 @@ namespace CRM.Domain
 
         [NotMapped]
         public string? LegalOfficerName { get; set; }
+
+        public void ValidateMandatoryFields()
+        {
+
+            if (ClientId <= 0)
+                errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "ClientId is mandatory." });
+
+            if (LegalOfficerId <= 0)
+                errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "LegalOfficerId is mandatory." });
+
+            if (AppoinmentDate == default)
+                errorMsgList.Add(new uMessage() { MsgType = messageType.Error, Msg = "AppoinmentDate is mandatory." });
+
+        }
     }
 }

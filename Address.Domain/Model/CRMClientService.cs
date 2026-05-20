@@ -8,6 +8,7 @@ namespace CRM.Domain
     {
         public long Id { get; set; }
         public long ClientId { get; set; }
+        public long? LegalOfficerAppoinmentId { get; set; }
         public string? ServiceRefNo { get; set; }
         public long? ServiceConfigId { get; set; }
         public long? MatterTypeConfigId { get; set; }
@@ -17,11 +18,15 @@ namespace CRM.Domain
         public string? Notes { get; set; }
         public long? ServiceStatusConfigId { get; set; }
         public string? EnteredBy { get; set; }
+
+        public virtual User? EnteredByFullName { get; set; }
+
         public DateTime? EnteredOn { get; set; }
         public virtual Collection<CRMClientServiceAssignedOfficer> CRMClientServiceAssignedOfficers { get; set; }
         public virtual Collection<CRMClientServiceNotes> CRMClientServiceNotes { get; set; }
         public virtual Collection<CRMClientServiceStatusHistory> CRMClientServiceStatusHistories { get; set; }
         public virtual Collection<CRMClientServiceEmailHistory> CRMClientServiceEmailHistories { get; set; }
+        public virtual LegalOfficerAppoinment? LegalOfficerAppoinment { get; set; }
 
         public void ValidateMandatoryFieldsForService()
         {

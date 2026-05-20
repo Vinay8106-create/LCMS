@@ -16,7 +16,6 @@ namespace CRM.Application
         Task<CRMClientDto> SaveClientAsync(CRMClientDto request);
 
 
-
         #endregion
 
         #region Client Contact
@@ -74,6 +73,7 @@ namespace CRM.Application
         Task<SearchResult<LegalOfficerAppoinmentSearchResultsDto>> SearchLegalOfficerAppoinmentAsync(LegalOfficerAppoinmentSearchDto request);
         Task<LegalOfficerAppoinmentDto> CreateLegalOfficerAppoinmentAsync();
         Task<LegalOfficerAppoinmentDto> SaveLegalOfficerAppoinmentAsync(LegalOfficerAppoinmentDto request);
+        Task<LegalOfficerAppoinmentDto> GetLegalOfficerAppoinmentByAppoinmentIdAsync(long LegalOfficerAppoinmentId);
         Task<List<AppoinmentCalendarDto>> GetAppoinmentCalendarAsync(long legalOfficerId, int month, int year);
         Task<List<AppoinmentTimeSlotsDto>> GetAppoinmentTimeSlotsByDateAsync(long legalOfficerId, string date);
 
@@ -93,5 +93,7 @@ namespace CRM.Application
         Task<LegalOfficerBlockedDatesDto> GetLegalOfficerBlockedDateByLegalOfficerBlockDateIdAsync(long LegalOfficerBlockDateId);
         Task<List<LegalOfficerBlockedCalenderDto>> GetLegalOfficerBlockedDateCalenderAsync(long LegalOfficerId);
         #endregion
+
+        Task<LegalOfficerMonthlyCalendarDto> GetLegalOfficerMonthlyCalendarAsync(long legalOfficerId, int year, int month);
     }
 }

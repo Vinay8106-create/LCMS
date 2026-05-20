@@ -516,17 +516,45 @@ namespace CRM.Application
             if (ClientService.HasError)
                 throw new BusinessException(ClientService.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
 
+            var legalOfficerAppointment = _mapper.Map<LegalOfficerAppoinment>(request.LegalOfficerAppoinment);
+            if (request.Id > 0)
+            {
+                legalOfficerAppointment.ValidateMandatoryFields();
+
+                if (legalOfficerAppointment.HasError)
+                    throw new BusinessException(
+                        legalOfficerAppointment.errorMsgList.Select(x => x.Msg).ToList(), HttpStatusCode.BadRequest);
+
+
+                ClientService.LegalOfficerAppoinment = legalOfficerAppointment;
+
+                await GenerateAppointmentNo(ClientService.LegalOfficerAppoinment);
+            }
+            else
+            {
+                ClientService.LegalOfficerAppoinment = null;
+            }
+
             if (string.IsNullOrWhiteSpace(ClientService.ServiceRefNo))
             {
                 await GenerateClientServiceNo(ClientService);
             }
-
+            request.LegalOfficerAppoinment.AppoinmentNo = ClientService.LegalOfficerAppoinment.AppoinmentNo;
+            request.LegalOfficerAppoinment.ClientServiceId = ClientService.Id;
             ClientService = ClientService.Id > 0 ? await _iCRMUow.CRMClientServiceRepo.UpdateClientService(request) : await _iCRMUow.CRMClientServiceRepo.InsertClientService(ClientService);
 
             await _iCRMUow.SaveChangesAsync();
+            if (ClientService.Id > 0 && ClientService.LegalOfficerAppoinment != null)
+            {
+                ClientService.LegalOfficerAppoinment.ClientServiceId = ClientService.Id;
+            }
+
+            await _iCRMUow.SaveChangesAsync();
+
             var response = _mapper.Map<CRMClientServiceDto>(ClientService);
 
             await SetDescription(response);
+            await SetDescription(response.LegalOfficerAppoinment);
 
             return response;
         }
@@ -548,6 +576,7 @@ namespace CRM.Application
         {
             var clientService = _mapper.Map<CRMClientServiceDto>(await _iCRMUow.CRMClientServiceRepo.GetClientServiceById(clientServicetId));
             await _iCRMUow.ConfigRepo.SetDescription(clientService);
+            await _iCRMUow.ConfigRepo.SetDescription(clientService.LegalOfficerAppoinment);
 
             return clientService;
         }
@@ -905,6 +934,19 @@ namespace CRM.Application
         }
         #endregion
 
+        #region Get Legal Officer Appointment By Appoinment Id
+        public async Task<LegalOfficerAppoinmentDto> GetLegalOfficerAppoinmentByAppoinmentIdAsync(long LegalOfficerAppoinmentId)
+        {
+            var appoinment = await _iCRMUow.LegalOfficerAppoinmentRepo.GetLegalOfficerAppoinmentById(LegalOfficerAppoinmentId);
+
+            if (appoinment == null) return null;
+            var appoinmentDto = _mapper.Map<LegalOfficerAppoinmentDto>(appoinment);
+            await SetDescription(appoinmentDto);
+
+            return appoinmentDto;
+        }
+        #endregion
+
         #region Get Appoinment Calendar Async
         public async Task<List<AppoinmentCalendarDto>> GetAppoinmentCalendarAsync(long legalOfficerId, int month, int year)
         {
@@ -1186,6 +1228,73 @@ namespace CRM.Application
         }
         #endregion
 
+        #endregion
+
+
+        #region Get Legal Officer Monthly Calendar
+
+        public async Task<LegalOfficerMonthlyCalendarDto> GetLegalOfficerMonthlyCalendarAsync(long legalOfficerId, int year, int month)
+        {
+            var appointmentEntities = await _iCRMUow.LegalOfficerRepo.GetAppointmentsAsync(legalOfficerId, year, month);
+
+            var blockedDateEntities = await _iCRMUow.LegalOfficerRepo.GetBlockedDatesAsync(legalOfficerId, year, month);
+
+            var appointmentDtos = _mapper.Map<List<CalendarAppointmentDto>>(appointmentEntities);
+            var blockedDateDtos = _mapper.Map<List<CalendarBlockedDateDto>>(blockedDateEntities);
+
+            var appointmentsByDay = appointmentEntities
+                .GroupBy(a => a.AppoinmentDate.Date)
+                .ToDictionary(
+                    g => DateOnly.FromDateTime(g.Key),
+                    g => _mapper.Map<List<CalendarAppointmentDto>>(g.ToList()));
+
+            var blockedByDay = blockedDateEntities
+                .GroupBy(b => b.BlockDate)
+                .ToDictionary(
+                    g => g.Key,
+                    g => _mapper.Map<List<CalendarBlockedDateDto>>(g.ToList()));
+
+            // Build full month calendar
+            int totalDays = DateTime.DaysInMonth(year, month);
+
+            var calendarDays = Enumerable.Range(1, totalDays)
+                .Select(day => {
+                    var date = new DateOnly(year, month, day);
+
+                    return new CalendarDayDto
+                    {
+                        Date = date,
+                        DayName = date.ToString("dddd"),
+                        IsWeekend = date.DayOfWeek == DayOfWeek.Saturday ||
+                                       date.DayOfWeek == DayOfWeek.Sunday,
+                        Appointments = appointmentsByDay
+                                        .GetValueOrDefault(date,
+                                            new List<CalendarAppointmentDto>()),
+                        BlockedDates = blockedByDay
+                                        .GetValueOrDefault(date,
+                                            new List<CalendarBlockedDateDto>())
+                    };
+                }).ToList();
+
+            bool hasAnyData = appointmentEntities.Any() || blockedDateEntities.Any();
+
+            return new LegalOfficerMonthlyCalendarDto
+            {
+                LegalOfficerId = legalOfficerId,
+                Year = year,
+                Month = month,
+                MonthName = new DateTime(year, month, 1).ToString("MMMM"),
+                TotalDays = totalDays,
+                Calendar = calendarDays,
+                Message = new AppMessage
+                {
+                    InfoMessage = new uMessageDto
+                    {
+                        Msg = hasAnyData ? null : "No data found"
+                    }
+                }
+            };
+        }
         #endregion
     }
 }

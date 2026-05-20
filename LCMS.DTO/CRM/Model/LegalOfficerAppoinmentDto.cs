@@ -8,6 +8,7 @@ namespace LCMS.Dto
         public string? AppoinmentNo { get; set; }
         public long ClientId { get; set; }
         public long LegalOfficerId { get; set; }
+        public long ClientServiceId { get; set; }
         public string AppoinmentDate { get; set; }
         public string? StartTime { get; set; }
         public string? EndTime { get; set; }

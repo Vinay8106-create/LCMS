@@ -4,6 +4,7 @@ using Galaxy.Application.Mapper;
 using ITGAccounts.Utility;
 using LCMS.Domain;
 using LCMS.Dto;
+using LCMS.DTO;
 
 namespace CRM.Application
 {
@@ -17,8 +18,10 @@ namespace CRM.Application
 
             CreateMap<CRMClientService, CRMClientServiceDto>()
              .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
-             .ForMember(x => x.Version, opt => opt.Ignore())
-             .ReverseMap();
+             .ForMember(d => d.EnteredByFullName, o => o.MapFrom(src => ConversionWrapper.GetUserFullName(src.EnteredByFullName)))
+             .ReverseMap()
+             .ForMember(x => x.EnteredByFullName, opt => opt.Ignore());
+
             CreateMap<CRMClientServiceStatusHistory, CRMClientServiceStatusHistoryDto>()
              .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
              .ForMember(d => d.ChangedByFullName, o => o.MapFrom(src => ConversionWrapper.GetUserFullName(src.ChangedByFullName)))
@@ -38,7 +41,6 @@ namespace CRM.Application
             CreateMap<CRMClientServiceEmailHistory, CRMClientServiceEmailHistoryDto>()
         .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
         .ReverseMap();
-
 
             CreateMap<Address, AddressDto>()
                 .ForMember(d => d.Msg, o => o.MapFrom<AppMessageResolver>())
@@ -87,10 +89,12 @@ namespace CRM.Application
                 .ForMember(d => d.AppoinmentStatusDescription, o => o.Ignore())
                 .ForMember(d => d.PriorityLevelDescription, o => o.Ignore())
                 .ForMember(d => d.MeetingTypeDescription, o => o.Ignore())
+                .IncludeAllDerived()
                 .ReverseMap();
 
             CreateMap<LegalOfficerBlockedDates, LegalOfficerBlockedDatesDto>()
                .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
+               .IncludeAllDerived()
                .ReverseMap();
 
             CreateMap<LegalOfficerAppoinment, AppoinmentTimeSlotsDto>()
@@ -110,6 +114,19 @@ namespace CRM.Application
                 .ForMember(d => d.Notes, o => o.MapFrom(s => s.Notes))
                 .ForMember(d => d.Message, o => o.MapFrom<AppMessageResolver>())
                 .ReverseMap();
+
+
+            CreateMap<LegalOfficerAppoinment, CalendarAppointmentDto>()
+                .ForMember(d => d.StartTime, o => o.MapFrom(s => s.StartTime.HasValue
+                ? s.StartTime.Value.ToString()
+                    : null))
+                .ForMember(d => d.EndTime, o => o.MapFrom(s => s.EndTime.HasValue ? s.EndTime.Value.ToString()
+                    : null))
+                .IncludeAllDerived();
+
+            CreateMap<LegalOfficerBlockedDates, CalendarBlockedDateDto>()
+                .ForMember(d => d.Reason, o => o.MapFrom(s => s.Reason))
+                .IncludeAllDerived();
         }
     }
 }
