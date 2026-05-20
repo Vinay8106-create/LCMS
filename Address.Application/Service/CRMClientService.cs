@@ -539,8 +539,11 @@ namespace CRM.Application
             {
                 await GenerateClientServiceNo(ClientService);
             }
-            request.LegalOfficerAppoinment.AppoinmentNo = ClientService.LegalOfficerAppoinment.AppoinmentNo;
-            request.LegalOfficerAppoinment.ClientServiceId = ClientService.Id;
+            if (ClientService.LegalOfficerAppoinment != null && !string.IsNullOrEmpty(ClientService.LegalOfficerAppoinment.AppoinmentNo))
+            {
+                request.LegalOfficerAppoinment.AppoinmentNo = ClientService.LegalOfficerAppoinment.AppoinmentNo;
+                request.LegalOfficerAppoinment.ClientServiceId = ClientService.Id;
+            }
             ClientService = ClientService.Id > 0 ? await _iCRMUow.CRMClientServiceRepo.UpdateClientService(request) : await _iCRMUow.CRMClientServiceRepo.InsertClientService(ClientService);
 
             await _iCRMUow.SaveChangesAsync();
@@ -970,6 +973,7 @@ namespace CRM.Application
                 var respones = _mapper.Map<List<AppoinmentTimeSlotsDto>>(appointments);
                 var data = await _iCRMUow.LegalOfficerScheduleRepo.LoadLegalOfficerSchedule(legalOfficerId);
                 var currentDay = (int)Convert.ToDateTime(date).Date.DayOfWeek;
+                Console.WriteLine(currentDay);
                 var items = data.Where(x => x.DayOffWeek == currentDay).FirstOrDefault();
                 AppoinmentCalendarDto cal = new AppoinmentCalendarDto();
                 cal.AppoinmentDate = date.ToString();
